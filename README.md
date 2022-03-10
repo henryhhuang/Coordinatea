@@ -44,7 +44,7 @@ Possible other features that Coordinate will provide is an interactive map on a 
    - MaterialUI
 - API
    - NodeJs
-   - GraphQl
+   - GraphQl (Apollo)
 - Backend
    - NodeJs
    - MongoDB
