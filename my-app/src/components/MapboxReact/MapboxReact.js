@@ -3,6 +3,7 @@ import Map, {Marker, Popup, useControl} from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import "./MapboxReact.css"
+import { Pagination } from '@mui/material';
 
 //todo will need to retrieve the key from backend
 let accessToken = 'pk.eyJ1IjoiZGFwcGVycXVva2thIiwiYSI6ImNsMGgzZmdmazA0dm4zaW1qcjNmanhtNHYifQ.ODWLrgo7OhsbqXzGMsz1ug';
@@ -10,9 +11,16 @@ let accessToken = 'pk.eyJ1IjoiZGFwcGVycXVva2thIiwiYSI6ImNsMGgzZmdmazA0dm4zaW1qcj
 let id = 1;
 
 export function MapBoxReact(props) {
+  const { changeCurrentMarker, markersParent, markerCreation } = props;
+  const [markers, setMarkers] = useState(markersParent);
+  const [marker, setMarker] = useState(1);
 
-  const { markerCreation } = props;
-  const [markers, setMarkers] = useState([]);
+  const [viewport, setViewport] = useState({
+    latitude: 0,
+    longitude: 13.8161,
+    zoom: 0.64
+  });
+
   const mapRef = useRef(null);
 
   //can refactor to its own component too
@@ -24,7 +32,7 @@ export function MapBoxReact(props) {
     ctrl.on('result', evt => {
       const {result} = evt;
       const location = result && (result.center || (result.geometry?.type === 'Point' && result.geometry.coordinates));
-      if (location) {
+      if (markerCreation && location) {
         //todo save marker info to database, and store id from backend here
         //we should also check that no duplicate markers are made (same long,latitude)
         const newMarker = {
@@ -35,7 +43,7 @@ export function MapBoxReact(props) {
         }
         id++;
         setMarkers(() => [...markers, newMarker])
-      }
+        }
     });
     return null;
   }
@@ -46,11 +54,15 @@ export function MapBoxReact(props) {
   const [zoom, setZoom] = useState(1.19);
 
   const onMapLoad = React.useCallback(() => {
-    mapRef.current.on('move', () => {
-      setLng(mapRef.current.getCenter().lng.toFixed(4));
-      setLat(mapRef.current.getCenter().lat.toFixed(4));
-      setZoom(mapRef.current.getZoom().toFixed(2));
+    mapRef.current.on('load', function () {
+      mapRef.current.resize();
     });
+    //For testing
+    // mapRef.current.on('move', () => {
+    //   setLng(mapRef.current.getCenter().lng.toFixed(4));
+    //   setLat(mapRef.current.getCenter().lat.toFixed(4));
+    //   setZoom(mapRef.current.getZoom().toFixed(2));
+    // });
   });
 
   //set popup flag to false
@@ -75,7 +87,7 @@ export function MapBoxReact(props) {
   const zoomToOriginal = () => {
       mapRef.current.flyTo({
       center: [10.9353, 44.8916],
-      zoom: 1.19,
+      zoom: 1.20,
       bearing: 0,
       speed: 2, // make the flying slow
       curve: 2, // change the speed at which it zooms out
@@ -87,16 +99,26 @@ export function MapBoxReact(props) {
       });
   }
 
+  const paginationChange = (e, id) => {
+    if (!mapRef.current) {
+      return;
+    }
+    setMarker(id)
+    changeCurrentMarker(e, id);
+    zoomToPopup(null, id);
+  }
 
   const zoomToPopup = React.useCallback((e, id) => {
+    changeCurrentMarker(null, id);
+    setMarker(id)
+    let index = markers.findIndex((marker => marker.id == id));
     //set popup flag to true
-    let index;
-    setMarkers(() => {
-      const newMarkers = [...markers]
-      index = newMarkers.findIndex((marker => marker.id == id));
-      newMarkers[index].showPopup = true;
-      return newMarkers;
-    })
+    // setMarkers(() => {
+    //   const newMarkers = [...markers]
+    //   index = newMarkers.findIndex((marker => marker.id == id));
+    //   newMarkers[index].showPopup = true;
+    //   return newMarkers;
+    // })
 
     mapRef.current.flyTo({
       center: [markers[index].longitude, markers[index].latitude],
@@ -120,35 +142,41 @@ export function MapBoxReact(props) {
             <button onClick={zoomToOriginal}>Zoom out</button>
           </div>
       </div>
+      <div className="map-container">
+      <Pagination count={markers.length} page={marker} onChange={paginationChange} color="secondary" />
       <Map
-        initialViewState={{
-          longitude: 10.9353,
-          latitude: 44.8916,
-          zoom: 1.19
-        }}
-        style={{width: 1200, height: 1200}}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
+        className="map"
+        initialViewState={viewport}
+        // mapStyle="mapbox://styles/mapbox/streets-v11"
+        mapStyle="mapbox://styles/mapbox/light-v10"
         maxZoom={11}
-        minZoom={1.23}
+        // minZoom={1}
         mapboxAccessToken={accessToken}
         ref={mapRef}
         onLoad={onMapLoad}
         onClick={addMarker}>
-        <Geocoder accessToken={accessToken} mapboxgl={mapboxgl} position="top-right"></Geocoder>
+        <Geocoder 
+          accessToken={accessToken} 
+          mapboxgl={mapboxgl} position="top-right"
+          // flyTo={false}
+          >
+          </Geocoder>
         {markers.map((marker) => (
           <div key={marker.id}>
-            {marker.showPopup && (
+            {console.log(marker)}
+            {/* {marker.showPopup && (
             <Popup key={`popup-id-` + marker.id} longitude={marker.longitude} latitude={marker.latitude+0.01}
               anchor="bottom"
               closeOnClick={false}
               onClose={() => setShowPopup(marker.id)}>
               Placeholder text
-            </Popup>)}
+            </Popup>)} */}
             <Marker key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`} className="marker" longitude={marker.longitude} latitude={marker.latitude} onClick={(e) => zoomToPopup(e, marker.id)} anchor="bottom" >
             </Marker>
           </div>
         ))}
       </Map>
+      </div>
     </div>
   );
 }

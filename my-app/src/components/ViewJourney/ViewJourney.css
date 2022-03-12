@@ -1,0 +1,19 @@
+.view-container {
+    display: flex;
+    flex-direction: row;
+    margin: 40px;
+}
+
+.view-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+}
+
+.panel {
+    max-height: 900px;
+}
+
+.parent-panel {
+    height: fit-content
+}

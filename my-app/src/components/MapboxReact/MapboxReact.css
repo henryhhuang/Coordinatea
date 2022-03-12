@@ -1,6 +1,22 @@
+/*https://stackoverflow.com/questions/69262696/how-do-i-make-mapbox-map-responsive-inside-of-card*/
+
+.map {
+    position: relative;
+    height: inherit;
+    width: inherit;
+}
 .map-container {
     height: 800px;
-    width: 1200px;
+    width: 100%;
+    /* width: 100%;
+    min-width: 400px;
+    min-height: 400px; */
+    /* position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%; */
+    /* max-height: 800px;
+    max-width: 1200px; */
   }
   
   
@@ -10,7 +26,7 @@
     padding: 6px 12px;
     font-family: monospace;
     z-index: 1;
-    position: absolute;
+    /* position: absolute; */
     top: 0;
     left: 0;
     margin: 12px;
