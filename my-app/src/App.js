@@ -3,6 +3,8 @@ import { CreateJourney } from './components/CreateJourney/CreateJourney';
 // import NavBar from './components/NavBar/NavBar';
 import { ViewJourney } from './components/ViewJourney/ViewJourney';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Journeys } from './components/Journeys/Journeys';
+import { Outlet, Link, useRoutes, useLocation } from 'react-router-dom';
 
 const theme = createTheme({
   palette: {
@@ -22,16 +24,17 @@ const theme = createTheme({
 });
 
 function App() {
+  let element = useRoutes([
+    {
+      path: "/",
+      element: <Journeys />,
+    },
+    { path: "/journey/:id", element: <ViewJourney /> },
+    { path: "/journey/:id/:id2", element: <ViewJourney /> },
+    { path: "/journey/create", element: <CreateJourney /> },
 
-  return (
-    <ThemeProvider theme={theme}>
-      <div className='App'>
-        {/* <NavBar></NavBar> */}
-        <ViewJourney></ViewJourney>
-      </div>
-    </ThemeProvider>
-  );
-
+  ]);
+  return element;
 }
 
 export default App;
