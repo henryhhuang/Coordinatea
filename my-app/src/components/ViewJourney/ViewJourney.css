@@ -1,19 +1,43 @@
-.view-container {
-    display: flex;
-    flex-direction: row;
-    margin: 40px;
+.map-container1 {
+    position:relative;
+    height: 800px;
 }
 
-.view-panel {
-    display: flex;
-    flex-direction: column;
-    padding: 40px;
+
+.item-enter {
+    opacity: 0;
+  }
+  .item-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+  }
+  .item-exit {
+    opacity: 1;
+  }
+  .item-exit-active {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+  }
+
+  
+/* .markerTransition-enter {
+    opacity: 0.01;
+    transform: scale(1.1);
 }
 
-.panel {
-    max-height: 900px;
+.markerTransition-enter-active {
+opacity: 1;
+transform: scale(1);
+transition: all 1000ms ease-in-out;
 }
 
-.parent-panel {
-    height: fit-content
+.markerTransition-exit {
+opacity: 1;
+transform: scale(1);
 }
+
+.markerTransition-exit-active {
+opacity: 0.01;
+transform: scale(1.1);
+transition: all 1000ms ease-in-out;
+} */

@@ -1,0 +1,137 @@
+import React, { useRef, useEffect, useState } from 'react';
+import Map, {Marker, Popup, useControl} from 'react-map-gl';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import mapboxgl from 'mapbox-gl';
+import "./Mapbox.css"
+
+//todo will need to retrieve the key from backend
+let accessToken = 'pk.eyJ1IjoiZGFwcGVycXVva2thIiwiYSI6ImNsMGgzZmdmazA0dm4zaW1qcjNmanhtNHYifQ.ODWLrgo7OhsbqXzGMsz1ug';
+//todo id from backend when markers are saved
+let id = 1;
+
+export function Mapbox(props) {
+  let { onSearch, changeCurrentMarker, currentMarker, markersParent, markerCreation } = props;
+  const [markers, setMarkers] = useState(markersParent);
+  const [marker, setMarker] = useState(1);
+
+  const [viewport, setViewport] = useState({
+    latitude: 0,
+    longitude: 13.8161,
+    zoom: 0.64
+  });
+
+  const mapRef = useRef(null);
+
+  //todo: see if there is a better way
+  useEffect(() => {
+    if (mapRef && mapRef.current) {
+        currentMarker = props.currentMarker
+        zoomToPopup(null, currentMarker);
+    }
+  }, [props.currentMarker])
+
+  //can refactor to its own component
+  //parts taken from https://codesandbox.io/s/l7p179qr6m?file=/src/index.js
+  const Geocoder = (props) => {
+    const ctrl = useControl(() => new MapboxGeocoder(props), {
+      position: props.position
+    })
+    ctrl.on('result', evt => {
+      const {result} = evt;
+      const location = result && (result.center || (result.geometry?.type === 'Point' && result.geometry.coordinates));
+      console.log('hi');
+      console.log(markerCreation);
+      console.log(location)
+      if (markerCreation && location) {
+        console.log('hi');
+        //todo save marker info to database, and store id from backend here
+        //we should also check that no duplicate markers are made (same long,latitude)
+        const newMarker = {
+          id: id,
+          longitude: location[0],
+          latitude: location[1],
+          showPopup: false
+        }
+        id++;
+        onSearch(result);
+        setMarkers(() => [...markers, newMarker])
+        }
+    });
+    return null;
+  }
+
+  const onMapLoad = React.useCallback(() => {
+    mapRef.current.on('load', function () {
+      mapRef.current.resize();
+    });
+  });
+
+
+  const zoomToOriginal = () => {
+      mapRef.current.flyTo({
+      center: [10.9353, 44.8916],
+      zoom: 1.20,
+      bearing: 0,
+      speed: 2, // make the flying slow
+      curve: 2, // change the speed at which it zooms out
+      // This can be any easing function: it takes a number between
+      // 0 and 1 and returns another number between 0 and 1.
+      easing: (t) => t,
+      // this animation is considered essential with respect to prefers-reduced-motion
+      essential: true
+      });
+  }
+
+  const paginationChange = (e, id) => {
+    if (!mapRef.current) {
+      return;
+    }
+    setMarker(id)
+    changeCurrentMarker(e, id);
+    zoomToPopup(null, id);
+  }
+
+  const zoomToPopup = React.useCallback((e, id) => {
+    changeCurrentMarker(null, id);
+    setMarker(id)
+    let index = markers.findIndex((marker => marker.id == id));
+
+    mapRef.current.flyTo({
+      center: [markers[index].longitude, markers[index].latitude],
+      zoom: 13,
+      bearing: 0,
+      speed: 2, // make the flying slow
+      curve: 2, // change the speed at which it zooms out
+      // This can be any easing function: it takes a number between
+      // 0 and 1 and returns another number between 0 and 1.
+      easing: (t) => t,
+      // this animation is considered essential with respect to prefers-reduced-motion
+      essential: true
+      });
+  });
+
+  return (
+      <Map
+        className="map"
+        initialViewState={viewport}
+        mapStyle="mapbox://styles/mapbox/streets-v11"
+        maxZoom={11}
+        mapboxAccessToken={accessToken}
+        ref={mapRef}
+        onLoad={onMapLoad}>
+        <Geocoder 
+          accessToken={accessToken} 
+          mapboxgl={mapboxgl} position="top-right"
+          >
+          </Geocoder>
+        {markers.map((marker) => (
+          <div key={marker.id}>
+            <Marker key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`} className="marker" longitude={marker.longitude} latitude={marker.latitude} onClick={(e) => zoomToPopup(e, marker.id)} anchor="bottom" >
+            </Marker>
+          </div>
+        ))}
+      </Map>
+  );
+}
+
+

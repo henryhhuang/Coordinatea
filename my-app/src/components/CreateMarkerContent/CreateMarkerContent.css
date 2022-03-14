@@ -1,0 +1,6 @@
+.create-marker-content {
+    overflow: auto;
+    max-height: 800px;
+    width: '100%';
+    transition: all 10s linear 10s;
+}
