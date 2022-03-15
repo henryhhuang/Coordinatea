@@ -1,10 +1,10 @@
 import './App.css';
 import { CreateJourney } from './components/CreateJourney/CreateJourney';
-// import NavBar from './components/NavBar/NavBar';
+import NavBar from './components/NavBar/NavBar';
 import { ViewJourney } from './components/ViewJourney/ViewJourney';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Journeys } from './components/Journeys/Journeys';
-import { Outlet, Link, useRoutes, useLocation } from 'react-router-dom';
+import { Outlet, Link, useRoutes, useLocation, Route, Routes } from 'react-router-dom';
 import { SignIn } from './components/SignIn/SignIn';
 import { SignUp } from './components/SignUp/SignUp';
 import { Comment } from './components/Comments/Comment/Comment';
@@ -32,16 +32,20 @@ const theme = createTheme({
 });
 
 function App() {
-  let element = useRoutes([
-    {
-      path: "/",
-      element: <Journeys />,
-    },
-    { path: "/journey/:id", element: <ViewJourney /> },
-    { path: "/journey/:id/:id2", element: <ViewJourney /> },
-    { path: "/journey/create", element: <CreateJourney /> },
-  ]);
-  return element;
+  // let element = useRoutes([
+  //   {
+  //     path: "/",
+  //     element: <Journeys />,
+  //   },
+  //   { path: "/journey/:id", element: <ViewJourney /> },
+  //   { path: "/signup/", element: <SignIn /> },
+  //   { path: "/sigin/", element: <SignUp /> },
+  //   { path: "/follow/", element: <Follow /> },
+
+  //   { path: "/journey/:id/:id2", element: <ViewJourney /> },
+  //   { path: "/journey/create", element: <CreateJourney /> },
+  // ]);
+  // return element;
 
   
   const token = useAuthToken();
@@ -58,15 +62,25 @@ function App() {
     <ApolloProvider client={apolloClient}>
       <ThemeProvider theme={theme}>
         <div className='App'>
-          {/*<NavBar></NavBar><Comment />*/}
-          <ViewJourney></ViewJourney>
-          <SignIn></SignIn>
-          <SignUp></SignUp>
-          <Follow />
-          <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-          <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-          <CommentForm />
-          <CommentList username={'A'} />
+          <NavBar></NavBar>
+
+          <Routes>
+            <Route path="/" element={<Journeys/>}></Route>
+            <Route path="/journey/:id" element={<ViewJourney/>}></Route>
+            <Route path="/journey/:id/:id2" element={<ViewJourney/>}></Route>
+            <Route path="/journey/create" element={<CreateJourney/>}></Route>
+            <Route path="/signin/" element={<SignIn/>}></Route>
+            <Route path="/signup/" element={<SignUp/>}></Route>
+            <Route path="/follow/" element={<Follow/>}></Route>
+            <Route path="/comment/" element={
+              <div>
+              <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
+              <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
+              <CommentForm />
+              <CommentList username={'A'} />
+              </div>}
+            ></Route>
+          </Routes>
         </div>
       </ThemeProvider>
     </ApolloProvider>

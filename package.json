@@ -1,0 +1,24 @@
+{
+  "name": "project-dapperkats",
+  "version": "1.0.0",
+  "description": "- Justin Tran - Henry (Xiao Hang) Huang",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UTSCC09/project-dapperkats.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UTSCC09/project-dapperkats/issues"
+  },
+  "homepage": "https://github.com/UTSCC09/project-dapperkats#readme",
+  "dependencies": {
+    "cloudinary": "^1.28.1",
+    "dotenv": "^16.0.0"
+  }
+}
