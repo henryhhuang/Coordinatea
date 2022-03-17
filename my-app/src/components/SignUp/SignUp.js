@@ -19,12 +19,12 @@ import "./SignUp.css"
 
 export function SignUp() {
 
-    const [_, setAuthToken] = useAuthToken();
+    //const [_, setAuthToken] = useAuthToken();
 
     const [registerUser, { data, loading, error }] = useMutation(Mutations.SIGN_UP, {
         onCompleted: (data) => {
             console.log(data);
-            setAuthToken(data.register.token);
+            //setAuthToken(data.register.token);
         },
         onError: (error) => {
             console.log(error.message);
@@ -35,16 +35,18 @@ export function SignUp() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         try {
-            registerUser({
-                variables: {
-                    registerInput: {
-                        username: data.get('username'),
-                        password: data.get('password'),
-                        passwordConfirm: data.get('passwordConfirm'),
-                        email: data.get('email')
-                    }
-                }
-            });
+            const requestOptions = {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: data.get('username'),
+                    email: data.get('email'),
+                    password: data.get('password'),
+                    passwordConfirm: data.get('passwordConfirm')
+                })
+            };
+            fetch('http://localhost:5000/signup', requestOptions).then(res => console.log(res))
         } catch (err) {
         }
     }

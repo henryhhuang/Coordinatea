@@ -33,14 +33,16 @@ export function SignIn() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         try {
-            loginUser({
-                variables: {
-                    loginInput: {
-                        username: data.get('username'),
-                        password: data.get('password'),
-                    }
-                }
-            });
+            const requestOptions = {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: data.get('username'),
+                    password: data.get('password'),
+                })
+            };
+            fetch('http://localhost:5000/signin', requestOptions).then(res => console.log(res))
         } catch (error) {
             console.log(error);
         }

@@ -10,7 +10,11 @@ import { Mutations } from '../../graphql/mutation';
 
 export function Follow() {
 
-    const [followUser, {data, loading, error}] = useMutation(Mutations.FOLLOW, {
+    const [followUser, { data, loading, error }] = useMutation(gql`
+    mutation($subscriberUsername: String!, $publisherUsername: String!) {
+        follow(subscriberUsername: $subscriberUsername, publisherUsername: $publisherUsername) 
+    }
+`, {
         onCompleted: (data) => {
             console.log(data);
         }
@@ -25,10 +29,8 @@ export function Follow() {
         });
         followUser({
             variables: {
-                followInput: {
-                    subscriberUsername: data.get('subscriber'),
-                    publisherUsername: data.get('publisher'),
-                }
+                subscriberUsername: data.get('subscriber'),
+                publisherUsername: data.get('publisher'),
             }
         });
     }

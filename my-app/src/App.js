@@ -10,9 +10,10 @@ import { SignUp } from './components/SignUp/SignUp';
 import { Comment } from './components/Comments/Comment/Comment';
 import { CommentForm } from './components/Comments/CommentForm/CommentForm';
 import { Follow } from './components/Follow/Follow';
-import { ApolloClient, HttpLink, ApolloLink, InMemoryCache, concat, ApolloProvider } from "@apollo/client";
+import { ApolloClient, HttpLink, ApolloLink, InMemoryCache, concat, ApolloProvider, createHttpLink } from "@apollo/client";
 import { useAuthToken } from "./util/authentication";
 import { CommentList } from './components/Comments/CommentList/CommentList';
+import { createContext } from 'react';
 
 const theme = createTheme({
   palette: {
@@ -50,12 +51,14 @@ function App() {
   
   const token = useAuthToken();
 
+  const link = createHttpLink({
+    uri: 'http://localhost:5000/graphql',
+    credentials: 'include'
+  })
+
   const apolloClient = new ApolloClient({
-    uri: 'http://localhost:5000/',
     cache: new InMemoryCache(),
-    headers: {
-      authorization: token[0]
-    }
+    link
   })
 
   return (
