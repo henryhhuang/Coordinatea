@@ -11,8 +11,9 @@ let id = 1;
 
 export function Mapbox(props) {
   let { onSearch, changeCurrentMarker, currentMarker, markersParent, markerCreation } = props;
-  const [markers, setMarkers] = useState(markersParent);
-  const [marker, setMarker] = useState(1);
+
+  const [markers, setMarkers] = useState([]);
+  const [marker, setMarker] = useState(0);
 
   const [viewport, setViewport] = useState({
     latitude: 0,
@@ -22,10 +23,16 @@ export function Mapbox(props) {
 
   const mapRef = useRef(null);
 
-  //todo: see if there is a better way
+  //the below useEffects checks if parent props have been changed and if so updates this component
+  //todo: it might be inefficient for currentMarker
+  useEffect(() => {
+    setMarkers(props.markersParent)
+  }, [props.markersParent])
+
   useEffect(() => {
     if (mapRef && mapRef.current) {
         currentMarker = props.currentMarker
+        setMarker(currentMarker)
         zoomToPopup(null, currentMarker);
     }
   }, [props.currentMarker])
@@ -39,11 +46,7 @@ export function Mapbox(props) {
     ctrl.on('result', evt => {
       const {result} = evt;
       const location = result && (result.center || (result.geometry?.type === 'Point' && result.geometry.coordinates));
-      console.log('hi');
-      console.log(markerCreation);
-      console.log(location)
       if (markerCreation && location) {
-        console.log('hi');
         //todo save marker info to database, and store id from backend here
         //we should also check that no duplicate markers are made (same long,latitude)
         const newMarker = {
@@ -82,20 +85,11 @@ export function Mapbox(props) {
       });
   }
 
-  const paginationChange = (e, id) => {
-    if (!mapRef.current) {
-      return;
-    }
-    setMarker(id)
-    changeCurrentMarker(e, id);
-    zoomToPopup(null, id);
-  }
-
   const zoomToPopup = React.useCallback((e, id) => {
     changeCurrentMarker(null, id);
     setMarker(id)
-    let index = markers.findIndex((marker => marker.id == id));
 
+    let index = markers.findIndex((marker => marker.id == id));
     mapRef.current.flyTo({
       center: [markers[index].longitude, markers[index].latitude],
       zoom: 13,

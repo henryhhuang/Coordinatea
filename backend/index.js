@@ -6,6 +6,11 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const https = require('https');
 const app = express();
+const _ = require('lodash');
+
+const journeyTypeDefs = require('./typeDefs/journeyTypeDefs')
+const journeyResolver = require('./resolvers/journeyResolvers');
+
 
 const { MONGODB, SESSION_SECRET, SALT_ROUNDS } = require('./config');
 const User = require('./models/User');
@@ -80,10 +85,13 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-    typeDefs, resolvers, context: ({ req, res }) => {
+    typeDefs: [typeDefs, journeyTypeDefs], 
+    resolvers: _.merge({}, resolvers, journeyResolver), 
+    context: ({ req, res }) => {
         return { req, res }
     }
 });
+
 server.applyMiddleware({ app, cors: { origin: "http://localhost:3000", credentials: true }});
 
 // REST endpoint for signup from piazza post @342: https://piazza.com/class/kxgjicgvryu3h8?cid=342
@@ -105,7 +113,7 @@ app.post('/signup/', async (req, res, next) => {
         if (error)
             throw new Error(error)
         req.session.uid = doc._id
-        req.session.username = user.username
+        req.session.username = newUser.username
         return res.json(doc.username);
     });
 });

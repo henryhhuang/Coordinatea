@@ -66,11 +66,10 @@ function App() {
       <ThemeProvider theme={theme}>
         <div className='App'>
           <NavBar></NavBar>
-
           <Routes>
             <Route path="/" element={<Journeys/>}></Route>
-            <Route path="/journey/:id" element={<ViewJourney/>}></Route>
-            <Route path="/journey/:id/:id2" element={<ViewJourney/>}></Route>
+            <Route path="/journey/:journeyId" element={<ViewJourney/>}></Route>
+            <Route path="/journey/:journeyId/:markerId" element={<ViewJourney/>}></Route>
             <Route path="/journey/create" element={<CreateJourney/>}></Route>
             <Route path="/signin/" element={<SignIn/>}></Route>
             <Route path="/signup/" element={<SignUp/>}></Route>

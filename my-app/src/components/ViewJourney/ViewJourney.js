@@ -22,8 +22,9 @@ import { IconButton } from '@mui/material';
 import { MarkerContent } from '../MarkerContent/MarkerContent'
 import { CSSTransition } from 'react-transition-group';
 import { TransitionGroup } from 'react-transition-group';
-
-
+import { useQuery } from '@apollo/client'
+import { Journey_Querys } from '../../graphql/queries/journey'
+import { useEffect } from 'react';
 const ListItemButton = withStyles({
     root: {
       "&$selected": {
@@ -40,13 +41,21 @@ const ListItemButton = withStyles({
 const url = window.location.href;
 
 export function ViewJourney () {
-    let { id, id2 } = useParams();
-    const [open, setOpen] = React.useState(0);
-    const [currentMarker, setCurrentMarker] = React.useState(0);
-    const [openMarker, setOpenMarker] = React.useState(id2 || 0);
-    //get from db using id
-    const [journey, setJourney] = useState(journeyMock)
-    const [markers, setMarkers] = useState(mock)
+    let { journeyId, markerId } = useParams();
+    const {loading, error, data} = useQuery(Journey_Querys.GET_MARKERS, {
+        variables: { journeyId }
+    })
+    const [markers, setMarkers] = useState([]);
+
+    useEffect(() => {
+        if (!loading) {
+            setMarkers(data.getMarkers)
+        }
+    }, [data])
+
+    const [currentMarker, setCurrentMarker] = useState(0);
+    const [open, setOpen] = useState(0);
+    const [openMarker, setOpenMarker] = useState({});
     
     const handleChange = (event, value) => {
         setCurrentMarker(value);
@@ -58,9 +67,11 @@ export function ViewJourney () {
 
     }
     const handleContentOpen = () => {
-        //todo: check if url ends with /
-        window.history.pushState({}, null, url + "/1");
-        setOpenMarker(1);
+        //Todos: check if url ends with / and add the / in push if necessary
+        //add a check if the url has :journeyId/:markerId, we should show details about the openMarker
+        window.history.pushState({}, null, url + "/" + currentMarker);
+        let openMarker = markers.find((marker => marker.id == currentMarker));
+        setOpenMarker(openMarker);
         setOpen(true);
     }
 
@@ -78,9 +89,9 @@ export function ViewJourney () {
         xs={4}>
             {open ? (
                 <MarkerContent className="marker-content"
-                    title={markers[currentMarker-1].title} 
-                    description={markers[currentMarker-1].description}
-                    images={markers[currentMarker-1].images}
+                    title={openMarker.title} 
+                    description={openMarker.description}
+                    images={openMarker.images}
                     handleBack={handleBack}
                     ></MarkerContent>
             ) : (
@@ -114,7 +125,6 @@ export function ViewJourney () {
                                                     >Read more
                                                 </Typography>
                                             </IconButton>
-                                            {/* <LocationModal openText={"Read more"} title={marker.title} description={marker.description}>Hi</LocationModal> */}
                                             </React.Fragment>
                                         }
                                         />

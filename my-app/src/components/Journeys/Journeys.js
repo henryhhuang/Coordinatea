@@ -4,15 +4,19 @@ import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper';
 import {Link} from "react-router-dom";
 import mock from './mock.json';
-
+import { useQuery } from '@apollo/client'
+import { Journey_Querys } from '../../graphql/queries/journey'
+import { useEffect, useState } from "react";
 export function Journeys(props) {
-    //todos 
-    //only let redirect if logged in
-    //show followed people's journeys
-    //show journeys by popularity, recent, random
+    const {loading, error, data} = useQuery(Journey_Querys.GET_JOURNEYS);
+    const [journeys, setJourneys] = useState([]);
 
-    //   const { journeys } = props;
-    const journeys = mock;
+    //possible features todo: show journeys by popularity, random, by place?
+    useEffect(() => {
+        if (!loading) {
+            setJourneys(data.getJourneys)
+        }
+    }, [data])
 
     return (
     <Stack className="Journeys" direction="row" spacing={2}>
@@ -21,11 +25,11 @@ export function Journeys(props) {
                 No journeys :(.
             </Paper>
         ) : (
-        journeys.map((journey, idx) => (
+        journeys.map((journey) => (
             <Paper>
-            <Link to={"journey/" + idx} state={{journey}}>
+            <Link to={"journey/" + journey.id} state={{journey}}>
                 <Journey
-                    key={`item-idx-${idx}`}
+                    key={`journey-id-${journey.id}`}
                     journey={journey}
                     />
              </Link>
