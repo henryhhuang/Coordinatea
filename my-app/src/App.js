@@ -48,7 +48,7 @@ function App() {
   // ]);
   // return element;
 
-  
+
   const token = useAuthToken();
 
   const link = createHttpLink({
@@ -67,19 +67,19 @@ function App() {
         <div className='App'>
           <NavBar></NavBar>
           <Routes>
-            <Route path="/" element={<Journeys/>}></Route>
-            <Route path="/journey/:journeyId" element={<ViewJourney/>}></Route>
-            <Route path="/journey/:journeyId/:markerId" element={<ViewJourney/>}></Route>
-            <Route path="/journey/create" element={<CreateJourney/>}></Route>
-            <Route path="/signin/" element={<SignIn/>}></Route>
-            <Route path="/signup/" element={<SignUp/>}></Route>
-            <Route path="/follow/" element={<Follow/>}></Route>
+            <Route path="/" element={<Journeys />}></Route>
+            <Route path="/journey/:journeyId" element={<ViewJourney />}></Route>
+            <Route path="/journey/:journeyId/:markerId" element={<ViewJourney />}></Route>
+            <Route path="/journey/create" element={<CreateJourney />}></Route>
+            <Route path="/signin/" element={<SignIn />}></Route>
+            <Route path="/signup/" element={<SignUp />}></Route>
+            <Route path="/follow/" element={<Follow />}></Route>
             <Route path="/comment/" element={
               <div>
-              <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-              <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-              <CommentForm />
-              <CommentList username={'A'} />
+                <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
+                <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
+                <CommentForm />
+                <CommentList username={'A'} />
               </div>}
             ></Route>
           </Routes>
