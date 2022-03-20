@@ -11,8 +11,11 @@ const path = require('path');
 let multer  = require('multer');
 let upload = multer({ dest: path.join(__dirname, 'uploads')});
 
-const journeyTypeDefs = require('./typeDefs/journeyTypeDefs')
-const journeyResolver = require('./resolvers/journeyResolvers');
+//const journeyTypeDefs = require('./typeDefs/journeyTypeDefs')
+//const journeyResolver = require('./resolvers/journeyResolvers');
+
+const typeDefs = require('./graphql/typeDefs');
+const resolvers = require('./graphql/resolvers/index');
 
 
 const { MONGODB, SESSION_SECRET, SALT_ROUNDS } = require('./config');
@@ -38,6 +41,7 @@ app.use(session({
     }
 }));
 
+/*
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
   type Query {
@@ -51,6 +55,7 @@ const typeDefs = gql`
 `;
 
 // Provide resolver functions for your schema fields
+/*
 const resolvers = {
     Query: {
         authHello: (_, __, req) => {
@@ -87,24 +92,25 @@ const resolvers = {
         },
     }
 };
+*/
 
 const server = new ApolloServer({
-    typeDefs: [typeDefs, journeyTypeDefs], 
-    resolvers: _.merge({}, resolvers, journeyResolver), 
+    typeDefs: typeDefs,
+    resolvers: resolvers,
     context: ({ req, res }) => {
         return { req, res }
     }
 });
 
-server.applyMiddleware({ app, cors: { origin: "http://localhost:3000", credentials: true }});
+server.applyMiddleware({ app, cors: { origin: "http://localhost:3000", credentials: true } });
 
 // REST endpoint for signup from piazza post @342: https://piazza.com/class/kxgjicgvryu3h8?cid=342
 app.post('/signup/', async (req, res, next) => {
     const user = await User.findOne({ username: req.body.username });
     if (user)
-        return res.status(400).json({ error: "Username taken"});
+        return res.status(400).json({ error: "Username taken" });
     if (req.body.password != req.body.passwordConfirm)
-        return res.status(400).json({ error: "Passwords do not match"});
+        return res.status(400).json({ error: "Passwords do not match" });
     const hashedPassword = await bcrypt.hash(req.body.password, SALT_ROUNDS);
     const newUser = new User({
         username: req.body.username,
@@ -125,15 +131,14 @@ app.post('/signup/', async (req, res, next) => {
 app.post('/signin/', async (req, res, next) => {
     const user = await User.findOne({ username: req.body.username });
     if (!user)
-        return res.status(400).json({ error: "Username and password combination not found."});
+        return res.status(400).json({ error: "Username and password combination not found." });
     const auth = await bcrypt.compare(req.body.password, user.password)
     if (!auth)
-        return res.status(400).json({ error: "Username and password combination not found."});
+        return res.status(400).json({ error: "Username and password combination not found." });
     req.session.uid = user._id
     req.session.username = user.username
     return res.json("signed in");
 });
-
 
 //The following are REST endpoints to handle images, https://piazza.com/class/kxgjicgvryu3h8?cid=359
 //Upload an image
@@ -188,6 +193,13 @@ app.get('/api/image/:imageId/', async function (req, res, next) {
     res.sendFile(image.path);
 });
 
+
+
+app.get('/signout/', async (req, res, next) => {
+    req.session.destroy(function () {
+        return res.clearCookie('connect.sid').status(200).send("logged out")
+    });
+});
 
 mongoose.connect(MONGODB, { useNewUrlParser: true })
     .then(() => {

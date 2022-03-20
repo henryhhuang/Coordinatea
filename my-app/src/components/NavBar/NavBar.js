@@ -7,19 +7,17 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import {Link} from "react-router-dom";
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import { Link } from "react-router-dom";
+import HomeIcon from '@mui/icons-material/Home';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import PublicIcon from '@mui/icons-material/Public';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-//navbar code from https://mui.com/components/app-bar/
-
-//todo setup journey ids properly
-const pages = [['Home', '/'], ['Journey', '/journey/1/'], ['Create Journey', '/journey/create/'], ['Follow', '/follow/']];
-const settings = [['Sign in', '/signin/'], ['Sign up', 'signup'], ['Sign out', 'signout']];
-
-const NavBar = () => {
+const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -38,10 +36,29 @@ const NavBar = () => {
     setAnchorElUser(null);
   };
 
+  const handleLogout = () => {
+    console.log("Logout");
+    const requestOptions = {
+      credentials: 'include'
+    }
+    fetch('http://localhost:5001/signout', requestOptions).then(res => console.log(res))
+  }
+
   return (
-    <AppBar className="navbar" position="static" color='primary'>
+    <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            >
+              COORDINATE
+            </Typography>
+          </Link>
+
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -49,7 +66,7 @@ const NavBar = () => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="secondary"
+              color="inherit"
             >
               <MenuIcon />
             </IconButton>
@@ -71,32 +88,56 @@ const NavBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <Link to={page[1]}>
-                  <MenuItem key={page[0]} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page[0]}</Typography>
-                  </MenuItem>
-                </Link>
-              ))}
+              <Link to="/home" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem>
+                  <Typography>Home</Typography>
+                </MenuItem>
+              </Link>
+              <Link to="/following" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem>
+                  <Typography>Following</Typography>
+                </MenuItem>
+              </Link>
+              <Link to="/discover" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem>
+                  <Typography>Discover</Typography>
+                </MenuItem>
+              </Link>
             </Menu>
           </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+          ><Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+              COORDINATE</Link>
+          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Link to={page[1]}>
-                <Button
-                    key={page[0]}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'black', display: 'block' }}
-                >
-                    {page[0]}
-                </Button>
-                </Link>
-            ))}
+            <Link to="/home" style={{ textDecoration: 'none' }}>
+              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                <HomeIcon sx={{ mr: 1 }} />
+                <Typography>Home</Typography>
+              </Button>
+            </Link>
+            <Link to="/following" style={{ textDecoration: 'none' }}>
+              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                <FavoriteIcon sx={{ mr: 1 }} />
+                <Typography>Following</Typography>
+              </Button>
+            </Link>
+            <Link to="/discover" style={{ textDecoration: 'none' }}>
+              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                <PublicIcon sx={{ mr: 1 }} />
+                <Typography>Discover</Typography>
+              </Button>
+            </Link>
           </Box>
+
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <AccountCircle></AccountCircle>
+                <Avatar><AccountCircleIcon /></Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -115,13 +156,26 @@ const NavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <Link to={setting[1]}>
-                  <MenuItem key={setting[0]} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting[0]}</Typography>
-                  </MenuItem>
-                </Link>
-              ))}
+              <Link to="/profile" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem>
+                  <Typography>Profile</Typography>
+                </MenuItem>
+              </Link>
+              <Link to="/signup" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem>
+                  <Typography>Sign Up</Typography>
+                </MenuItem>
+              </Link>
+              <Link to="/signin" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem>
+                  <Typography>Sign In</Typography>
+                </MenuItem>
+              </Link>
+              <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem onClick={handleLogout}>
+                  <Typography>Logout</Typography>
+                </MenuItem>
+              </Link>
             </Menu>
           </Box>
         </Toolbar>
@@ -129,4 +183,4 @@ const NavBar = () => {
     </AppBar>
   );
 };
-export default NavBar;
+export default ResponsiveAppBar;

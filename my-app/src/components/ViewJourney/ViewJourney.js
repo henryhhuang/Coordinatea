@@ -17,7 +17,7 @@ import Avatar from '@mui/material/Avatar';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import MuiListItemButton from '@mui/material/ListItemButton';
 import { blue } from '@mui/material/colors';
-import { LocationDrawer } from '../LocationDrawer/LocationDrawer';
+//import { LocationDrawer } from '../LocationDrawer/LocationDrawer';
 import { IconButton } from '@mui/material';
 import { MarkerContent } from '../MarkerContent/MarkerContent'
 import { CSSTransition } from 'react-transition-group';
@@ -27,16 +27,16 @@ import { Journey_Querys } from '../../graphql/queries/journey'
 import { useEffect } from 'react';
 const ListItemButton = withStyles({
     root: {
-      "&$selected": {
-        backgroundColor: '#67B7D1'
-      }
+        "&$selected": {
+            backgroundColor: '#67B7D1'
+        }
     },
     selected: {}
-  })(MuiListItemButton);
+})(MuiListItemButton);
 
-      //cant use this since if someone enters the url state will be empty
-    // const location = useLocation()
-    // const { from } = location.state
+//cant use this since if someone enters the url state will be empty
+// const location = useLocation()
+// const { from } = location.state
 
 const url = window.location.href;
 
@@ -77,9 +77,9 @@ export function ViewJourney () {
         }
     }, [data])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-    }, [getMarkerImageIds])
+    // }, [getMarkerImageIds])
 
     // useEffect(() => {
     //     handleContentOpen();
@@ -107,7 +107,7 @@ export function ViewJourney () {
     const handleChange = (event, value) => {
         setCurrentMarker(value);
     };
-    
+
     const handleBack = () => {
         window.history.pushState({}, null, url);
         setOpen(false);
@@ -158,33 +158,33 @@ export function ViewJourney () {
                                         primary={marker.place}
                                         secondary={
                                             <React.Fragment>
-                                            <Typography
-                                                sx={{ display: 'inline' }}
-                                                component="span"
-                                                variant="body2"
-                                                color="text.primary"
-                                            >
-                                            {marker.date}
-                                            </Typography>
-                                            <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
                                                 <Typography
                                                     sx={{ display: 'inline' }}
                                                     component="span"
                                                     variant="body2"
-                                                    color="blue"
-                                                    >Read more
+                                                    color="text.primary"
+                                                >
+                                                    {marker.date}
                                                 </Typography>
-                                            </IconButton>
+                                                <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
+                                                    <Typography
+                                                        sx={{ display: 'inline' }}
+                                                        component="span"
+                                                        variant="body2"
+                                                        color="blue"
+                                                    >Read more
+                                                    </Typography>
+                                                </IconButton>
                                             </React.Fragment>
                                         }
-                                        />
-                            </ListItemButton>
-                            <Divider variant="inset" component="li" />
-                        </div>
-                    ))}
-                </List>
-            )}
+                                    />
+                                </ListItemButton>
+                                <Divider variant="inset" component="li" />
+                            </div>
+                        ))}
+                    </List>
+                )}
+            </Grid>
         </Grid>
-    </Grid>
     </>)
 }

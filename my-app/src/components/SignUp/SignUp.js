@@ -1,8 +1,4 @@
 import React from 'react';
-import { useMutation } from '@apollo/client';
-import { useAuthToken } from '../../util/authentication';
-import { Loading } from '../Loading/Loading'
-import { Mutations } from '../../graphql/mutation';
 import {
     Avatar,
     Box,
@@ -18,18 +14,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import "./SignUp.css"
 
 export function SignUp() {
-
-    //const [_, setAuthToken] = useAuthToken();
-
-    const [registerUser, { data, loading, error }] = useMutation(Mutations.SIGN_UP, {
-        onCompleted: (data) => {
-            console.log(data);
-            //setAuthToken(data.register.token);
-        },
-        onError: (error) => {
-            console.log(error.message);
-        }
-    });
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -62,9 +46,9 @@ export function SignUp() {
                     alignItems: 'center',
                 }}
             >
-                {loading ? <Loading /> : <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                     <LockOutlinedIcon />
-                </Avatar>}
+                </Avatar>
                 <Typography component="h1" variant="h5">
                     Sign Up
                 </Typography>
@@ -113,9 +97,6 @@ export function SignUp() {
                         name="passwordConfirm"
                         autoFocus
                     />
-                    {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
-                        {error.message}
-                    </Typography> : <></>}
                     <Button
                         type="submit"
                         fullWidth

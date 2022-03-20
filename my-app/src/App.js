@@ -5,16 +5,14 @@ import { ViewJourney } from './components/ViewJourney/ViewJourney';
 import { CreateJourney } from './components/CreateJourney/CreateJourney';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Journeys } from './components/Journeys/Journeys';
-import { Outlet, Link, useRoutes, useLocation, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { SignIn } from './components/SignIn/SignIn';
 import { SignUp } from './components/SignUp/SignUp';
 import { Comment } from './components/Comments/Comment/Comment';
 import { CommentForm } from './components/Comments/CommentForm/CommentForm';
 import { Follow } from './components/Follow/Follow';
-import { ApolloClient, HttpLink, ApolloLink, InMemoryCache, concat, ApolloProvider, createHttpLink } from "@apollo/client";
-import { useAuthToken } from "./util/authentication";
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 import { CommentList } from './components/Comments/CommentList/CommentList';
-import { createContext } from 'react';
 
 const theme = createTheme({
   palette: {
@@ -49,9 +47,6 @@ function App() {
   // ]);
   // return element;
 
-  
-  const token = useAuthToken();
-
   const link = createHttpLink({
     uri: 'http://localhost:5000/graphql',
     credentials: 'include'
@@ -78,10 +73,10 @@ function App() {
             <Route path="/follow/" element={<Follow/>}></Route>
             <Route path="/comment/" element={
               <div>
-              <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-              <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-              <CommentForm />
-              <CommentList username={'A'} />
+                <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
+                <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
+                <CommentForm />
+                <CommentList username={'A'} />
               </div>}
             ></Route>
           </Routes>

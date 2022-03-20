@@ -1,7 +1,4 @@
 import React from 'react';
-import { useMutation } from '@apollo/client';
-import { Mutations } from '../../graphql/mutation';
-import { useAuthToken } from '../../util/authentication';
 import {
     Avatar,
     Box,
@@ -17,17 +14,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import "./SignIn.css"
 
 export function SignIn() {
-
-    const [_, setAuthToken, removeAuthToken] = useAuthToken();
-    const [loginUser, { data, loading, error }] = useMutation(Mutations.SIGN_IN, {
-        onCompleted: (data) => {
-            console.log(data);
-            setAuthToken(data.login.token);
-        },
-        onError: (error) => {
-            console.log(error.message);
-        }
-    });
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -88,9 +74,6 @@ export function SignIn() {
                         id="password"
                         autoComplete="current-password"
                     />
-                    {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
-                        {error.message}
-                    </Typography> : <></>}
                     <Button
                         type="submit"
                         fullWidth
