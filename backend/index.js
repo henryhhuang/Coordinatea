@@ -7,6 +7,9 @@ const bcrypt = require('bcrypt');
 const https = require('https');
 const app = express();
 const _ = require('lodash');
+const path = require('path');
+let multer  = require('multer');
+let upload = multer({ dest: path.join(__dirname, 'uploads')});
 
 const journeyTypeDefs = require('./typeDefs/journeyTypeDefs')
 const journeyResolver = require('./resolvers/journeyResolvers');
@@ -14,6 +17,7 @@ const journeyResolver = require('./resolvers/journeyResolvers');
 
 const { MONGODB, SESSION_SECRET, SALT_ROUNDS } = require('./config');
 const User = require('./models/User');
+const Image = require('./models/Image');
 
 app.use(bodyParser.json());
 
@@ -129,6 +133,61 @@ app.post('/signin/', async (req, res, next) => {
     req.session.username = user.username
     return res.json("signed in");
 });
+
+
+//The following are REST endpoints to handle images, https://piazza.com/class/kxgjicgvryu3h8?cid=359
+//Upload an image
+app.post('/api/image/:id', upload.single('file'), async function (req, res, next) {
+    console.log(req);
+    console.log(req.params);
+    console.log(req.body);
+    console.log(req.file);
+
+    const newImage = Image({
+        journeyId: '',
+        markerId: '',
+        fieldname: req.file.fieldname,
+        originalname: req.file.originalname,
+        encoding: req.file.encoding,
+        mimetype: req.file.mimetype,
+        destination: req.file.destination,
+        filename: req.file.filename,
+        path: req.file.path,
+        size: req.file.size
+    })
+    if (req.body.action == 'journey') {
+        newImage.journeyId = req.params.id
+    } else {//marker
+        newImage.markerId = req.params.id
+    }
+    await newImage.save();
+    return res.json(newImage._id);
+});
+
+//Get a list of all image ids from a journey or marker
+app.get('/api/imageIds/:id/:action', async function (req, res, next) {
+    let images;
+    if (req.params.action == 'journey') {
+        images = await Image.find({
+            'journeyId': req.params.id
+        })
+    } else {
+        images = await Image.find({
+            'markerId': req.params.id
+        })
+    }
+    let imageIds = images.map(image => image._id);
+
+    return res.json(imageIds);
+});
+
+//Get the path of the image
+app.get('/api/image/:imageId/', async function (req, res, next) {
+    let image = await Image.findById(req.params.imageId);
+    res.setHeader('Content-Type', image.mimetype);
+    res.sendFile(image.path);
+});
+
 
 mongoose.connect(MONGODB, { useNewUrlParser: true })
     .then(() => {

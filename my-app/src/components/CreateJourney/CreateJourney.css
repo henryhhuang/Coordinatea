@@ -1,9 +1,0 @@
-.journey-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.journey-creation-container {
-    display: flex;
-    flex-direction: column;
-}

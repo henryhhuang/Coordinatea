@@ -1,7 +1,7 @@
 import { Mapbox } from '../Mapbox/Mapbox';
 import Grid from '@mui/material/Grid';
 import './ViewJourney.css';
-import React, { useRef, useState, forwardRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import mock from '../ViewJourney/mock.json';
 import journeyMock from '../ViewJourney/journey_mock.json'
 import { useParams, useLocation } from "react-router-dom";
@@ -41,21 +41,68 @@ const ListItemButton = withStyles({
 const url = window.location.href;
 
 export function ViewJourney () {
-    let { journeyId, markerId } = useParams();
+    const [markers, setMarkers] = useState([]);
+    const [currentMarker, setCurrentMarker] = useState();
+    const [open, setOpen] = useState(0);
+    const [openMarker, setOpenMarker] = useState({});
+    const { journeyId, markerId } = useParams();
+    const [imageMarker, setImageMarker] = useState();
     const {loading, error, data} = useQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
-    })
-    const [markers, setMarkers] = useState([]);
+    });
+
+    const getMarkerImageIds = useCallback((markerId) => {
+        fetch('http://localhost:5000/api/imageIds/' + markerId + '/marker', {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then((res) => res.json())
+        .then((result) => {
+            setImageMarker(result);
+        }).catch((error) => {
+            console.log('error', error);
+        })
+    });
+
 
     useEffect(() => {
         if (!loading) {
             setMarkers(data.getMarkers)
+            // console.log(markerId);
+            // console.log(data);
+            // if (markerId) {
+            //     setCurrentMarker(markerId);
+            //     setOpenMarker(markerId);
+            // }
         }
     }, [data])
 
-    const [currentMarker, setCurrentMarker] = useState(0);
-    const [open, setOpen] = useState(0);
-    const [openMarker, setOpenMarker] = useState({});
+    useEffect(() => {
+
+    }, [getMarkerImageIds])
+
+    // useEffect(() => {
+    //     handleContentOpen();
+    // }, [openMarker])
+
+    // useEffect(() => {
+    //     if (markerId) {
+    //         console.log('hihi')
+    //         setCurrentMarker(markerId);
+    //         handleContentOpen();
+    //     }
+    // }, [markerId])
+
+
+    // useEffect(() => {
+    //     if (markerId) {
+    //         console.log(markerId);
+    //         handleChange(null, markerId);
+    //         // setCurrentMarker(markerId);
+    //         console.log(currentMarker);
+    //         handleContentOpen();
+    //     }
+    // }, [markerId])
     
     const handleChange = (event, value) => {
         setCurrentMarker(value);
@@ -64,13 +111,16 @@ export function ViewJourney () {
     const handleBack = () => {
         window.history.pushState({}, null, url);
         setOpen(false);
-
     }
     const handleContentOpen = () => {
         //Todos: check if url ends with / and add the / in push if necessary
         //add a check if the url has :journeyId/:markerId, we should show details about the openMarker
-        window.history.pushState({}, null, url + "/" + currentMarker);
+        if (!url.includes(markerId)) {
+            window.history.pushState({}, null, url + "/" + currentMarker);
+        }
         let openMarker = markers.find((marker => marker.id == currentMarker));
+
+        getMarkerImageIds(currentMarker);
         setOpenMarker(openMarker);
         setOpen(true);
     }
@@ -87,17 +137,17 @@ export function ViewJourney () {
         justify="center"
         alignItems="center"
         xs={4}>
-            {open ? (
+            {open && openMarker != null ? (
                 <MarkerContent className="marker-content"
                     title={openMarker.title} 
                     description={openMarker.description}
-                    images={openMarker.images}
+                    images={imageMarker}
                     handleBack={handleBack}
                     ></MarkerContent>
             ) : (
                 <List sx={{ maxHeight: '800px', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
                     {markers.map((marker) => (
-                        <div className="marker-container">
+                        <div key={'list-' + marker.id} className="marker-container">
                             <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
                                 <ListItemAvatar>
                                 <Avatar>

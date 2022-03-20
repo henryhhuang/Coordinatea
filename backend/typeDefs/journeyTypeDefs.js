@@ -23,12 +23,12 @@ const journeyTypeDefs = gql`
     }
 
     input JourneyInput {
-        username: String
-        title: String
-        imageId: String
-        description: String
-        fromDate: String
-        toDate:String
+        username: String!
+        title: String!
+        imageId: String!
+        description: String!
+        fromDate: String!
+        toDate: String!
     }
 
     input MarkerInput {

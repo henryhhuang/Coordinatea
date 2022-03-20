@@ -1,7 +1,8 @@
 import './App.css';
-import { CreateJourney } from './components/CreateJourney/CreateJourney';
+import { CreateMarker } from './components/CreateMarker/CreateMarker';
 import NavBar from './components/NavBar/NavBar';
 import { ViewJourney } from './components/ViewJourney/ViewJourney';
+import { CreateJourney } from './components/CreateJourney/CreateJourney';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Journeys } from './components/Journeys/Journeys';
 import { Outlet, Link, useRoutes, useLocation, Route, Routes } from 'react-router-dom';
@@ -70,7 +71,8 @@ function App() {
             <Route path="/" element={<Journeys/>}></Route>
             <Route path="/journey/:journeyId" element={<ViewJourney/>}></Route>
             <Route path="/journey/:journeyId/:markerId" element={<ViewJourney/>}></Route>
-            <Route path="/journey/create" element={<CreateJourney/>}></Route>
+            <Route path="/journey/create/" element={<CreateJourney/>}></Route>
+            <Route path="/journey/create/:journeyId" element={<CreateMarker/>}></Route>
             <Route path="/signin/" element={<SignIn/>}></Route>
             <Route path="/signup/" element={<SignUp/>}></Route>
             <Route path="/follow/" element={<Follow/>}></Route>

@@ -5,21 +5,29 @@ import { CardMedia } from '@mui/material';
 import { IconButton } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 //todo add image form
 export function CreateMarkerContent (props) {
     const {handleSubmit, handleBack, title, images, description} = props;
 
+    const [selectedFile, setSelectedFile] = useState();
+	const [isFilePicked, setIsFilePicked] = useState(false);
+
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
 
+    const fileChange = (e) => {
+        console.log(e)
+        setSelectedFile(e.target.files[0]);
+        setIsFilePicked(true);
+    }
     const validateSubmit = (e) => {
         e.preventDefault();
         //validation
         const title = titleRef.current.value;
         const description = descriptionRef.current.value
-        handleSubmit(e, title, description);
+        handleSubmit(e, title, description, selectedFile);
     }
 
     return (
@@ -51,6 +59,17 @@ export function CreateMarkerContent (props) {
                 defaultValue="Title"
                 inputRef={descriptionRef}
             />
+                <Button
+                variant="contained"
+                component="label"
+                >
+                Upload File
+                <input
+                    type="file"
+                    hidden
+                    onChange={fileChange}
+                />
+            </Button>
             <Button type='submit' variant="outlined" size="medium">
                 Save Marker
             </Button>

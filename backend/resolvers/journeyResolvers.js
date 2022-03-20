@@ -16,9 +16,11 @@ const journeyResolvers = {
             let marker = await Marker.find({
                 "journeyId": journeyId
             })
-            console.log(marker);
             return marker;
-        }
+        },
+        // getMarkerImages: async (_, args) => {
+
+        // }
     },
     Mutation: {
         createJourney: async (_, args) => {
