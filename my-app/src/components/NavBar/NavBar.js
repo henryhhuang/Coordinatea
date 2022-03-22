@@ -16,6 +16,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CreateIcon from '@mui/icons-material/Create';
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -103,6 +104,11 @@ const ResponsiveAppBar = () => {
                   <Typography>Discover</Typography>
                 </MenuItem>
               </Link>
+              <Link to="/journey/create" style={{ color: 'black', textDecoration: 'none' }}>
+                <MenuItem>
+                  <Typography>Create Journey</Typography>
+                </MenuItem>
+              </Link>
             </Menu>
           </Box>
           <Typography
@@ -130,6 +136,12 @@ const ResponsiveAppBar = () => {
               <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
                 <PublicIcon sx={{ mr: 1 }} />
                 <Typography>Discover</Typography>
+              </Button>
+            </Link>
+            <Link to="/journey/create" style={{ textDecoration: 'none' }}>
+              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                <CreateIcon sx={{ mr: 1 }} />
+                <Typography>Create Journey</Typography>
               </Button>
             </Link>
           </Box>

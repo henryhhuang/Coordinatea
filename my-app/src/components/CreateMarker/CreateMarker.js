@@ -21,9 +21,10 @@ import { IconButton } from '@mui/material';
 import { CreateMarkerContent } from '../CreateMarkerContent/CreateMarkerContent'
 import TextField from '@mui/material/TextField';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
 import { Journey_Mutations } from '../../graphql/mutation/journey'
 import { Journey_Querys } from '../../graphql/queries/journey'
+import { useNavigate } from "react-router-dom";
 
 const ListItemButton = withStyles({
     root: {
@@ -33,26 +34,6 @@ const ListItemButton = withStyles({
     },
     selected: {}
   })(MuiListItemButton);
-
-//refactor to a utils folder
-const uploadImage = (markerId, file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    fetch('http://localhost:5000/api/image/' + markerId + '/', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-    })
-    .then((res) => res.json())
-    .then((result) => {
-        console.log('success', result);
-    }).catch((error) => {
-        console.log('error', error);
-    })
-}
-
-// todo fix url routing in this component
 
 const url = window.location.href;
 
@@ -64,27 +45,73 @@ export function CreateMarker () {
     // todo let user edit their journey card here
     const [journey, setJourney] = useState(journeyMock)
     const [markers, setMarkers] = useState([]);
-    const [image, setImage] = useState();
+    // const [image, setImage] = useState();
+    const [uploadedImage, setUploadedImage] = useState();
     const [newMarker, setNewMarker] = useState();
 
     const markerPlaceRef = useRef(null);
     const markerDateRef = useRef(null);
+    const navigate = useNavigate();
 
-    const {data, loading, error} = useQuery(Journey_Querys.GET_MARKERS, {
+    const [getMarkers, {data, loading, error}] = useLazyQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     })
+
+    //refactor to a utils folder
+    const uploadImage = (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('http://localhost:5000/api/image/0/', {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+        })
+        .then((res) => res.json())
+        .then((result) => {
+            setUploadedImage(result);
+        }).catch((error) => {
+            console.log('error', error);
+        })
+    }
+
     const [createMarker, { data: createData, loading: createLoading, error: createError }] = useMutation(Journey_Mutations.CREATE_MARKER);
 
+    //get markers on render
     useEffect(() => {
-        console.log(data);
-        if (!loading) {
+        getMarkers();
+    }, [])
+
+    //set markers everytime data is changed
+    useEffect(() => {
+        if (!loading && data) {
             setMarkers(data.getMarkers)
         }
     }, [data])
 
     useEffect(() => {
+        if (newMarker && uploadedImage) {
+            createMarker({
+                variables: {
+                    marker: {
+                        journeyId: journeyId,
+                        title: newMarker.title,
+                        description: newMarker.description,
+                        place: newMarker.place,
+                        date: newMarker.date,
+                        longitude: newMarker.longitude,
+                        latitude: newMarker.latitude,
+                        imageId: uploadedImage
+                    }
+                }
+            });
+        }
+    }, [uploadedImage])
+
+    useEffect(() => {
         if (!createLoading && createData) {
-            uploadImage(createData.createMarker.id, image);
+            getMarkers();
+            // navigate(createData.createMarker.id, { replace: true });
         }
     }, [createData])
 
@@ -123,21 +150,18 @@ export function CreateMarker () {
     const handleSubmit = (e, title, description, image) => {
         setOpen(false);
         setNewMarker();
-        setImage(image);
-
-        createMarker({
-            variables: {
-                marker: {
-                    journeyId: journeyId,
-                    title: title,
-                    description: description,
-                    place: newMarker.place,
-                    date: newMarker.date,
-                    longitude: newMarker.center[0],
-                    latitude: newMarker.center[1]
-                }
-            }
-        });
+        // setImage(image);
+        let marker = {
+            journeyId: journeyId,
+            title: title,
+            description: description,
+            place: newMarker.place,
+            date: newMarker.date,
+            longitude: newMarker.center[0],
+            latitude: newMarker.center[1],
+        }
+        setNewMarker(marker)
+        uploadImage(image);
     }
 
     const handleContentOpen = () => {

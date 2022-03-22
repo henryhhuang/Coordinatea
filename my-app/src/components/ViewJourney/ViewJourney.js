@@ -5,7 +5,6 @@ import React, { useState, useCallback } from 'react';
 import mock from '../ViewJourney/mock.json';
 import journeyMock from '../ViewJourney/journey_mock.json'
 import { useParams, useLocation } from "react-router-dom";
-import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
@@ -17,7 +16,6 @@ import Avatar from '@mui/material/Avatar';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import MuiListItemButton from '@mui/material/ListItemButton';
 import { blue } from '@mui/material/colors';
-//import { LocationDrawer } from '../LocationDrawer/LocationDrawer';
 import { IconButton } from '@mui/material';
 import { MarkerContent } from '../MarkerContent/MarkerContent'
 import { CSSTransition } from 'react-transition-group';
@@ -25,6 +23,9 @@ import { TransitionGroup } from 'react-transition-group';
 import { useQuery } from '@apollo/client'
 import { Journey_Querys } from '../../graphql/queries/journey'
 import { useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+
+
 const ListItemButton = withStyles({
     root: {
         "&$selected": {
@@ -43,86 +44,65 @@ const url = window.location.href;
 export function ViewJourney () {
     const [markers, setMarkers] = useState([]);
     const [currentMarker, setCurrentMarker] = useState();
-    const [open, setOpen] = useState(0);
+    const [open, setOpen] = useState(false);
     const [openMarker, setOpenMarker] = useState({});
     const { journeyId, markerId } = useParams();
     const [imageMarker, setImageMarker] = useState();
     const {loading, error, data} = useQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     });
+    const navigate = useNavigate();
 
-    const getMarkerImageIds = useCallback((markerId) => {
-        fetch('http://localhost:5000/api/imageIds/' + markerId + '/marker', {
-            method: 'GET',
-            credentials: 'include',
-        })
-        .then((res) => res.json())
-        .then((result) => {
-            setImageMarker(result);
-        }).catch((error) => {
-            console.log('error', error);
-        })
-    });
+    // const getMarkerImageIds = useCallback((markerId) => {
+    //     fetch('http://localhost:5000/api/imageIds/' + markerId + '/marker', {
+    //         method: 'GET',
+    //         credentials: 'include',
+    //     })
+    //     .then((res) => res.json())
+    //     .then((result) => {
+    //         console.log(result);
+    //         setImageMarker(result);
+    //     }).catch((error) => {
+    //         console.log('error', error);
+    //     })
+    // });
 
 
     useEffect(() => {
         if (!loading) {
             setMarkers(data.getMarkers)
-            // console.log(markerId);
-            // console.log(data);
-            // if (markerId) {
-            //     setCurrentMarker(markerId);
-            //     setOpenMarker(markerId);
-            // }
         }
     }, [data])
 
-    // useEffect(() => {
-
-    // }, [getMarkerImageIds])
-
-    // useEffect(() => {
-    //     handleContentOpen();
-    // }, [openMarker])
-
-    // useEffect(() => {
-    //     if (markerId) {
-    //         console.log('hihi')
-    //         setCurrentMarker(markerId);
-    //         handleContentOpen();
-    //     }
-    // }, [markerId])
-
-
-    // useEffect(() => {
-    //     if (markerId) {
-    //         console.log(markerId);
-    //         handleChange(null, markerId);
-    //         // setCurrentMarker(markerId);
-    //         console.log(currentMarker);
-    //         handleContentOpen();
-    //     }
-    // }, [markerId])
+    //wait to get imageId before opening content panel
+    useEffect(() => {
+        console.log(openMarker);
+        if (openMarker && imageMarker) {
+            setOpen(true);
+        }
+    }, [imageMarker])
     
     const handleChange = (event, value) => {
         setCurrentMarker(value);
     };
 
+    //todo: doesn't work when user clicks browser's back button
     const handleBack = () => {
-        window.history.pushState({}, null, url);
         setOpen(false);
+        setOpenMarker({});
+        navigate(-1)
     }
+
     const handleContentOpen = () => {
         //Todos: check if url ends with / and add the / in push if necessary
         //add a check if the url has :journeyId/:markerId, we should show details about the openMarker
         if (!url.includes(markerId)) {
-            window.history.pushState({}, null, url + "/" + currentMarker);
+            navigate(currentMarker);
         }
         let openMarker = markers.find((marker => marker.id == currentMarker));
-
-        getMarkerImageIds(currentMarker);
         setOpenMarker(openMarker);
-        setOpen(true);
+        setImageMarker(openMarker.imageId);
+        // getMarkerImageIds(currentMarker);
     }
 
     return (<>

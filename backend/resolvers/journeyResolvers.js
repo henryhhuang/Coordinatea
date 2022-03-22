@@ -30,8 +30,8 @@ const journeyResolvers = {
             return journey;
         },
         createMarker: async (_, args) => {
-            const { journeyId, title, place, description, date, latitude, longitude } = args.marker;
-            const marker = new Marker({journeyId, title, place, description, date, latitude, longitude})
+            const { journeyId, title, place, description, date, latitude, longitude, imageId } = args.marker;
+            const marker = new Marker({journeyId, title, place, description, date, latitude, longitude, imageId})
             await marker.save();
             return marker;
         }

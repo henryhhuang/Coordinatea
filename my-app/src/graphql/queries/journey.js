@@ -20,14 +20,14 @@ export const Journey_Querys = {
             getMarkers(journeyId: $journeyId) {
                 id,
                 journeyId,
+                imageId,
                 title,
                 place,
                 description,
                 date,
                 longitude,
-                latitude,
+                latitude
             }
-
         }
     `
 }

@@ -55,7 +55,7 @@ export function CreateJourney(props) {
         })
     }
 
-    //Send request to save marker once image upload is complete
+    //Send request to save journey once image upload is complete
     useEffect(() => {
         if (journey && uploadedImage) {
             createJourney({

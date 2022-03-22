@@ -4,7 +4,7 @@ const { model, Schema } = require("mongoose");
 const MarkerSchema = new Schema({
     journeyId: String,
     title: String,
-    imageId: [String],
+    imageId: String,
     place: String,
     description: String,
     date: Date,

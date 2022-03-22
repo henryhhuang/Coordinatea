@@ -20,6 +20,7 @@ const journeyTypeDefs = gql`
         date: String!
         longitude: Float!
         latitude: Float!
+        imageId: ID!
     }
 
     input JourneyInput {
@@ -39,6 +40,7 @@ const journeyTypeDefs = gql`
         date: String!
         longitude: Float!
         latitude: Float!
+        imageId: ID!
     }
 
     extend type Query {

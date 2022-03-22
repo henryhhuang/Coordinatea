@@ -28,6 +28,7 @@ module.exports = gql`
     type Marker {
         id: ID!
         journeyId: ID!
+        imageId: ID!
         title: String!
         place: String!
         description: String!
@@ -52,6 +53,7 @@ module.exports = gql`
         date: String!
         longitude: Float!
         latitude: Float!
+        imageId: ID!
     }
 
     type Query {

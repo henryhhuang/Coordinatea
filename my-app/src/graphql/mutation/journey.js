@@ -25,7 +25,8 @@ export const Journey_Mutations = {
             description,
             date,
             longitude,
-            latitude
+            latitude,
+            imageId
         }
     }
     `

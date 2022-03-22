@@ -38,9 +38,9 @@ const journeyResolvers = {
             }
         },
         createMarker: async (_, args) => {
-            const { journeyId, title, place, description, date, latitude, longitude } = args.marker;
+            const { journeyId, title, place, description, date, latitude, longitude, imageId } = args.marker;
             Journey.updateOne({_id : journeyId}, { $set: {published: true} });
-            const marker = new Marker({ journeyId, title, place, description, date, latitude, longitude })
+            const marker = new Marker({ journeyId, title, place, description, date, latitude, longitude, imageId })
             await marker.save();
             return marker;
         }
