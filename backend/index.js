@@ -11,9 +11,6 @@ const path = require('path');
 let multer  = require('multer');
 let upload = multer({ dest: path.join(__dirname, 'uploads')});
 
-//const journeyTypeDefs = require('./typeDefs/journeyTypeDefs')
-//const journeyResolver = require('./resolvers/journeyResolvers');
-
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers/index');
 
@@ -40,59 +37,6 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
-
-/*
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    authHello: String!
-  },
-  type Mutation {
-    register(username: String!, password: String!) : Boolean!
-    follow(subscriberUsername: String!, publisherUsername: String!): String!
-  }
-  
-`;
-
-// Provide resolver functions for your schema fields
-/*
-const resolvers = {
-    Query: {
-        authHello: (_, __, req) => {
-            if (req.session.uid) {
-                return `Cookie found! Your uid is: ${req.session.id}`
-            } else {
-                "Could not find cookie"
-            }
-        },
-    },
-    Mutation: {
-        register: async (_, { username, password }, req) => {
-            console.log(req);
-            const hashedPassword = await bcrypt.hash(password, 12);
-            const newUser = new User({
-                username: username,
-                password: hashedPassword,
-                createdAt: new Date().toISOString(),
-                following: [],
-                comments: [],
-                journeys: [],
-            });
-            const res = await newUser.save();
-            req = "123"
-            return true
-        },
-        follow: (_, args, context) => {
-            console.log(context.req.session);
-            if (context.req.session.uid) {
-                return `UID found! ${context.req.session.uid}`
-            } else {
-                return `no UID :(`
-            }
-        },
-    }
-};
-*/
 
 const server = new ApolloServer({
     typeDefs: typeDefs,
@@ -143,11 +87,6 @@ app.post('/signin/', async (req, res, next) => {
 //The following are REST endpoints to handle images, https://piazza.com/class/kxgjicgvryu3h8?cid=359
 //Upload an image
 app.post('/api/image/:id', upload.single('file'), async function (req, res, next) {
-    console.log(req);
-    console.log(req.params);
-    console.log(req.body);
-    console.log(req.file);
-
     const newImage = Image({
         journeyId: '',
         markerId: '',
@@ -188,6 +127,11 @@ app.get('/api/imageIds/:id/:action', async function (req, res, next) {
 
 //Get the path of the image
 app.get('/api/image/:imageId/', async function (req, res, next) {
+    console.log(req.params.imageId);
+    if (req.params.imageId.length < 12) {
+        //for the bad data in our db atm
+        return res.json("oops");
+    }
     let image = await Image.findById(req.params.imageId);
     res.setHeader('Content-Type', image.mimetype);
     res.sendFile(image.path);

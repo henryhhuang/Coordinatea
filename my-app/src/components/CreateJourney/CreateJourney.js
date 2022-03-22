@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { useAuthToken } from '../../util/authentication';
-import { Loading } from '../Loading/Loading'
-import { Mutations } from '../../graphql/mutation';
+import { Journey_Mutations } from '../../graphql/mutation/journey';
+import { useNavigate } from "react-router-dom";
 import {
     Avatar,
     Box,
@@ -13,77 +12,169 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-
 import "./CreateJourney.css"
+
+const url = window.location.href;
 
 export function CreateJourney(props) {
  
+    const titleRef = useRef(null);
+    const descriptionRef = useRef(null);
+    const toDateRef = useRef(null);
+    const fromDateRef = useRef(null);
+    const [image, setImage] = useState();
+    const [uploadedImage, setUploadedImage] = useState();
+    const [isImageUploaded, setIsImageUploaded] = useState(false);
+    const [journey, setJourney] = useState();
+    const navigate = useNavigate();
+
+    const [ createJourney, { data, loading, error } ] = useMutation(Journey_Mutations.CREATE_JOURNEY)
+
+    const fileChange = (e) => {
+        setImage(e.target.files[0]);
+        setIsImageUploaded(true);
+    }
+
+    //todo: refactor to a utils folder
+    //add a text for the image selected beside the upload file button
+    //can also refactor upload button to its own component
+    const uploadImage = (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('http://localhost:5000/api/image/0/', {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+        })
+        .then((res) => res.json())
+        .then((result) => {
+            setUploadedImage(result);
+        }).catch((error) => {
+            console.log('error', error);
+        })
+    }
+
+    //Send request to save marker once image upload is complete
+    useEffect(() => {
+        if (journey && uploadedImage) {
+            createJourney({
+                variables: {
+                    journey: {
+                        title: journey.title,
+                        description: journey.description,
+                        imageId: uploadedImage,
+                        toDate: journey.toDate,
+                        fromDate: journey.fromDate 
+                    }
+                }
+            })
+        }
+    }, [uploadedImage])
+
+    //Redirect to marker creation once journy is created
+    useEffect(() => {
+        if (!loading && data) {
+            navigate(data.createJourney.id, { replace: true });
+        }
+    }, [data])
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        //todo validation
+        let newJourney = {
+            title: titleRef.current.value,
+            description: descriptionRef.current.value,
+            toDate: toDateRef.current.value,
+            fromDate: fromDateRef.current.value
+        }
+        setJourney(newJourney);
+
+        if (isImageUploaded) {
+            uploadImage(image);
+        }
+    };
+
     return (
         <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-            sx={{
-                marginTop: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-            }}
-        >
-            {loading ? <Loading /> : <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <CssBaseline />
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+            {/* {loading ? <Loading /> : <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                 <LockOutlinedIcon />
-            </Avatar>}
+            </Avatar>} */}
             <Typography component="h1" variant="h5">
-                Sign Up
+                Create a Journey
             </Typography>
-            <Box component="form" noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     color='secondary'
-                    id="username"
-                    label="Username"
-                    name="username"
-                    autoComplete="username"
+                    id="title"
+                    label="Title"
+                    name="title"
+                    autoComplete="title"
                     autoFocus
+                    inputRef={titleRef}
                 />
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     color='secondary'
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
+                    id="description"
+                    label="Description"
+                    name="description"
+                    autoComplete="description"
                     autoFocus
+                    inputRef={descriptionRef}
+
                 />
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     color='secondary'
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
+                    name="fromdate"
+                    label="From Date"
+                    id="fromdate"
+                    inputRef={fromDateRef}
+
                 />
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     color='secondary'
-                    id="passwordConfirm"
-                    type="password"
-                    label="Confirm Password"
-                    name="passwordConfirm"
+                    id="todate"
+                    label="To Date"
+                    name="todate"
                     autoFocus
+                    inputRef={toDateRef}
+
                 />
-                {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
+                {/* {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
                     {error.message}
-                </Typography> : <></>}
+                </Typography> : <></>} */}
+                <Button
+                    variant="contained"
+                    component="label"
+                    >
+                    Upload File
+                    <input
+                        type="file"
+                        hidden
+                        onChange={fileChange}
+                />
+            </Button>
                 <Button
                     type="submit"
                     fullWidth
@@ -91,11 +182,8 @@ export function CreateJourney(props) {
                     sx={{ mt: 3, mb: 2 }}
                     color="secondary"
                 >
-                    Sign Up
+                    Create Journey
                 </Button>
-                <Link href="#" variant="body2" color='secondary'>
-                    {"Already have an account? Sign In"}
-                </Link>
             </Box>
         </Box>
     </Container>

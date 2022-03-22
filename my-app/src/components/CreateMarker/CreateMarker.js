@@ -1,7 +1,7 @@
 import { Mapbox } from '../Mapbox/Mapbox';
 
 import Grid from '@mui/material/Grid';
-import React, { useRef, useState, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import mock from '../ViewJourney/mock.json';
 import journeyMock from '../ViewJourney/journey_mock.json'
 import { useParams, useLocation } from "react-router-dom";
@@ -21,7 +21,6 @@ import { IconButton } from '@mui/material';
 import { CreateMarkerContent } from '../CreateMarkerContent/CreateMarkerContent'
 import TextField from '@mui/material/TextField';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
-import { Button } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 import { Journey_Mutations } from '../../graphql/mutation/journey'
 import { Journey_Querys } from '../../graphql/queries/journey'
@@ -35,11 +34,12 @@ const ListItemButton = withStyles({
     selected: {}
   })(MuiListItemButton);
 
-const uploadImage = (journeyId, file) => {
+//refactor to a utils folder
+const uploadImage = (markerId, file) => {
     const formData = new FormData();
     formData.append('file', file);
 
-    fetch('http://localhost:5000/api/image/' + journeyId + '/', {
+    fetch('http://localhost:5000/api/image/' + markerId + '/', {
         method: 'POST',
         credentials: 'include',
         body: formData
@@ -61,12 +61,10 @@ export function CreateMarker () {
     const [open, setOpen] = React.useState(0);
     const [currentMarker, setCurrentMarker] = React.useState(0);
     const [openMarker, setOpenMarker] = React.useState(id2 || 0);
-    //todo: get journey info from db using id
+    // todo let user edit their journey card here
     const [journey, setJourney] = useState(journeyMock)
     const [markers, setMarkers] = useState([]);
     const [image, setImage] = useState();
-    //todo: call db to set existing markers for the journey if it exists
-
     const [newMarker, setNewMarker] = useState();
 
     const markerPlaceRef = useRef(null);
@@ -77,9 +75,6 @@ export function CreateMarker () {
     })
     const [createMarker, { data: createData, loading: createLoading, error: createError }] = useMutation(Journey_Mutations.CREATE_MARKER);
 
-//     const { data: dataR, error: errorR, loading: landingR } = useQuery(GET_RESTAURANTS);
-// const { data, error, loading } = useQuery(GET_DAILY_MENU);
-
     useEffect(() => {
         console.log(data);
         if (!loading) {
@@ -89,7 +84,6 @@ export function CreateMarker () {
 
     useEffect(() => {
         if (!createLoading && createData) {
-            console.log('create', createData);
             uploadImage(createData.createMarker.id, image);
         }
     }, [createData])
@@ -117,7 +111,7 @@ export function CreateMarker () {
     const handleMarkerSubmit = (e) => {
         e.preventDefault();
     
-        //validation here?
+        //todo: handle validation
         const place = markerPlaceRef.current.value;
         const date = markerDateRef.current.value;
         let marker = newMarker;
@@ -127,7 +121,6 @@ export function CreateMarker () {
     }
 
     const handleSubmit = (e, title, description, image) => {
-        console.log(journeyId, newMarker.place, newMarker.date, title, description, image);
         setOpen(false);
         setNewMarker();
         setImage(image);
@@ -145,22 +138,6 @@ export function CreateMarker () {
                 }
             }
         });
-
-        // if (!createLoading) {
-        //     console.log(createData);
-        // }
-
-        // let imagePath = uploadImage(journeyId, image);
-
-        // journeyId: ID!
-        // title: String!
-        // place: String!
-        // description: String!
-        // date: String!
-        // longitude: Float!
-        // latitude: Float!
-
-
     }
 
     const handleContentOpen = () => {

@@ -1,5 +1,6 @@
 const { gql } = require('apollo-server-express');
 
+//todo extract specific typedefs to its own file
 module.exports = gql`
     type User {
         id: ID!
@@ -36,13 +37,13 @@ module.exports = gql`
     }
 
     input JourneyInput {
-        username: String
-        title: String
-        imageId: String
-        description: String
-        fromDate: String
-        toDate:String
+        title: String!
+        imageId: ID!
+        description: String!
+        fromDate: String!
+        toDate:String!
     }
+    
     input MarkerInput {
         journeyId: ID!
         title: String!

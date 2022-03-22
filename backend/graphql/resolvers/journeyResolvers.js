@@ -21,14 +21,25 @@ const journeyResolvers = {
         }
     },
     Mutation: {
-        createJourney: async (_, args) => {
-            const { username, title, imageId, description, fromDate, toDate } = args.journey
-            const journey = new Journey({ username, title, imageId, description, fromDate, toDate })
-            await journey.save();
-            return journey;
+        createJourney: async (_, args, context) => {
+            if (context.req.session && context.req.session.username) {
+                const { title, imageId, description, fromDate, toDate } = args.journey
+                const journey = new Journey(
+                    { username: context.req.session.username, 
+                        title, 
+                        imageId, 
+                        description, 
+                        fromDate, 
+                        toDate, 
+                        published: false 
+                    })
+                await journey.save();
+                return journey;
+            }
         },
         createMarker: async (_, args) => {
             const { journeyId, title, place, description, date, latitude, longitude } = args.marker;
+            Journey.updateOne({_id : journeyId}, { $set: {published: true} });
             const marker = new Marker({ journeyId, title, place, description, date, latitude, longitude })
             await marker.save();
             return marker;

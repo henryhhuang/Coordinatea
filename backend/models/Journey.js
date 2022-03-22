@@ -7,7 +7,8 @@ const JourneySchema = new Schema({
     imageId: String,
     description: String,
     fromDate: String,
-    toDate: String
+    toDate: String,
+    published: Boolean
 });
 
 module.exports = model("Journey", JourneySchema);

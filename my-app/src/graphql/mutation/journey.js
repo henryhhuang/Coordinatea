@@ -2,8 +2,9 @@ import { gql } from '@apollo/client';
 
 export const Journey_Mutations = {
     CREATE_JOURNEY: gql`
-        mutation CreateJourney($input: JourneyInput) {
-            createJourney(input: $input) {
+        mutation CreateJourney($journey: JourneyInput!) {
+            createJourney(journey: $journey) {
+                id,
                 username,
                 title,
                 imageId,
