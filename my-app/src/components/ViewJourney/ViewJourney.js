@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
 import List from '@mui/material/List';
+import { CommentList } from '../Comments/CommentList/CommentList';
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -41,14 +42,15 @@ const ListItemButton = withStyles({
 
 const url = window.location.href;
 
-export function ViewJourney () {
+export function ViewJourney() {
+    const [commentsOpen, setCommentsOpen] = useState(true);
     const [markers, setMarkers] = useState([]);
     const [currentMarker, setCurrentMarker] = useState();
     const [open, setOpen] = useState(false);
     const [openMarker, setOpenMarker] = useState({});
     const { journeyId, markerId } = useParams();
     const [imageMarker, setImageMarker] = useState();
-    const {loading, error, data} = useQuery(Journey_Querys.GET_MARKERS, {
+    const { loading, error, data } = useQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     });
     const navigate = useNavigate();
@@ -81,7 +83,7 @@ export function ViewJourney () {
             setOpen(true);
         }
     }, [imageMarker])
-    
+
     const handleChange = (event, value) => {
         setCurrentMarker(value);
     };
@@ -106,64 +108,65 @@ export function ViewJourney () {
     }
 
     return (<>
-    <Grid container>
-        <Grid className="map-container" item xs={8}>
-            <Mapbox changeCurrentMarker={handleChange} currentMarker={currentMarker} markersParent={markers} markerCreation={false}></Mapbox>
-        </Grid>
-        <Grid
-        item
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-        xs={4}>
-            {open && openMarker != null ? (
-                <MarkerContent className="marker-content"
-                    title={openMarker.title} 
-                    description={openMarker.description}
-                    images={imageMarker}
-                    handleBack={handleBack}
+        <Grid container>
+            <Grid className="map-container" item xs={8}>
+                <Mapbox changeCurrentMarker={handleChange} currentMarker={currentMarker} markersParent={markers} markerCreation={false}></Mapbox>
+            </Grid>
+            <Grid
+                item
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+                xs={4}>
+                {open && openMarker != null ? (
+                    <MarkerContent className="marker-content"
+                        title={openMarker.title}
+                        description={openMarker.description}
+                        images={imageMarker}
+                        handleBack={handleBack}
                     ></MarkerContent>
-            ) : (
-                <List sx={{ maxHeight: '800px', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
-                    {markers.map((marker) => (
-                        <div key={'list-' + marker.id} className="marker-container">
-                            <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
-                                <ListItemAvatar>
-                                <Avatar>
-                                    <BeachAccessIcon sx={{ color: blue[500] }}/>
-                                </Avatar>
-                                </ListItemAvatar>
+                ) : commentsOpen ?
+                    (<CommentList parentId={journeyId} />) : (
+                        <List sx={{ maxHeight: '800px', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
+                            {markers.map((marker) => (
+                                <div key={'list-' + marker.id} className="marker-container">
+                                    <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
+                                        <ListItemAvatar>
+                                            <Avatar>
+                                                <BeachAccessIcon sx={{ color: blue[500] }} />
+                                            </Avatar>
+                                        </ListItemAvatar>
                                         <ListItemText
-                                        primary={marker.place}
-                                        secondary={
-                                            <React.Fragment>
-                                                <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="text.primary"
-                                                >
-                                                    {marker.date}
-                                                </Typography>
-                                                <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
+                                            primary={marker.place}
+                                            secondary={
+                                                <React.Fragment>
                                                     <Typography
                                                         sx={{ display: 'inline' }}
                                                         component="span"
                                                         variant="body2"
-                                                        color="blue"
-                                                    >Read more
+                                                        color="text.primary"
+                                                    >
+                                                        {marker.date}
                                                     </Typography>
-                                                </IconButton>
-                                            </React.Fragment>
-                                        }
-                                    />
-                                </ListItemButton>
-                                <Divider variant="inset" component="li" />
-                            </div>
-                        ))}
-                    </List>
-                )}
+                                                    <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
+                                                        <Typography
+                                                            sx={{ display: 'inline' }}
+                                                            component="span"
+                                                            variant="body2"
+                                                            color="blue"
+                                                        >Read more
+                                                        </Typography>
+                                                    </IconButton>
+                                                </React.Fragment>
+                                            }
+                                        />
+                                    </ListItemButton>
+                                    <Divider variant="inset" component="li" />
+                                </div>
+                            ))}
+                        </List>
+                    )}
             </Grid>
         </Grid>
     </>)

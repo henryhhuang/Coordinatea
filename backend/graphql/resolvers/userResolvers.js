@@ -4,6 +4,17 @@ const Journey = require('../../models/Journey');
 
 const userResolvers = {
     Query: {
+        getUser: async (_, __, context) => {
+            console.log(context.req.session.uid);
+            if (context.req.session.uid) {
+                const user = await User.findById(context.req.session.uid);
+                if (!user)
+                    throw new Error("User does not exist");
+                console.log(user.username);
+                return user;
+            }
+            return null;
+        },
         getUserById: async (_, { id }, context) => {
             console.log(context.req.session);
             const user = await User.findById(id);
@@ -11,15 +22,13 @@ const userResolvers = {
                 throw new Error("User does not exist");
             return user;
         },
-        /*
         getUserByUsername: async (_, { username }, context) => {
             console.log(context.req.session);
-            const user = await User.find({ username: username });
+            const user = await User.findOne({ username: username });
             if (!user)
                 throw new Error("User does not exist");
             return user;
         },
-        */
         getFollowing: async (_, { id }, context) => {
             console.log(context.req.session);
             const user = await User.findById(id);

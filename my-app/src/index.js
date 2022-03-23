@@ -5,16 +5,28 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 
+const link = createHttpLink({
+  uri: 'http://localhost:5000/graphql',
+  credentials: 'include'
+})
+
+const apolloClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  link
+})
 
 ReactDOM.render(
   <BrowserRouter>
     <React.StrictMode>
       <CookiesProvider>
-        <App />
+        <ApolloProvider client={apolloClient}>
+          <App />
+        </ApolloProvider>
       </CookiesProvider>
     </React.StrictMode>
-    </BrowserRouter>,
+  </BrowserRouter>,
 
   document.getElementById('root')
 );

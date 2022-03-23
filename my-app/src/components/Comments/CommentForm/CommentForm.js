@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { Mutations } from '../../../graphql/mutation';
 import { useAuthToken } from '../../../util/authentication';
 import {
@@ -15,11 +15,24 @@ import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
-export function CommentForm() {
+export function CommentForm(props) {
 
-    const [createComment, { data, loading, error }] = useMutation(Mutations.CREATE_COMMENT, {
+    const { comments, setComments, parentId } = props;
+
+    const createCommentMutation = gql`
+        mutation($parentId: ID, $content: String) {
+            createComment(parentId: $parentId, content: $content) {
+                username
+                content
+                createdAt
+            }
+        }
+    `
+
+    const [createComment, { data, loading, error }] = useMutation(createCommentMutation, {
         onCompleted: (data) => {
-            console.log(data);
+            const newComments = [...comments, data.createComment];
+            setComments(newComments);
         },
         onError: (error) => {
             console.log(error.message);
@@ -32,9 +45,8 @@ export function CommentForm() {
         try {
             createComment({
                 variables: {
-                    commentInput: {
-                        content: data.get('content')
-                    }
+                    parentId: parentId,
+                    content: data.get('content')
                 }
             });
         } catch (error) {
@@ -50,7 +62,7 @@ export function CommentForm() {
                         <AccountCircleIcon />
                     </Avatar>
                 </Grid>
-                <Grid item xs={10} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Grid item xs={9} sx={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         margin="normal"
                         required
@@ -70,7 +82,7 @@ export function CommentForm() {
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                         color="secondary"
-                    ><SendIcon/></IconButton>
+                    ><SendIcon /></IconButton>
                 </Grid>
             </Grid>
         </Container>

@@ -27,17 +27,19 @@ const commentResolvers = {
         }
     },
     Mutation: {
-        createComment: async (_, { uid, parentId, content }, context) => {
-            console.log(context.req.session);
-            const user = await User.findById(uid);
+        createComment: async (_, { parentId, content }, context) => {
+            if (!context.req.session.uid)
+                throw new Error("Unauthorized");
+            const user = await User.findById(context.req.session.uid);
             if (!user)
                 throw new Error("User does not exist");
             const journey = await Journey.findById(parentId);
             const comment = await Comment.findById(parentId);
             if (!(journey || comment))
-                throw new Error("Unable to create comment. Parent does object does not exist.");
+                throw new Error("Unable to create comment. Parent object does not exist.");
             const newComment = new Comment({
-                userId: uid,
+                userId: context.req.session.uid,
+                username: user.username,
                 parentId: parentId,
                 content: content,
                 createdAt: new Date().toISOString()
