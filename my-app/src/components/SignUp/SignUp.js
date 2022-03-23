@@ -9,11 +9,16 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
+import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import "./SignUp.css"
 
-export function SignUp() {
+export function SignUp(props) {
+
+    const { setUsername } = props;
+
+    let navigate = useNavigate()
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -30,7 +35,12 @@ export function SignUp() {
                     passwordConfirm: data.get('passwordConfirm')
                 })
             };
-            fetch('http://localhost:5000/signup', requestOptions).then(res => console.log(res))
+            fetch('http://localhost:5000/signup', requestOptions).then(res => {
+                if (res.status === 200) {
+                    setUsername(data.get('username'))
+                    navigate(-1);
+                }
+            })
         } catch (err) {
         }
     }
@@ -52,7 +62,7 @@ export function SignUp() {
                 <Typography component="h1" variant="h5">
                     Sign Up
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} afterSubmit={() => navigate("/")} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
@@ -106,7 +116,7 @@ export function SignUp() {
                     >
                         Sign Up
                     </Button>
-                    <Link href="#" variant="body2" color='secondary'>
+                    <Link href="/signin" variant="body2" color='secondary'>
                         {"Already have an account? Sign In"}
                     </Link>
                 </Box>

@@ -18,7 +18,10 @@ import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CreateIcon from '@mui/icons-material/Create';
 
-const ResponsiveAppBar = () => {
+const ResponsiveAppBar = (props) => {
+
+  const { username, setUsername } = props;
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -42,11 +45,14 @@ const ResponsiveAppBar = () => {
     const requestOptions = {
       credentials: 'include'
     }
-    fetch('http://localhost:5001/signout', requestOptions).then(res => console.log(res))
+    fetch('http://localhost:5000/signout', requestOptions).then(res => {
+      console.log(res)
+      setUsername(null)
+    })
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: 'secondary' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
@@ -120,33 +126,37 @@ const ResponsiveAppBar = () => {
               COORDINATE</Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Link to="/home" style={{ textDecoration: 'none' }}>
-              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
-                <HomeIcon sx={{ mr: 1 }} />
-                <Typography>Home</Typography>
-              </Button>
-            </Link>
-            <Link to="/following" style={{ textDecoration: 'none' }}>
-              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
-                <FavoriteIcon sx={{ mr: 1 }} />
-                <Typography>Following</Typography>
-              </Button>
-            </Link>
-            <Link to="/discover" style={{ textDecoration: 'none' }}>
-              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
-                <PublicIcon sx={{ mr: 1 }} />
-                <Typography>Discover</Typography>
-              </Button>
-            </Link>
-            <Link to="/journey/create" style={{ textDecoration: 'none' }}>
-              <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
-                <CreateIcon sx={{ mr: 1 }} />
-                <Typography>Create Journey</Typography>
-              </Button>
-            </Link>
+            {username ?
+              <div style={{ display: 'flex' }}>
+                <Link to="/home" style={{ textDecoration: 'none' }}>
+                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                    <HomeIcon sx={{ mr: 1 }} />
+                    <Typography>Home</Typography>
+                  </Button>
+                </Link>
+                <Link to="/following" style={{ textDecoration: 'none' }}>
+                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                    <FavoriteIcon sx={{ mr: 1 }} />
+                    <Typography>Following</Typography>
+                  </Button>
+                </Link>
+                <Link to="/discover" style={{ textDecoration: 'none' }}>
+                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                    <PublicIcon sx={{ mr: 1 }} />
+                    <Typography>Discover</Typography>
+                  </Button>
+                </Link>
+                <Link to="/journey/create" style={{ textDecoration: 'none' }}>
+                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                    <CreateIcon sx={{ mr: 1 }} />
+                    <Typography>Create Journey</Typography>
+                  </Button>
+                </Link>
+              </div>
+              : <></>}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
+
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar><AccountCircleIcon /></Avatar>
@@ -168,31 +178,36 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <Link to="/profile" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem>
-                  <Typography>Profile</Typography>
-                </MenuItem>
-              </Link>
-              <Link to="/signup" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem>
-                  <Typography>Sign Up</Typography>
-                </MenuItem>
-              </Link>
-              <Link to="/signin" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem>
-                  <Typography>Sign In</Typography>
-                </MenuItem>
-              </Link>
-              <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem onClick={handleLogout}>
-                  <Typography>Logout</Typography>
-                </MenuItem>
-              </Link>
+              {!username ?
+                <div>
+                  <Link to="/signup" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem>
+                      <Typography>Sign Up</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link to="/signin" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem>
+                      <Typography>Sign In</Typography>
+                    </MenuItem>
+                  </Link>
+                </div> :
+                <div>
+                  <Link to="/profile" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem>
+                      <Typography>Profile</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem onClick={handleLogout}>
+                      <Typography>Logout</Typography>
+                    </MenuItem>
+                  </Link>
+                </div>}
             </Menu>
           </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+        </Toolbar >
+      </Container >
+    </AppBar >
   );
 };
 export default ResponsiveAppBar;

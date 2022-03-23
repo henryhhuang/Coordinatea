@@ -57,7 +57,9 @@ module.exports = gql`
     }
 
     type Query {
+        getUser: User
         getUserById(id: ID): User!
+        getUserByUsername(username: String): User!
         getFollowing(id: ID): [User!]!
         getUserComments(id: ID): [Comment!]!
         getParentComments(id: ID): [Comment!]!
@@ -70,7 +72,7 @@ module.exports = gql`
     type Mutation {
         follow(subscriberId: ID, publisherId: ID): [User!]!
         unfollow(subscriberId: ID, publisherId: ID): [User!]!
-        createComment(uid: ID, parentId: ID, content: String): Comment!
+        createComment(parentId: ID, content: String): Comment!
         createJourney(journey: JourneyInput): Journey
         createMarker(marker: MarkerInput): Marker
     }

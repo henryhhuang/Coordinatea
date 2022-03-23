@@ -11,8 +11,21 @@ import { SignUp } from './components/SignUp/SignUp';
 import { Comment } from './components/Comments/Comment/Comment';
 import { CommentForm } from './components/Comments/CommentForm/CommentForm';
 import { Follow } from './components/Follow/Follow';
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 import { CommentList } from './components/Comments/CommentList/CommentList';
+import React, { useEffect, useState } from 'react';
+
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
+
+const link = createHttpLink({
+  uri: 'http://localhost:5000/graphql',
+  credentials: 'include'
+})
+
+const apolloClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  link
+})
 
 const theme = createTheme({
   palette: {
@@ -31,7 +44,28 @@ const theme = createTheme({
   },
 });
 
+const getUserQuery = gql`
+  query {
+    getUser {
+      username
+    }
+  }
+`
+
 function App() {
+
+  const [username, setUsername] = useState(null);
+
+  const [getUser, { loading, error, data }] = useLazyQuery(getUserQuery, {
+    onCompleted: (data) => {
+      if (data.getUser)
+        setUsername(data.getUser.username);
+    }
+  })
+
+  useEffect(() => {
+    getUser()
+  }, [])
   // let element = useRoutes([
   //   {
   //     path: "/",
@@ -47,35 +81,22 @@ function App() {
   // ]);
   // return element;
 
-  const link = createHttpLink({
-    uri: 'http://localhost:5000/graphql',
-    credentials: 'include'
-  })
-
-  const apolloClient = new ApolloClient({
-    cache: new InMemoryCache(),
-    link
-  })
-
   return (
     <ApolloProvider client={apolloClient}>
       <ThemeProvider theme={theme}>
         <div className='App'>
-          <NavBar></NavBar>
+          <NavBar username={username} setUsername={setUsername}></NavBar>
           <Routes>
-            <Route path="/" element={<Journeys/>}></Route>
-            <Route path="/journey/:journeyId" element={<ViewJourney/>}></Route>
-            <Route path="/journey/:journeyId/:markerId" element={<ViewJourney/>}></Route>
-            <Route path="/journey/create/" element={<CreateJourney/>}></Route>
-            <Route path="/journey/create/:journeyId" element={<CreateMarker/>}></Route>
-            <Route path="/signin/" element={<SignIn/>}></Route>
-            <Route path="/signup/" element={<SignUp/>}></Route>
-            <Route path="/follow/" element={<Follow/>}></Route>
+            <Route path="/" element={<Journeys />}></Route>
+            <Route path="/journey/:journeyId" element={<ViewJourney />}></Route>
+            <Route path="/journey/:journeyId/:markerId" element={<ViewJourney />}></Route>
+            <Route path="/journey/create/" element={<CreateJourney />}></Route>
+            <Route path="/journey/create/:journeyId" element={<CreateMarker />}></Route>
+            <Route path="/signin/" element={<SignIn setUsername={setUsername} />}></Route>
+            <Route path="/signup/" element={<SignUp setUsername={setUsername} />}></Route>
+            <Route path="/follow/" element={<Follow />}></Route>
             <Route path="/comment/" element={
               <div>
-                <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-                <Comment username={"DapperQuokka"} content={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"} />
-                <CommentForm />
                 <CommentList username={'A'} />
               </div>}
             ></Route>

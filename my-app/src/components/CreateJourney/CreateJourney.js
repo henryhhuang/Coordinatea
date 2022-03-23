@@ -17,7 +17,7 @@ import "./CreateJourney.css"
 const url = window.location.href;
 
 export function CreateJourney(props) {
- 
+
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
     const toDateRef = useRef(null);
@@ -28,7 +28,7 @@ export function CreateJourney(props) {
     const [journey, setJourney] = useState();
     const navigate = useNavigate();
 
-    const [ createJourney, { data, loading, error } ] = useMutation(Journey_Mutations.CREATE_JOURNEY)
+    const [createJourney, { data, loading, error }] = useMutation(Journey_Mutations.CREATE_JOURNEY)
 
     const fileChange = (e) => {
         setImage(e.target.files[0]);
@@ -47,12 +47,12 @@ export function CreateJourney(props) {
             credentials: 'include',
             body: formData
         })
-        .then((res) => res.json())
-        .then((result) => {
-            setUploadedImage(result);
-        }).catch((error) => {
-            console.log('error', error);
-        })
+            .then((res) => res.json())
+            .then((result) => {
+                setUploadedImage(result);
+            }).catch((error) => {
+                console.log('error', error);
+            })
     }
 
     //Send request to save journey once image upload is complete
@@ -65,7 +65,7 @@ export function CreateJourney(props) {
                         description: journey.description,
                         imageId: uploadedImage,
                         toDate: journey.toDate,
-                        fromDate: journey.fromDate 
+                        fromDate: journey.fromDate
                     }
                 }
             })
@@ -81,6 +81,7 @@ export function CreateJourney(props) {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        console.log("hi");
         //todo validation
         let newJourney = {
             title: titleRef.current.value,
@@ -106,86 +107,86 @@ export function CreateJourney(props) {
                     alignItems: 'center',
                 }}
             >
-            {/* {loading ? <Loading /> : <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                {/* {loading ? <Loading /> : <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                 <LockOutlinedIcon />
             </Avatar>} */}
-            <Typography component="h1" variant="h5">
-                Create a Journey
-            </Typography>
-            <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    color='secondary'
-                    id="title"
-                    label="Title"
-                    name="title"
-                    autoComplete="title"
-                    autoFocus
-                    inputRef={titleRef}
-                />
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    color='secondary'
-                    id="description"
-                    label="Description"
-                    name="description"
-                    autoComplete="description"
-                    autoFocus
-                    inputRef={descriptionRef}
+                <Typography component="h1" variant="h5">
+                    Create a Journey
+                </Typography>
+                <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        color='secondary'
+                        id="title"
+                        label="Title"
+                        name="title"
+                        autoComplete="title"
+                        autoFocus
+                        inputRef={titleRef}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        color='secondary'
+                        id="description"
+                        label="Description"
+                        name="description"
+                        autoComplete="description"
+                        autoFocus
+                        inputRef={descriptionRef}
 
-                />
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    color='secondary'
-                    name="fromdate"
-                    label="From Date"
-                    id="fromdate"
-                    inputRef={fromDateRef}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        color='secondary'
+                        name="fromdate"
+                        label="From Date"
+                        id="fromdate"
+                        inputRef={fromDateRef}
 
-                />
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    color='secondary'
-                    id="todate"
-                    label="To Date"
-                    name="todate"
-                    autoFocus
-                    inputRef={toDateRef}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        color='secondary'
+                        id="todate"
+                        label="To Date"
+                        name="todate"
+                        autoFocus
+                        inputRef={toDateRef}
 
-                />
-                {/* {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
+                    />
+                    {/* {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
                     {error.message}
                 </Typography> : <></>} */}
-                <Button
-                    variant="contained"
-                    component="label"
+                    <Button
+                        variant="contained"
+                        component="label"
                     >
-                    Upload File
-                    <input
-                        type="file"
-                        hidden
-                        onChange={fileChange}
-                />
-            </Button>
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    color="secondary"
-                >
-                    Create Journey
-                </Button>
+                        Upload File
+                        <input
+                            type="file"
+                            hidden
+                            onChange={fileChange}
+                        />
+                    </Button>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                        color="secondary"
+                    >
+                        Create Journey
+                    </Button>
+                </Box>
             </Box>
-        </Box>
-    </Container>
+        </Container>
     );
 }

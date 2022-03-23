@@ -10,10 +10,14 @@ import {
     Typography
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useNavigate } from 'react-router-dom';
 
 import "./SignIn.css"
 
-export function SignIn() {
+export function SignIn(props) {
+
+    const { setUsername } = props;
+    let navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -28,7 +32,13 @@ export function SignIn() {
                     password: data.get('password'),
                 })
             };
-            fetch('http://localhost:5000/signin', requestOptions).then(res => console.log(res))
+            fetch('http://localhost:5000/signin', requestOptions).then((res, err) => {
+                if (res.status === 200) {
+                    setUsername(data.get('username'))
+                    navigate(-1);
+                }
+
+            });
         } catch (error) {
             console.log(error);
         }
@@ -83,7 +93,7 @@ export function SignIn() {
                     >
                         Sign In
                     </Button>
-                    <Link href="#" variant="body2" color='secondary'>
+                    <Link href="/signup" variant="body2" color='secondary'>
                         {"Don't have an account? Sign Up"}
                     </Link>
                 </Box>
