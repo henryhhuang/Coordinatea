@@ -1,8 +1,15 @@
-import React, { useRef, useEffect, useState } from 'react';
-import Map, {Marker, Popup, useControl} from 'react-map-gl';
+import { useRef, useEffect, useState, useCallback} from 'react';
+import ReactMapGL, {Marker, Popup, useControl} from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import "./Mapbox.css"
+
+//https://stackoverflow.com/questions/65434964/mapbox-blank-map-react-map-gl-reactjs
+//to transiple mapbox web worker seperately
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
+mapboxgl.workerClass = MapboxWorker;
 
 //todo id from backend when markers are saved
 let id = 1;
@@ -73,7 +80,7 @@ export function Mapbox(props) {
     return null;
   }
 
-  const onMapLoad = React.useCallback(() => {
+  const onMapLoad = useCallback(() => {
     mapRef.current.on('load', function () {
       mapRef.current.resize();
     });
@@ -95,7 +102,7 @@ export function Mapbox(props) {
       });
   }
 
-  const zoomToPopup = React.useCallback((e, id) => {
+  const zoomToPopup = useCallback((e, id) => {
     changeCurrentMarker(null, id);
     setMarker(id)
 
@@ -115,7 +122,7 @@ export function Mapbox(props) {
   });
 
   return (
-      <Map
+      <ReactMapGL
         className="map"
         initialViewState={viewport}
         mapStyle="mapbox://styles/mapbox/streets-v11"
@@ -134,7 +141,7 @@ export function Mapbox(props) {
             </Marker>
           </div>
         ))}
-      </Map>
+      </ReactMapGL>
   );
 }
 
