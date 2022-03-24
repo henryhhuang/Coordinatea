@@ -26,6 +26,7 @@ import { Journey_Querys } from '../../graphql/queries/journey'
 import { Common_Queries } from '../../graphql/queries/common';
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { format } from 'date-fns'
 
 
 const ListItemButton = withStyles({
@@ -44,7 +45,7 @@ const ListItemButton = withStyles({
 const url = window.location.href;
 
 export function ViewJourney() {
-    const [commentsOpen, setCommentsOpen] = useState(true);
+    const [commentsOpen, setCommentsOpen] = useState(false);
     const [markers, setMarkers] = useState([]);
     const [currentMarker, setCurrentMarker] = useState();
     const [open, setOpen] = useState(false);
@@ -163,7 +164,7 @@ export function ViewJourney() {
                                                         variant="body2"
                                                         color="text.primary"
                                                     >
-                                                        {marker.date}
+                                                        {format(new Date(marker.date * 1), 'yyyy-MM-dd')}
                                                     </Typography>
                                                     <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
                                                         <Typography

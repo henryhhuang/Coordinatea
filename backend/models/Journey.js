@@ -6,8 +6,8 @@ const JourneySchema = new Schema({
     title: String,
     imageId: String,
     description: String,
-    fromDate: String,
-    toDate: String,
+    fromDate: Date,
+    toDate: Date,
     published: Boolean
 });
 

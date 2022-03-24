@@ -12,6 +12,9 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
 import "./CreateJourney.css"
 
 const url = window.location.href;
@@ -20,8 +23,8 @@ export function CreateJourney(props) {
 
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
-    const toDateRef = useRef(null);
-    const fromDateRef = useRef(null);
+    const [fromDate, setFromDate] = useState();
+    const [toDate, setToDate] = useState();
     const [image, setImage] = useState();
     const [uploadedImage, setUploadedImage] = useState();
     const [isImageUploaded, setIsImageUploaded] = useState(false);
@@ -41,7 +44,6 @@ export function CreateJourney(props) {
     const uploadImage = (file) => {
         const formData = new FormData();
         formData.append('file', file);
-
         fetch('http://localhost:5000/api/image/0/', {
             method: 'POST',
             credentials: 'include',
@@ -81,13 +83,12 @@ export function CreateJourney(props) {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log("hi");
-        //todo validation
+        // todo validation
         let newJourney = {
             title: titleRef.current.value,
             description: descriptionRef.current.value,
-            toDate: toDateRef.current.value,
-            fromDate: fromDateRef.current.value
+            toDate: toDate,
+            fromDate: fromDate
         }
         setJourney(newJourney);
 
@@ -137,31 +138,31 @@ export function CreateJourney(props) {
                         autoComplete="description"
                         autoFocus
                         inputRef={descriptionRef}
-
                     />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        color='secondary'
-                        name="fromdate"
-                        label="From Date"
-                        id="fromdate"
-                        inputRef={fromDateRef}
-
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        color='secondary'
-                        id="todate"
-                        label="To Date"
-                        name="todate"
-                        autoFocus
-                        inputRef={toDateRef}
-
-                    />
+                    <div className='dates'>
+                        <LocalizationProvider className="fromDate" dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Pick your start date"
+                                value={fromDate}
+                                onChange={(newValue) => {
+                                    setFromDate(newValue);
+                                }}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
+                    </div>
+                    <div className="dates">
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Pick your end date"
+                                value={toDate}
+                                onChange={(newValue) => {
+                                    setToDate(newValue);
+                                }}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
+                    </div>
                     {/* {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
                     {error.message}
                 </Typography> : <></>} */}

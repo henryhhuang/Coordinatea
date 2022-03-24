@@ -26,6 +26,10 @@ import { Journey_Mutations } from '../../graphql/mutation/journey'
 import { Journey_Querys } from '../../graphql/queries/journey'
 import { Common_Queries } from '../../graphql/queries/common';
 import { useNavigate } from "react-router-dom";
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import { format } from 'date-fns'
 
 const ListItemButton = withStyles({
     root: {
@@ -50,6 +54,7 @@ export function CreateMarker () {
     const [uploadedImage, setUploadedImage] = useState();
     const [newMarker, setNewMarker] = useState();
     const [accessToken, setAccessToken] = useState();
+    const [date, setDate] = useState();
     const markerPlaceRef = useRef(null);
     const markerDateRef = useRef(null);
     const navigate = useNavigate();
@@ -148,8 +153,6 @@ export function CreateMarker () {
         e.preventDefault();
     
         //todo: handle validation
-        const place = markerPlaceRef.current.value;
-        const date = markerDateRef.current.value;
         let marker = newMarker;
         marker.date = date;
         setOpen(true);
@@ -216,14 +219,16 @@ export function CreateMarker () {
                                 defaultValue={newMarker.place}
                                 inputRef={markerPlaceRef}
                                 />
-                            <TextField
-                            required
-                            id="outlined-required"
-                            label="Required"
-                            defaultValue="Date"
-                            sx={{width: '80%'}}
-                            inputRef={markerDateRef}
-                            />   
+                            <LocalizationProvider className="fromDate" dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Pick a date"
+                                    value={date}
+                                    onChange={(newValue) => {
+                                        setDate(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
                             <ListItemButton onClick={handleMarkerSubmit}>
                                 <Avatar>
                                     <AddCircleOutline sx={{ color: blue[500] }}/>
@@ -250,7 +255,7 @@ export function CreateMarker () {
                                                 variant="body2"
                                                 color="text.primary"
                                             >
-                                            {marker.date}
+                                            {format(new Date(marker.date * 1), 'yyyy-MM-dd')}
                                             </Typography>
                                             <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
                                                 <Typography
