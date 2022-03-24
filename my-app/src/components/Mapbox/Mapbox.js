@@ -4,14 +4,11 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import "./Mapbox.css"
 
-//todo will need to retrieve the key from backend
-let accessToken = 'pk.eyJ1IjoiZGFwcGVycXVva2thIiwiYSI6ImNsMGgzZmdmazA0dm4zaW1qcjNmanhtNHYifQ.ODWLrgo7OhsbqXzGMsz1ug';
 //todo id from backend when markers are saved
 let id = 1;
 
 export function Mapbox(props) {
-  let { onSearch, changeCurrentMarker, currentMarker, markersParent, markerCreation } = props;
-
+  let { onSearch, changeCurrentMarker, currentMarker, markersParent, markerCreation, accessToken } = props;
   const [markers, setMarkers] = useState([]);
   const [marker, setMarker] = useState(0);
 
@@ -126,8 +123,8 @@ export function Mapbox(props) {
         mapboxAccessToken={accessToken}
         ref={mapRef}
         onLoad={onMapLoad}>
-        <Geocoder 
-          accessToken={accessToken} 
+        <Geocoder
+          accessToken={accessToken}
           mapboxgl={mapboxgl} position="top-right"
           >
           </Geocoder>

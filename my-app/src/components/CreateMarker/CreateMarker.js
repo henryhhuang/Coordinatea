@@ -24,6 +24,7 @@ import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
 import { Journey_Mutations } from '../../graphql/mutation/journey'
 import { Journey_Querys } from '../../graphql/queries/journey'
+import { Common_Queries } from '../../graphql/queries/common';
 import { useNavigate } from "react-router-dom";
 
 const ListItemButton = withStyles({
@@ -48,7 +49,7 @@ export function CreateMarker () {
     // const [image, setImage] = useState();
     const [uploadedImage, setUploadedImage] = useState();
     const [newMarker, setNewMarker] = useState();
-
+    const [accessToken, setAccessToken] = useState();
     const markerPlaceRef = useRef(null);
     const markerDateRef = useRef(null);
     const navigate = useNavigate();
@@ -56,6 +57,14 @@ export function CreateMarker () {
     const [getMarkers, {data, loading, error}] = useLazyQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     })
+    const {loading: getKeyLoading, error: getKeyError, data: getKeyData} = useQuery(Common_Queries.GET_MAPBOX_KEY)
+
+    //initialize key
+    useEffect(() => {
+        if (!getKeyLoading && getKeyData) {
+            setAccessToken(getKeyData.getMapboxKey);
+        }
+    }, [getKeyData])
 
     //refactor to a utils folder
     const uploadImage = (file) => {
@@ -174,7 +183,15 @@ export function CreateMarker () {
     return (<>
     <Grid container>
         <Grid className="map-container" item xs={8}>
-            <Mapbox onSearch={onSearch} changeCurrentMarker={handleChange} currentMarker={currentMarker} markersParent={markers} markerCreation={true}></Mapbox>
+            {accessToken &&
+                <Mapbox 
+                    onSearch={onSearch} 
+                    changeCurrentMarker={handleChange} 
+                    currentMarker={currentMarker} 
+                    markersParent={markers} 
+                    markerCreation={true} 
+                    accessToken={accessToken}></Mapbox>
+            }
         </Grid>
         <Grid
         item

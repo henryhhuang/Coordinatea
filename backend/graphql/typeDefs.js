@@ -67,6 +67,7 @@ module.exports = gql`
         getJourneys: [Journey!]!
         getJourney(id: ID): Journey!
         getMarkers(journeyId: ID): [Marker!]!
+        getMapboxKey: String!
     }
 
     type Mutation {

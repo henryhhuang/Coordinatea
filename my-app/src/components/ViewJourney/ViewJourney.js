@@ -23,6 +23,7 @@ import { CSSTransition } from 'react-transition-group';
 import { TransitionGroup } from 'react-transition-group';
 import { useQuery } from '@apollo/client'
 import { Journey_Querys } from '../../graphql/queries/journey'
+import { Common_Queries } from '../../graphql/queries/common';
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
@@ -50,10 +51,19 @@ export function ViewJourney() {
     const [openMarker, setOpenMarker] = useState({});
     const { journeyId, markerId } = useParams();
     const [imageMarker, setImageMarker] = useState();
+    const [accessToken, setAccessToken] = useState();
     const { loading, error, data } = useQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     });
+    const {loading: getKeyLoading, error: getKeyError, data: getKeyData} = useQuery(Common_Queries.GET_MAPBOX_KEY)
     const navigate = useNavigate();
+
+    //initialize key
+    useEffect(() => {
+        if (!getKeyLoading && getKeyData) {
+            setAccessToken(getKeyData.getMapboxKey);
+        }
+    }, [getKeyData])
 
     // const getMarkerImageIds = useCallback((markerId) => {
     //     fetch('http://localhost:5000/api/imageIds/' + markerId + '/marker', {
@@ -78,7 +88,6 @@ export function ViewJourney() {
 
     //wait to get imageId before opening content panel
     useEffect(() => {
-        console.log(openMarker);
         if (openMarker && imageMarker) {
             setOpen(true);
         }
@@ -110,7 +119,14 @@ export function ViewJourney() {
     return (<>
         <Grid container>
             <Grid className="map-container" item xs={8}>
-                <Mapbox changeCurrentMarker={handleChange} currentMarker={currentMarker} markersParent={markers} markerCreation={false}></Mapbox>
+                {accessToken &&
+                <Mapbox 
+                    changeCurrentMarker={handleChange} 
+                    currentMarker={currentMarker} 
+                    markersParent={markers} 
+                    markerCreation={false}
+                    accessToken={accessToken}></Mapbox>
+                }
             </Grid>
             <Grid
                 item
