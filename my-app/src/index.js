@@ -9,7 +9,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@ap
 
 const link = createHttpLink({
   // uri: 'http://147.182.149.236:5000/graphql',
-  uri: 'https://api.coordinatea.me',
+  uri: 'https://api.coordinatea.me/graphql',
   credentials: 'include'
 })
 
