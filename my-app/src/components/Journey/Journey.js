@@ -28,7 +28,7 @@ export function Journey(props) {
                 className="img"
                 component="img"
                 height="194"
-                image={"http://147.182.149.236:5000/api/image/" + journey.imageId + "/"}
+                image={"https://api.coordinatea.me/api/image/" + journey.imageId + "/"}
                 alt="Failed to retrieve image"
             />
             <CardContent>
