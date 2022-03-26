@@ -26,7 +26,7 @@ services:
         - DEFAULT_EMAIL=xiaoh.huang@mail.utoronto.ca
         
   frontend:
-    image: ghcr.io/UTSCC09/my-app-henryhhuang
+    image: ghcr.io/utscc09/my-app-henryhhuang
     container_name: frontend
     restart: always
     expose:
@@ -36,7 +36,7 @@ services:
       - LETSENCRYPT_HOST=coordinatea.me
       
   backend:
-    image: ghcr.io/UTSCC09/backend-henryhhuang
+    image: ghcr.io/utscc09/backend-henryhhuang
     container_name: backend
     restart: always
     expose:

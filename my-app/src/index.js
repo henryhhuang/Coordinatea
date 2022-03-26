@@ -8,7 +8,8 @@ import { BrowserRouter } from "react-router-dom";
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 
 const link = createHttpLink({
-  uri: 'http://147.182.149.236:5000/graphql',
+  // uri: 'http://147.182.149.236:5000/graphql',
+  uri: 'api.coordinatea.me',
   credentials: 'include'
 })
 
