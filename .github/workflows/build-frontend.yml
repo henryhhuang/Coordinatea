@@ -52,6 +52,9 @@ jobs:
     runs-ON: ubuntu-latest
     if: github.event_name == 'push'
     needs: push
+    defaults:
+      run:
+        working-directory: my-app
 
     steps: 
       - name: Deploy to Digital Ocean via SSH
