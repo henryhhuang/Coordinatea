@@ -60,7 +60,4 @@ jobs:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           KEY: ${{ secrets.KEY }}
-          script: |
-            pwd
-            ls
-            docker-compose pull && docker-compose up -d
+          script: docker-compose pull && docker-compose up -d
