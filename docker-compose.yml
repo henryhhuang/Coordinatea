@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs 
+      - ./vhost:/etc/nginx/vhost.d 
+      - ./html:/usr/share/nginx/html 
+      
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./acme:/etc/acme.sh
+    environment:
+        - DEFAULT_EMAIL=xiaoh.huang@mail.utoronto.ca
+        
+  frontend:
+    image: ghcr.io/UTSCC09/my-app-henryhhuang
+    container_name: frontend
+    restart: always
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=coordinatea.me
+      - LETSENCRYPT_HOST=coordinatea.me
+      
+  backend:
+    image: ghcr.io/UTSCC09/backend-henryhhuang
+    container_name: backend
+    restart: always
+    expose:
+      - 5000
+    environment:
+      - VIRTUAL_HOST=api.coordinatea.me
+      - LETSENCRYPT_HOST=api.coordinatea.me
+     
