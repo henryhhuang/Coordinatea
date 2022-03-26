@@ -2,32 +2,17 @@ import { Mapbox } from '../Mapbox/Mapbox';
 import Grid from '@mui/material/Grid';
 import './ViewJourney.css';
 import React, { useState, useCallback } from 'react';
-import mock from '../ViewJourney/mock.json';
-import journeyMock from '../ViewJourney/journey_mock.json'
 import { useParams, useLocation } from "react-router-dom";
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-
-import List from '@mui/material/List';
 import { CommentList } from '../Comments/CommentList/CommentList';
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import MuiListItemButton from '@mui/material/ListItemButton';
-import { blue } from '@mui/material/colors';
-import { IconButton } from '@mui/material';
 import { MarkerContent } from '../MarkerContent/MarkerContent'
-import { CSSTransition } from 'react-transition-group';
-import { TransitionGroup } from 'react-transition-group';
 import { useQuery } from '@apollo/client'
 import { Journey_Querys } from '../../graphql/queries/journey'
 import { Common_Queries } from '../../graphql/queries/common';
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { format } from 'date-fns'
-
+import { Markers } from '../Markers/Markers';
 
 const ListItemButton = withStyles({
     root: {
@@ -64,22 +49,7 @@ export function ViewJourney() {
         if (!getKeyLoading && getKeyData) {
             setAccessToken(getKeyData.getMapboxKey);
         }
-    }, [getKeyData])
-
-    // const getMarkerImageIds = useCallback((markerId) => {
-    //     fetch('http://localhost:5000/api/imageIds/' + markerId + '/marker', {
-    //         method: 'GET',
-    //         credentials: 'include',
-    //     })
-    //     .then((res) => res.json())
-    //     .then((result) => {
-    //         console.log(result);
-    //         setImageMarker(result);
-    //     }).catch((error) => {
-    //         console.log('error', error);
-    //     })
-    // });
-
+    }, [getKeyData]);
 
     useEffect(() => {
         if (!loading) {
@@ -145,44 +115,13 @@ export function ViewJourney() {
                     ></MarkerContent>
                 ) : commentsOpen ?
                     (<CommentList parentId={journeyId} />) : (
-                        <List sx={{ maxHeight: '800px', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
-                            {markers.map((marker) => (
-                                <div key={'list-' + marker.id} className="marker-container">
-                                    <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <BeachAccessIcon sx={{ color: blue[500] }} />
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={marker.place}
-                                            secondary={
-                                                <React.Fragment>
-                                                    <Typography
-                                                        sx={{ display: 'inline' }}
-                                                        component="span"
-                                                        variant="body2"
-                                                        color="text.primary"
-                                                    >
-                                                        {format(new Date(marker.date * 1), 'yyyy-MM-dd')}
-                                                    </Typography>
-                                                    <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
-                                                        <Typography
-                                                            sx={{ display: 'inline' }}
-                                                            component="span"
-                                                            variant="body2"
-                                                            color="blue"
-                                                        >Read more
-                                                        </Typography>
-                                                    </IconButton>
-                                                </React.Fragment>
-                                            }
-                                        />
-                                    </ListItemButton>
-                                    <Divider variant="inset" component="li" />
-                                </div>
-                            ))}
-                        </List>
+                        markers && (
+                        <Markers
+                            markers={markers}
+                            handleChange={handleChange}
+                            handleContentOpen={handleContentOpen}
+                            handleBack={handleBack}
+                            currentMarker={currentMarker}></Markers>)
                     )}
             </Grid>
         </Grid>

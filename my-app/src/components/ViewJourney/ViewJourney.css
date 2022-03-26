@@ -1,8 +1,9 @@
-.map-container1 {
-    position:relative;
-    height: 800px;
+.toggle {
+  position: relative;
+  top: 0px;
+  /* left: 100px;
+  top: 150px; */
 }
-
 
 .item-enter {
     opacity: 0;
