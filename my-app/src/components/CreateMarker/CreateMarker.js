@@ -29,7 +29,8 @@ import { useNavigate } from "react-router-dom";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import { format } from 'date-fns'
+import { format } from 'date-fns' 
+import { uploadImage } from '../../api.mjs';
 
 const ListItemButton = withStyles({
     root: {
@@ -57,6 +58,7 @@ export function CreateMarker () {
     const [date, setDate] = useState();
     const markerPlaceRef = useRef(null);
     const markerDateRef = useRef(null);
+    const [formError, setFormError] = useState(false);
     const navigate = useNavigate();
 
     const [getMarkers, {data, loading, error}] = useLazyQuery(Journey_Querys.GET_MARKERS, {
@@ -70,24 +72,6 @@ export function CreateMarker () {
             setAccessToken(getKeyData.getMapboxKey);
         }
     }, [getKeyData])
-
-    //refactor to a utils folder
-    const uploadImage = (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        fetch('http://147.182.149.236:5000/api/image/0/', {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-        })
-        .then((res) => res.json())
-        .then((result) => {
-            setUploadedImage(result);
-        }).catch((error) => {
-            console.log('error', error);
-        })
-    }
 
     const [createMarker, { data: createData, loading: createLoading, error: createError }] = useMutation(Journey_Mutations.CREATE_MARKER);
 
@@ -151,15 +135,25 @@ export function CreateMarker () {
 
     const handleMarkerSubmit = (e) => {
         e.preventDefault();
-    
-        //todo: handle validation
+        if (!(date && markerPlaceRef.current.value)) {
+            console.log(markerPlaceRef.current.value);
+            setFormError(true);
+            return;
+        }
+        setFormError(false);
         let marker = newMarker;
         marker.date = date;
+        marker.place = markerPlaceRef.current.value;
+
         setOpen(true);
         setNewMarker(marker);
     }
 
     const handleSubmit = (e, title, description, image) => {
+        if (!(image && title && description)) {
+            setFormError(true);
+            return;
+        }
         setOpen(false);
         setNewMarker();
         // setImage(image);
@@ -173,7 +167,7 @@ export function CreateMarker () {
             latitude: newMarker.center[1],
         }
         setNewMarker(marker)
-        uploadImage(image);
+        uploadImage(image, setUploadedImage);
     }
 
     const handleContentOpen = () => {
@@ -234,6 +228,9 @@ export function CreateMarker () {
                                     <AddCircleOutline sx={{ color: blue[500] }}/>
                                 </Avatar>
                             </ListItemButton> 
+                            {formError ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
+                                A place and date are required.
+                            </Typography> : <></>}
                         </ListItem>
                     }
                     {/* <Divider variant="inset" component="li" /> */}

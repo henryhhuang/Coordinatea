@@ -1,19 +1,17 @@
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import './CreateMarkerContent.css'
-import { CardMedia } from '@mui/material';
 import { IconButton } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { useRef, useState } from 'react';
 
-//todo add image form
 export function CreateMarkerContent (props) {
     const {handleSubmit, handleBack, title, images, description} = props;
 
     const [selectedFile, setSelectedFile] = useState();
 	const [isFilePicked, setIsFilePicked] = useState(false);
-
+    const [formError, setFormError] = useState(false);
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
 
@@ -22,11 +20,16 @@ export function CreateMarkerContent (props) {
         setSelectedFile(e.target.files[0]);
         setIsFilePicked(true);
     }
+
     const validateSubmit = (e) => {
         e.preventDefault();
-        //validation
         const title = titleRef.current.value;
-        const description = descriptionRef.current.value
+        const description = descriptionRef.current.value;
+        if (!(isFilePicked && title && description)) {
+            setFormError(true);
+            return;
+        }
+        setFormError(false);
         handleSubmit(e, title, description, selectedFile);
     }
 
@@ -56,7 +59,7 @@ export function CreateMarkerContent (props) {
                 rows={8}
                 id="outlined-required"
                 label="Required"
-                defaultValue="Title"
+                defaultValue="Description"
                 inputRef={descriptionRef}
             />
                 <Button
@@ -73,10 +76,9 @@ export function CreateMarkerContent (props) {
             <Button type='submit' variant="outlined" size="medium">
                 Save Marker
             </Button>
-
-            {/* onClick={(e) => zoomToPopup(e, marker.id)}  */}
-            {/* <CardMedia component="img" image={"/" + images[0].url}></CardMedia> */}
-            {/* <Typography variant="body1">{description}</Typography> */}
+            {formError ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
+                A title, description and image are required.
+            </Typography> : <></>}
         </Container>
         </form>
     )

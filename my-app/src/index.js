@@ -5,11 +5,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink} from "@apollo/client";
 
+const env = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/graphql' : 'https://api.coordinatea.me/graphql';
 const link = createHttpLink({
   // uri: 'http://147.182.149.236:5000/graphql',
-  uri: 'https://api.coordinatea.me/graphql',
+  // uri: 'https://api.coordinatea.me/graphql'
+  uri: env,
   credentials: 'include'
 })
 

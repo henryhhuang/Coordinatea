@@ -17,9 +17,11 @@ import React, { useEffect, useState } from 'react';
 
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 
+const env = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/graphql' : 'https://api.coordinatea.me/graphql';
 const link = createHttpLink({
   // uri: 'http://147.182.149.236:5000/graphql',
-  uri: 'https://api.coordinatea.me/graphql',
+  // uri: 'https://api.coordinatea.me/graphql',
+  uri: env,
   credentials: 'include'
 })
 
@@ -67,20 +69,6 @@ function App() {
   useEffect(() => {
     getUser()
   }, [])
-  // let element = useRoutes([
-  //   {
-  //     path: "/",
-  //     element: <Journeys />,
-  //   },
-  //   { path: "/journey/:id", element: <ViewJourney /> },
-  //   { path: "/signup/", element: <SignIn /> },
-  //   { path: "/sigin/", element: <SignUp /> },
-  //   { path: "/follow/", element: <Follow /> },
-
-  //   { path: "/journey/:id/:id2", element: <ViewJourney /> },
-  //   { path: "/journey/create", element: <CreateJourney /> },
-  // ]);
-  // return element;
 
   return (
     <ApolloProvider client={apolloClient}>

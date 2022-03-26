@@ -15,6 +15,7 @@ import {
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
+import { uploadImage } from '../../api.mjs';
 import "./CreateJourney.css"
 
 const url = window.location.href;
@@ -29,6 +30,7 @@ export function CreateJourney(props) {
     const [uploadedImage, setUploadedImage] = useState();
     const [isImageUploaded, setIsImageUploaded] = useState(false);
     const [journey, setJourney] = useState();
+    const [formError, setFormError] = useState(false);
     const navigate = useNavigate();
 
     const [createJourney, { data, loading, error }] = useMutation(Journey_Mutations.CREATE_JOURNEY)
@@ -36,26 +38,6 @@ export function CreateJourney(props) {
     const fileChange = (e) => {
         setImage(e.target.files[0]);
         setIsImageUploaded(true);
-    }
-
-    //todo: refactor to a utils folder
-    //add a text for the image selected beside the upload file button
-    //can also refactor upload button to its own component
-    const uploadImage = (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        fetch('http://147.182.149.236:5000/api/image/0/', {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-        })
-            .then((res) => res.json())
-            .then((result) => {
-                setUploadedImage(result);
-            }).catch((error) => {
-                console.log('error', error);
-            })
     }
 
     //Send request to save journey once image upload is complete
@@ -84,7 +66,11 @@ export function CreateJourney(props) {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        // todo validation
+        if (!(isImageUploaded && titleRef.current.value && descriptionRef.current.value)) {
+            setFormError(true);
+            return;
+        }
+        setFormError(false);
         let newJourney = {
             title: titleRef.current.value,
             description: descriptionRef.current.value,
@@ -92,10 +78,7 @@ export function CreateJourney(props) {
             fromDate: fromDate
         }
         setJourney(newJourney);
-
-        if (isImageUploaded) {
-            uploadImage(image);
-        }
+        uploadImage(image, setUploadedImage);
     };
 
     return (
@@ -164,9 +147,6 @@ export function CreateJourney(props) {
                             />
                         </LocalizationProvider>
                     </div>
-                    {/* {error ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
-                    {error.message}
-                </Typography> : <></>} */}
                     <Button
                         variant="contained"
                         component="label"
@@ -187,6 +167,9 @@ export function CreateJourney(props) {
                     >
                         Create Journey
                     </Button>
+                     {formError ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
+                        A title, description, dates and image are required.
+                    </Typography> : <></>}
                 </Box>
             </Box>
         </Container>

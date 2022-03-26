@@ -11,7 +11,7 @@ import "./Journeys.css"
 export function Journeys(props) {
     const {loading, error, data} = useQuery(Journey_Querys.GET_JOURNEYS);
     const [journeys, setJourneys] = useState([]);
-
+        
     //possible features todo: show journeys by popularity, random, by place?
     useEffect(() => {
         if (!loading) {
@@ -28,8 +28,8 @@ export function Journeys(props) {
             </Paper>
         ) : (
         journeys.map((journey) => (
-            <Grid item xs={12} sm={6} md={4}>
-                <Link className="link" to={"journey/" + journey.id} state={{journey}}>
+            <Grid key={`grid-id-${journey.id}`} item xs={12} sm={6} md={4}>
+                <Link key={`link-id-${journey.id}`} className="link" to={"journey/" + journey.id} state={{journey}}>
                     <Journey
                         key={`journey-id-${journey.id}`}
                         journey={journey}
