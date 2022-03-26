@@ -4,6 +4,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
 import "./Mapbox.css"
 
+//test workflow
 
 //https://stackoverflow.com/questions/65434964/mapbox-blank-map-react-map-gl-reactjs
 //to transiple mapbox web worker seperately
