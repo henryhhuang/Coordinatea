@@ -45,7 +45,7 @@ const ResponsiveAppBar = (props) => {
     const requestOptions = {
       credentials: 'include'
     }
-    fetch('http://localhost:5000/signout', requestOptions).then(res => {
+    fetch('http://147.182.149.236:5000/signout', requestOptions).then(res => {
       console.log(res)
       setUsername(null)
     })

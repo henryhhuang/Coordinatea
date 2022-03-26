@@ -35,7 +35,7 @@ export function SignUp(props) {
                     passwordConfirm: data.get('passwordConfirm')
                 })
             };
-            fetch('http://localhost:5000/signup', requestOptions).then(res => {
+            fetch('http://147.182.149.236:5000/signup', requestOptions).then(res => {
                 if (res.status === 200) {
                     setUsername(data.get('username'))
                     navigate(-1);

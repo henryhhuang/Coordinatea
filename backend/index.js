@@ -22,7 +22,7 @@ const Image = require('./models/Image');
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://147.182.149.236',
     credentials: true
 }));
 
@@ -46,7 +46,7 @@ const server = new ApolloServer({
     }
 });
 
-server.applyMiddleware({ app, cors: { origin: "http://localhost:3000", credentials: true } });
+server.applyMiddleware({ app, cors: { origin: "http://147.182.149.236", credentials: true } });
 
 // REST endpoint for signup from piazza post @342: https://piazza.com/class/kxgjicgvryu3h8?cid=342
 app.post('/signup/', async (req, res, next) => {
@@ -151,7 +151,7 @@ mongoose.connect(MONGODB, { useNewUrlParser: true })
         return app.listen({ port: 5000 });
     })
     .then((res) => {
-        console.log(`🚀 Server ready at http://localhost:5000${server.graphqlPath}`)
+        console.log(`🚀 Server ready at http://147.182.149.236:5000${server.graphqlPath}`)
     })
     .catch((error) => {
         console.log(error);
