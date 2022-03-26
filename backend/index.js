@@ -34,7 +34,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: false, // TODO: change in production
+        secure: true, // TODO: change in production
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
@@ -152,7 +152,7 @@ mongoose.connect(MONGODB, { useNewUrlParser: true })
         return app.listen({ port: 5000 });
     })
     .then((res) => {
-        console.log(`🚀 Server ready at http://147.182.149.236:5000${server.graphqlPath}`)
+        console.log(`🚀 Server ready at https://147.182.149.236:5000${server.graphqlPath}`)
     })
     .catch((error) => {
         console.log(error);
