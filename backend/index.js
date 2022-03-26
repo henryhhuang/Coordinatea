@@ -149,7 +149,7 @@ app.get('/signout/', async (req, res, next) => {
 mongoose.connect(MONGODB, { useNewUrlParser: true })
     .then(() => {
         console.log('MongoDB Connected...');
-        return app.listen({ port: 5000 });
+        return https.createServer(app).listen({ port: 5000 });
     })
     .then((res) => {
         console.log(`🚀 Server ready at https://147.182.149.236:5000${server.graphqlPath}`)
