@@ -34,7 +34,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: true, // TODO: change in production
+        secure: false, // TODO: change in production
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
