@@ -7,7 +7,7 @@ services:
     container_name: nginx-proxy
     ports:
       - "80:80"
-      - "5000:5000"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./certs:/etc/nginx/certs 
@@ -27,7 +27,7 @@ services:
         
   frontend:
     image: ghcr.io/utscc09/my-app-henryhhuang
-    container_name: frontend
+    container_name: my-app
     restart: always
     expose:
       - 80
