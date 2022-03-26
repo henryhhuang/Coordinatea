@@ -32,7 +32,7 @@ export function SignIn(props) {
                     password: data.get('password'),
                 })
             };
-            fetch('http://localhost:5000/signin', requestOptions).then((res, err) => {
+            fetch('http://147.182.149.236:5000/signin', requestOptions).then((res, err) => {
                 if (res.status === 200) {
                     setUsername(data.get('username'))
                     navigate(-1);

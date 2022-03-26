@@ -76,7 +76,7 @@ export function CreateMarker () {
         const formData = new FormData();
         formData.append('file', file);
 
-        fetch('http://localhost:5000/api/image/0/', {
+        fetch('http://147.182.149.236:5000/api/image/0/', {
             method: 'POST',
             credentials: 'include',
             body: formData
