@@ -27,9 +27,11 @@ app.use(cors({
     credentials: true
 }));
 
-if (process.env.NODE_ENV === "production") {
-    app.set('trust proxy', 1)
-}
+app.set('trust proxy', 1)
+
+// if (process.env.NODE_ENV === "production") {
+//     app.set('trust proxy', 1)
+// }
 
 const session = require('express-session');
 app.use(session({
@@ -37,11 +39,16 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        domain: process.env.NODE_ENV === 'production' ? "coordinatea.me" : "localhost",
-        proxy: process.env.NODE_ENV === 'production',
+        domain: "coordinatea.me",
+        proxy: true,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         maxAge: 1000 * 60 * 60 * 24 * 7
+        // domain: process.env.NODE_ENV === 'production' ? "coordinatea.me" : "localhost",
+        // proxy: process.env.NODE_ENV === 'production',
+        // httpOnly: true,
+        // secure: process.env.NODE_ENV === 'production',
+        // maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
 
@@ -117,6 +124,11 @@ app.post('/api/image/:id', upload.single('file'), async function (req, res, next
 
 //Get a list of all image ids from a journey or marker
 app.get('/api/imageIds/:id/:action', async function (req, res, next) {
+    if (process.env.NODE_ENV === 'production') {
+        return res.json("nice")
+    } else {
+        return res.json(":(");
+    }
     let images;
     if (req.params.action == 'journey') {
         images = await Image.find({
