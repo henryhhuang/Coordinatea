@@ -33,7 +33,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        domain: "https://coordinatea.me",
+        proxy: true,
         httpOnly: true,
         secure: true, // TODO: change in production
         maxAge: 1000 * 60 * 60 * 24 * 7
