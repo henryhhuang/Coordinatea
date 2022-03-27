@@ -27,12 +27,15 @@ app.use(cors({
     credentials: true
 }));
 
+app.set('trust proxy', 1);
+
 const session = require('express-session');
 app.use(session({
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
+        domain: "coordinatea.me",
         proxy: true,
         httpOnly: true,
         secure: true, // TODO: change in production
