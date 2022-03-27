@@ -55,7 +55,7 @@ export function CommentForm(props) {
     }
 
     return (
-        <Container maxWidth="md" component='form' onSubmit={handleSubmit}>
+        <Container height="10%" maxWidth="md" component='form' onSubmit={handleSubmit}>
             <Grid container spacing={1}>
                 <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>

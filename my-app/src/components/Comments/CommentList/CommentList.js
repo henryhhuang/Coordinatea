@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Comment } from '../Comment/Comment';
 import { List, ListItem } from '@mui/material';
 import { CommentForm } from '../CommentForm/CommentForm';
+import Box from '@mui/material/Box';
 
 const getParentCommentsQuery = gql`
     query ($id: ID) {
@@ -35,8 +36,8 @@ export function CommentList(props) {
     }, [])
 
     return (
-        <div style={{ width: '100%' }}>
-            <List sx={{ height: '700px', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
+        <Box sx={{}}>
+            <List sx={{ height: '75vh', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
                 {comments.map((comment) => (
                     <ListItem divider>
                         <Comment username={comment.username} content={comment.content} createdAt={comment.createdAt} />
@@ -44,6 +45,6 @@ export function CommentList(props) {
                 ))}
             </List>
             <CommentForm comments={comments} setComments={setComments} parentId={parentId} />
-        </div>
+        </Box>
     )
 }

@@ -13,6 +13,11 @@ import { Common_Queries } from '../../graphql/queries/common';
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Markers } from '../Markers/Markers';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import Box from '@mui/material/Box';
 
 const ListItemButton = withStyles({
     root: {
@@ -30,7 +35,7 @@ const ListItemButton = withStyles({
 const url = window.location.href;
 
 export function ViewJourney() {
-    const [commentsOpen, setCommentsOpen] = useState(false);
+    const [tabValue, setTabValue] = useState("1");
     const [markers, setMarkers] = useState([]);
     const [currentMarker, setCurrentMarker] = useState();
     const [open, setOpen] = useState(false);
@@ -41,7 +46,7 @@ export function ViewJourney() {
     const { loading, error, data } = useQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     });
-    const {loading: getKeyLoading, error: getKeyError, data: getKeyData} = useQuery(Common_Queries.GET_MAPBOX_KEY)
+    const { loading: getKeyLoading, error: getKeyError, data: getKeyData } = useQuery(Common_Queries.GET_MAPBOX_KEY)
     const navigate = useNavigate();
 
     //initialize key
@@ -68,6 +73,10 @@ export function ViewJourney() {
         setCurrentMarker(value);
     };
 
+    const handleTabChange = (event, value) => {
+        setTabValue(value);
+    }
+
     //todo: doesn't work when user clicks browser's back button
     const handleBack = () => {
         setOpen(false);
@@ -91,22 +100,50 @@ export function ViewJourney() {
         <Grid container>
             <Grid className="map-container" item xs={8}>
                 {accessToken &&
-                <Mapbox 
-                    changeCurrentMarker={handleChange} 
-                    currentMarker={currentMarker} 
-                    markersParent={markers} 
-                    markerCreation={false}
-                    accessToken={accessToken}></Mapbox>
+                    <Mapbox
+                        changeCurrentMarker={handleChange}
+                        currentMarker={currentMarker}
+                        markersParent={markers}
+                        markerCreation={false}
+                        accessToken={accessToken}></Mapbox>
                 }
             </Grid>
             <Grid
                 item
                 container
-                direction="row"
-                justify="center"
-                alignItems="center"
-                xs={4}>
-                {open && openMarker != null ? (
+                direction="column"
+                xs={4}
+            >
+                <TabContext value={tabValue}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <TabList onChange={handleTabChange}>
+                            <Tab label="JOURNEY" value="1" />
+                            <Tab label="COMMENTS" value="2" />
+                        </TabList>
+                    </Box>
+                    <TabPanel value="1" sx={{ maxheight: '85vh', overflow: 'auto' }}>
+                        {open && openMarker != null ? (
+                            <MarkerContent className="marker-content"
+                                title={openMarker.title}
+                                description={openMarker.description}
+                                images={imageMarker}
+                                handleBack={handleBack}
+                            ></MarkerContent>
+                        ) : (
+                            markers && (
+                                <Markers
+                                    markers={markers}
+                                    handleChange={handleChange}
+                                    handleContentOpen={handleContentOpen}
+                                    handleBack={handleBack}
+                                    currentMarker={currentMarker}></Markers>)
+                        )}
+                    </TabPanel>
+                    <TabPanel value="2" sx={{ height: '85vh' }}>
+                        <CommentList parentId={journeyId} />
+                    </TabPanel>
+                </TabContext>
+                {/*open && openMarker != null ? (
                     <MarkerContent className="marker-content"
                         title={openMarker.title}
                         description={openMarker.description}
@@ -116,13 +153,13 @@ export function ViewJourney() {
                 ) : commentsOpen ?
                     (<CommentList parentId={journeyId} />) : (
                         markers && (
-                        <Markers
-                            markers={markers}
-                            handleChange={handleChange}
-                            handleContentOpen={handleContentOpen}
-                            handleBack={handleBack}
-                            currentMarker={currentMarker}></Markers>)
-                    )}
+                            <Markers
+                                markers={markers}
+                                handleChange={handleChange}
+                                handleContentOpen={handleContentOpen}
+                                handleBack={handleBack}
+                                currentMarker={currentMarker}></Markers>)
+                        )*/}
             </Grid>
         </Grid>
     </>)
