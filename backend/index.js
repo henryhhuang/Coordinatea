@@ -33,6 +33,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
+        domain: "https://coordinatea.me",
         httpOnly: true,
         secure: true, // TODO: change in production
         maxAge: 1000 * 60 * 60 * 24 * 7
@@ -158,5 +159,5 @@ mongoose.connect(MONGODB, { useNewUrlParser: true })
         console.log(error);
     })
 
-const PORT = 3000;
-https.createServer(app).listen(PORT);
+// const PORT = 3000;
+// https.createServer(app).listen(PORT);
