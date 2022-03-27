@@ -45,7 +45,7 @@ const ResponsiveAppBar = (props) => {
     const requestOptions = {
       credentials: 'include'
     }
-    fetch('https://api.coordinatea.me/signout', requestOptions).then(res => {
+    fetch(process.env.NODE_ENV === "production" ? 'https://api.coordinatea.me/signout' : 'http://localhost:5000/signout', requestOptions).then(res => {
       console.log(res)
       setUsername(null)
     })

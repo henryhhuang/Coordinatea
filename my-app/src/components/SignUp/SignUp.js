@@ -35,7 +35,7 @@ export function SignUp(props) {
                     passwordConfirm: data.get('passwordConfirm')
                 })
             };
-            fetch('https://api.coordinatea.me/signup', requestOptions).then(res => {
+            fetch(process.env.NODE_ENV === "production" ? 'https://api.coordinatea.me/signup' : 'http://localhost:5000/signup', requestOptions).then(res => {
                 if (res.status === 200) {
                     setUsername(data.get('username'))
                     navigate(-1);

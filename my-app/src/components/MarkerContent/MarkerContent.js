@@ -20,7 +20,10 @@ export function MarkerContent (props) {
                 </Typography>
             </IconButton>
             <Typography variant="h2">{title}</Typography>
-            <CardMedia component="img" image={"https://api.coordinatea.me/api/image/" + images + "/"}></CardMedia>
+            <CardMedia component="img" 
+                image={process.env.NODE_ENV === "production" ? 
+                "https://api.coordinatea.me/api/image/" + images + "/" : "http://localhost:5000/api/image" + images + "/"}>
+                </CardMedia>
 
             <Typography variant="body1">{description}</Typography>
         </Container>

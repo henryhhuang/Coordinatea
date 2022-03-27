@@ -27,7 +27,9 @@ app.use(cors({
     credentials: true
 }));
 
-app.set('trust proxy', 1);
+if (process.env.NODE_ENV === "production") {
+    app.set('trust proxy', 1)
+}
 
 const session = require('express-session');
 app.use(session({
@@ -35,10 +37,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        domain: "coordinatea.me",
-        proxy: true,
+        domain: process.env.NODE_ENV === 'production' ? "coordinatea.me" : "localhost",
+        proxy: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        secure: true, // TODO: change in production
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
@@ -161,6 +163,3 @@ mongoose.connect(MONGODB, { useNewUrlParser: true })
     .catch((error) => {
         console.log(error);
     })
-
-// const PORT = 3000;
-// https.createServer(app).listen(PORT);

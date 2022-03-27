@@ -28,7 +28,8 @@ export function Journey(props) {
                 className="img"
                 component="img"
                 height="194"
-                image={"https://api.coordinatea.me/api/image/" + journey.imageId + "/"}
+                image={process.env.NODE_ENV === "production" ? "https://api.coordinatea.me/api/image/" + journey.imageId + "/" :
+                    "http://localhost:5000/api/image" + journey.imageId + "/"}
                 alt="Failed to retrieve image"
             />
             <CardContent>
