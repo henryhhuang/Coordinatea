@@ -28,6 +28,17 @@ export const Journey_Mutations = {
             latitude,
             imageId
         }
-    }
-    `
+    }`,
+    CREATE_SUGGESTION: gql`
+    mutation createSuggestion($suggestion: SuggestionInput!) {
+        createSuggestion(suggestion: $suggestion) {
+            id,
+            markerId,
+            description,
+            imageId,
+            longitude,
+            latitude,
+            username
+        }
+    }`
 }

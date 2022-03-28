@@ -29,5 +29,19 @@ export const Journey_Querys = {
                 latitude
             }
         }
+    `,
+    GET_SUGGESTIONS: gql`
+        query GetSuggestions($markerId: ID!) {
+            getSuggestions(markerId: $markerId) {
+                id,
+                markerId,
+                description,
+                imageId,
+                longitude,
+                latitude,
+                username,
+                type
+            }
+        }
     `
 }

@@ -35,6 +35,7 @@ if (process.env.NODE_ENV === "production") {
     app.set('trust proxy', 1)
 }
 
+//todo: https://stackoverflow.com/questions/44882535/warning-connect-session-memorystore-is-not-designed-for-a-production-environm
 const session = require('express-session');
 app.use(session({
     secret: SESSION_SECRET,

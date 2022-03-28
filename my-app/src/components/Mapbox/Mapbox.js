@@ -1,7 +1,9 @@
 import { useRef, useEffect, useState, useCallback} from 'react';
-import ReactMapGL, {Marker, Popup, useControl} from 'react-map-gl';
+import ReactMapGL, {Marker, useControl} from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import mapboxgl from 'mapbox-gl';
+import { Suggestion } from '../Suggestion/Suggestion';
+import { CreateSuggestion } from '../CreateSuggestion/CreateSuggestion';
 import "./Mapbox.css"
 
 //https://stackoverflow.com/questions/65434964/mapbox-blank-map-react-map-gl-reactjs
@@ -15,9 +17,22 @@ mapboxgl.workerClass = MapboxWorker;
 let id = 1;
 
 export function Mapbox(props) {
-  let { onSearch, changeCurrentMarker, currentMarker, markersParent, markerCreation, accessToken } = props;
+  let { onSearch, 
+    changeCurrentMarker, 
+    currentMarker, 
+    markerCreation, 
+    accessToken, 
+    commentMarkerCreation,
+    onCommentMarkerCreate,
+    onCommentMarkerSubmit} = props;
+
   const [markers, setMarkers] = useState([]);
   const [marker, setMarker] = useState(0);
+  const [commentMarkers, setCommentMarkers] = useState([]);
+  const [image, setImage] = useState();
+  const descriptionRef = useRef(null);
+  const [newSuggestion, setNewSuggestion] = useState();
+  const [createSuggestion, setCreateSuggestion] = useState();
 
   const [viewport, setViewport] = useState({
     latitude: 0,
@@ -32,6 +47,10 @@ export function Mapbox(props) {
   useEffect(() => {
     setMarkers(props.markersParent)
   }, [props.markersParent])
+
+  useEffect(() => {
+    setCommentMarkers(props.suggestions);
+  }, [props.suggestions])
 
   useEffect(() => {
     if (mapRef && mapRef.current) {
@@ -121,6 +140,27 @@ export function Mapbox(props) {
       });
   });
 
+  const createMarker = (e) => {
+    if (commentMarkerCreation && commentMarkerCreation != null && mapRef.current.getZoom() > 9) {
+      console.log(e);
+      const suggestion = {
+        markerId: currentMarker,
+        longitude: e.lngLat.lng,
+        latitude: e.lngLat.lat,
+        type: commentMarkerCreation
+      }
+      //commentMarker created, but not offically
+      // setCommentMarkers(() => [...commentMarkers, suggestion])
+      setNewSuggestion(suggestion)
+      setCreateSuggestion(true);
+      onCommentMarkerCreate(e);
+    }
+  };
+
+  const cancelCreate = (e) => {
+    setCreateSuggestion(false);
+  }
+
   return (
       <ReactMapGL
         className="map"
@@ -129,18 +169,34 @@ export function Mapbox(props) {
         maxZoom={11}
         mapboxAccessToken={accessToken}
         ref={mapRef}
-        onLoad={onMapLoad}>
+        onLoad={onMapLoad}
+        onClick={createMarker}
+        renderChildrenInPortal={true}
+        >
         <Geocoder
           accessToken={accessToken}
           mapboxgl={mapboxgl} position="top-right"
           >
-          </Geocoder>
+        </Geocoder>
         {markers.map((marker) => (
           <div key={marker.id}>
             <Marker key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`} className="marker" longitude={marker.longitude} latitude={marker.latitude} onClick={(e) => zoomToPopup(e, marker.id)} anchor="bottom" >
             </Marker>
           </div>
-        ))}
+        ))}        
+        {commentMarkers.map((commentMarker) => (
+          <Suggestion
+            suggestion={commentMarker}
+          />
+        ))} 
+        {createSuggestion && (<CreateSuggestion
+            longitude={newSuggestion.longitude}
+            latitude={newSuggestion.latitude}
+            type={newSuggestion.type}
+            markerId={newSuggestion.markerId}
+            cancelCreate={cancelCreate}
+            submitSuggestion={onCommentMarkerSubmit}
+        />)}    
       </ReactMapGL>
   );
 }
