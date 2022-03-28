@@ -7,6 +7,14 @@
     width: 100%;
 }
 
+
+.map-container {
+    /* height: 100vh; */
+    /* min-height: 800px; */
+    height: 92vh;
+    width: 100%;
+  }
+
 .map-container .pagination {
     text-align: center;
 }
