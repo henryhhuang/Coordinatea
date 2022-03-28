@@ -26,6 +26,7 @@ module.exports = gql`
         fromDate: String!
         toDate: String!
     }
+
     type Marker {
         id: ID!
         journeyId: ID!
@@ -36,6 +37,17 @@ module.exports = gql`
         date: String!
         longitude: Float!
         latitude: Float!
+    }
+
+    type Suggestion {
+        id: ID!
+        markerId: ID!
+        imageId: ID!
+        description: String!
+        longitude: Float!
+        latitude: Float!
+        username: String!
+        type: String!
     }
 
     input JourneyInput {
@@ -57,6 +69,15 @@ module.exports = gql`
         imageId: ID!
     }
 
+    input SuggestionInput {
+        markerId: ID!
+        imageId: ID!
+        description: String!
+        longitude: Float!
+        latitude: Float!
+        type: String!
+    }
+
     type Query {
         getUser: User
         getUserById(id: ID): User!
@@ -69,13 +90,15 @@ module.exports = gql`
         getJourney(id: ID): Journey!
         getMarkers(journeyId: ID): [Marker!]!
         getMapboxKey: String!
+        getSuggestions(markerId: ID): [Suggestion!]!
     }
 
     type Mutation {
         follow(subscriberId: ID, publisherId: ID): [User!]!
         unfollow(subscriberId: ID, publisherId: ID): [User!]!
         createComment(parentId: ID, content: String): Comment!
-        createJourney(journey: JourneyInput): Journey
-        createMarker(marker: MarkerInput): Marker
+        createJourney(journey: JourneyInput): Journey!
+        createMarker(marker: MarkerInput): Marker!
+        createSuggestion(suggestion: SuggestionInput): Suggestion!
     }
 `

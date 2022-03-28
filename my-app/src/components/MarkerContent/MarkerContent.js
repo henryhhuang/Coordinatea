@@ -4,7 +4,6 @@ import './MarkerContent.css'
 import { CardMedia } from '@mui/material';
 import { IconButton } from '@mui/material';
 
-//Todo: once edit to use real image once image upload is completed
 export function MarkerContent (props) {
     const {handleBack, title, images, description} = props;
     return (
@@ -22,9 +21,8 @@ export function MarkerContent (props) {
             <Typography variant="h2">{title}</Typography>
             <CardMedia component="img" 
                 image={process.env.NODE_ENV === "production" ? 
-                "https://api.coordinatea.me/api/image/" + images + "/" : "http://localhost:5000/api/image" + images + "/"}>
+                "https://api.coordinatea.me/api/image/" + images + "/" : "http://localhost:5000/api/image/" + images + "/"}>
                 </CardMedia>
-
             <Typography variant="body1">{description}</Typography>
         </Container>
     )
