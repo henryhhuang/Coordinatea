@@ -16,6 +16,7 @@ import { CommentList } from './components/Comments/CommentList/CommentList';
 import React, { useEffect, useState } from 'react';
 
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
+import { Profile } from './components/Profile/Profile';
 
 const env = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/graphql' : 'https://api.coordinatea.me/graphql';
 const link = createHttpLink({
@@ -84,11 +85,7 @@ function App() {
             <Route path="/signin/" element={<SignIn setUsername={setUsername} />}></Route>
             <Route path="/signup/" element={<SignUp setUsername={setUsername} />}></Route>
             <Route path="/follow/" element={<Follow />}></Route>
-            <Route path="/comment/" element={
-              <div>
-                <CommentList username={'A'} />
-              </div>}
-            ></Route>
+            <Route path="/profile/:username" element={<Profile />}></Route>
           </Routes>
         </div>
       </ThemeProvider>

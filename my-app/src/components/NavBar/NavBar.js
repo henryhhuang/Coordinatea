@@ -12,7 +12,6 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from "react-router-dom";
-import HomeIcon from '@mui/icons-material/Home';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -95,11 +94,6 @@ const ResponsiveAppBar = (props) => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              <Link to="/home" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem>
-                  <Typography>Home</Typography>
-                </MenuItem>
-              </Link>
               <Link to="/following" style={{ color: 'black', textDecoration: 'none' }}>
                 <MenuItem>
                   <Typography>Following</Typography>
@@ -128,12 +122,6 @@ const ResponsiveAppBar = (props) => {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {username ?
               <div style={{ display: 'flex' }}>
-                <Link to="/home" style={{ textDecoration: 'none' }}>
-                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
-                    <HomeIcon sx={{ mr: 1 }} />
-                    <Typography>Home</Typography>
-                  </Button>
-                </Link>
                 <Link to="/following" style={{ textDecoration: 'none' }}>
                   <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
                     <FavoriteIcon sx={{ mr: 1 }} />
@@ -192,7 +180,7 @@ const ResponsiveAppBar = (props) => {
                   </Link>
                 </div> :
                 <div>
-                  <Link to="/profile" style={{ color: 'black', textDecoration: 'none' }}>
+                  <Link to={"/profile/" + username} style={{ color: 'black', textDecoration: 'none' }}>
                     <MenuItem>
                       <Typography>Profile</Typography>
                     </MenuItem>

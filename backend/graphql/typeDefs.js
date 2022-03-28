@@ -11,6 +11,7 @@ module.exports = gql`
     }
     type Comment {
         id: ID!
+        parentId: ID
         username: String
         createdAt: String
         content: String
@@ -61,9 +62,9 @@ module.exports = gql`
         getUserById(id: ID): User!
         getUserByUsername(username: String): User!
         getFollowing(id: ID): [User!]!
-        getUserComments(id: ID): [Comment!]!
+        getUserComments(username: String): [Comment!]!
         getParentComments(id: ID): [Comment!]!
-        getUserJourneys(id: ID): [Journey!]!
+        getUserJourneys(username: String): [Journey!]!
         getJourneys: [Journey!]!
         getJourney(id: ID): Journey!
         getMarkers(journeyId: ID): [Marker!]!
