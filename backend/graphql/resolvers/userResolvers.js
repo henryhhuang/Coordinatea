@@ -36,6 +36,17 @@ const userResolvers = {
                 throw new Error("User does not exist");
             return user.following;
         },
+        getUserJourneys: async (_, { username }, context) => {
+            //console.log(context.req.session)
+            //console.log(username);
+            const journeys = await Journey.find({ username: username });
+            return journeys;
+        },
+        getUserComments: async (_, { username }, context) => {
+            console.log(context.req.session);
+            console.log(username);
+            return await Comment.find({ username: username });
+        }
         /*
         getUserComments: async (_, { id }, context) => {
             console.log(context.req.session);
