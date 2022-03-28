@@ -80,7 +80,7 @@ export function CreateMarker () {
         getMarkers();
     }, [])
 
-    //set markers everytime data is changed
+    //set markers once data is retrieved
     useEffect(() => {
         if (!loading && data) {
             setMarkers(data.getMarkers)
@@ -187,7 +187,12 @@ export function CreateMarker () {
                     currentMarker={currentMarker} 
                     markersParent={markers} 
                     markerCreation={true} 
-                    accessToken={accessToken}></Mapbox>
+                    accessToken={accessToken}
+                    commentMarkerCreation={null}
+                    onCommentMarkerCreate={null}
+                    onCommentMarkerSubmit={null}
+                    suggestions={[]}
+                    ></Mapbox>
             }
         </Grid>
         <Grid

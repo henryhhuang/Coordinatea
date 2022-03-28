@@ -16,6 +16,8 @@ mapboxgl.workerClass = MapboxWorker;
 //todo id from backend when markers are saved
 let id = 1;
 
+
+
 export function Mapbox(props) {
   let { onSearch, 
     changeCurrentMarker, 
@@ -45,7 +47,9 @@ export function Mapbox(props) {
   //the below useEffects checks if parent props have been changed and if so updates this component
   //todo: it might be inefficient for currentMarker
   useEffect(() => {
-    setMarkers(props.markersParent)
+    if (props.markersParent) {
+      setMarkers(props.markersParent)
+    }
   }, [props.markersParent])
 
   useEffect(() => {

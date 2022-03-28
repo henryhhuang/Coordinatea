@@ -9,8 +9,8 @@ const journeyResolvers = {
         getJourneys: async () => {
             return await Journey.find();
         },
-        getJourney: async (_, { id }) => {
-            return await Journey.findById(id);
+        getJourney: async (_, { journeyId }) => {
+            return await Journey.findById(journeyId);
         },
         getMarkers: async (_, args) => {
             const { journeyId } = args;
@@ -30,7 +30,7 @@ const journeyResolvers = {
     Mutation: {
         createJourney: async (_, args, context) => {
             if (context.req.session && context.req.session.username) {
-                const { title, imageId, description, fromDate, toDate } = args.journey
+                const { title, imageId, description, fromDate, toDate, suggestionsEnabled } = args.journey
                 const journey = new Journey(
                     { username: context.req.session.username, 
                         title, 
@@ -38,9 +38,11 @@ const journeyResolvers = {
                         description, 
                         fromDate, 
                         toDate, 
-                        published: false 
+                        published: false,
+                        suggestionsEnabled
                     })
                 await journey.save();
+                console.log(journey);
                 return journey;
             }
         },

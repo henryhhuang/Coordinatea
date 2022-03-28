@@ -10,7 +10,8 @@ export const Journey_Mutations = {
                 imageId,
                 description,
                 fromDate,
-                toDate
+                toDate,
+                suggestionsEnabled
             }
         }
     `,

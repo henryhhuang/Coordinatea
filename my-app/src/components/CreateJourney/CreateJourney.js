@@ -16,6 +16,8 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import { uploadImage } from '../../api.mjs';
+import { Switch } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import "./CreateJourney.css"
 
 const url = window.location.href;
@@ -31,6 +33,7 @@ export function CreateJourney(props) {
     const [isImageUploaded, setIsImageUploaded] = useState(false);
     const [journey, setJourney] = useState();
     const [formError, setFormError] = useState(false);
+    const [suggestionsEnabled, setSuggestionsEnabled] = useState(true);
     const navigate = useNavigate();
 
     const [createJourney, { data, loading, error }] = useMutation(Journey_Mutations.CREATE_JOURNEY)
@@ -50,7 +53,8 @@ export function CreateJourney(props) {
                         description: journey.description,
                         imageId: uploadedImage,
                         toDate: journey.toDate,
-                        fromDate: journey.fromDate
+                        fromDate: journey.fromDate,
+                        suggestionsEnabled
                     }
                 }
             })
@@ -63,6 +67,10 @@ export function CreateJourney(props) {
             navigate(data.createJourney.id, { replace: true });
         }
     }, [data])
+
+    const handleChange = (event) => {
+        setSuggestionsEnabled(event.target.checked);
+      };
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -158,6 +166,9 @@ export function CreateJourney(props) {
                             onChange={fileChange}
                         />
                     </Button>
+                    <div>
+                        <FormControlLabel onChange={handleChange} control={<Switch defaultChecked />} label="Viewer Suggestions"></FormControlLabel>
+                    </div>
                     <Button
                         type="submit"
                         fullWidth

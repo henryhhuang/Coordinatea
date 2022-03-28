@@ -70,6 +70,12 @@ export function ViewJourney() {
     const [anchorEl, setAnchorEl] = useState(null);
     const menuOpen = Boolean(anchorEl);
     const [suggestions, setSuggestions] = useState([]);
+    const [journey, setJourney] = useState();
+
+    const { loading: journeyLoading, error: journeyError, data: journeyData} = useQuery(Journey_Querys.GET_JOURNEY, {
+        variables: { journeyId }
+    });
+
     const { loading, error, data } = useQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     });
@@ -83,6 +89,12 @@ export function ViewJourney() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!journeyLoading && journeyData) {
+            setJourney(journeyData.getJourney)
+        }
+    }, [journeyData])
+    
     useEffect(() => {
         if (newSuggestion && suggestionImage) {
             createSuggestion({
@@ -198,7 +210,7 @@ export function ViewJourney() {
         <Grid container>
             {accessToken &&
             <Grid className="map-container" item xs={8}>
-                {currentMarker &&  (
+                {currentMarker && journey && journey.suggestionsEnabled && (
                     <React.Fragment>
                         <CreateMarkerButton
                             id="basic-button"

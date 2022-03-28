@@ -10,7 +10,6 @@ import IconButton from '@mui/material/IconButton';
 import { format } from 'date-fns'
 import "./Journey.css"
 
-//todo: upvote/downvote feature
 export function Journey(props) {
     const { journey } = props;
 
@@ -29,7 +28,7 @@ export function Journey(props) {
                 component="img"
                 height="194"
                 image={process.env.NODE_ENV === "production" ? "https://api.coordinatea.me/api/image/" + journey.imageId + "/" :
-                    "http://localhost:5000/api/image" + journey.imageId + "/"}
+                    "http://localhost:5000/api/image/" + journey.imageId + "/"}
                 alt="Failed to retrieve image"
             />
             <CardContent>

@@ -24,6 +24,7 @@ module.exports = gql`
         description: String!
         fromDate: String!
         toDate: String!
+        suggestionsEnabled: Boolean!
     }
 
     type Marker {
@@ -55,6 +56,7 @@ module.exports = gql`
         description: String!
         fromDate: String!
         toDate:String!
+        suggestionsEnabled: Boolean!
     }
     
     input MarkerInput {
@@ -86,7 +88,7 @@ module.exports = gql`
         getParentComments(id: ID): [Comment!]!
         getUserJourneys(id: ID): [Journey!]!
         getJourneys: [Journey!]!
-        getJourney(id: ID): Journey!
+        getJourney(journeyId: ID): Journey!
         getMarkers(journeyId: ID): [Marker!]!
         getMapboxKey: String!
         getSuggestions(markerId: ID): [Suggestion!]!

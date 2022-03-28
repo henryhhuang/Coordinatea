@@ -8,7 +8,8 @@ const JourneySchema = new Schema({
     description: String,
     fromDate: Date,
     toDate: Date,
-    published: Boolean
+    published: Boolean,
+    suggestionsEnabled: Boolean
 });
 
 module.exports = model("Journey", JourneySchema);
