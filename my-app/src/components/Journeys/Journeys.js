@@ -1,43 +1,95 @@
 
 import { Journey } from "../Journey/Journey";
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid'
 import {Link} from "react-router-dom";
-import { useQuery } from '@apollo/client'
+import { useLazyQuery, useMutation} from '@apollo/client'
 import { Journey_Querys } from '../../graphql/queries/journey'
+import { Journey_Mutations } from "../../graphql/mutation/journey";
 import { useEffect, useState } from "react";
+import { Stack } from "@mui/material";
+import { Pagination } from "@mui/material";
 import "./Journeys.css"
 
 export function Journeys(props) {
-    const {loading, error, data} = useQuery(Journey_Querys.GET_JOURNEYS);
+    const { username } = props;
+    const [getJourneysLength, {loading: lengthLoading, error: lengthError, data: lengthData}] = useLazyQuery(Journey_Querys.GET_JOURNEYS_LENGTH);
     const [journeys, setJourneys] = useState([]);
-        
-    //possible features todo: show journeys by popularity, random, by place?
+    const [length, setLength] = useState(0);
+    const [page, setPage] = useState(1);
+
+    const [getJourneys, {loading, error, data}] = useLazyQuery(Journey_Querys.GET_JOURNEYS, {
+        variables: {
+            page: page - 1
+        }
+    });
+
+    const [deleteJourney, { loading: deleteLoading, error: deleteError, data: deleteData }] = useMutation(Journey_Mutations.DELETE_JOURNEY)
+
     useEffect(() => {
-        if (!loading) {
+        getJourneysLength();
+    }, [])
+
+    useEffect(() => {
+        if (!lengthLoading && lengthData) {
+            setLength(lengthData.getJourneysLength);
+            if (lengthData.getJourneysLength == 10 && page != 1) {
+                setPage(page - 1);
+            } else {
+                getJourneys();
+            }
+        }
+    }, [lengthData])
+    
+
+    useEffect(() => {
+        if (!loading && data) {
             setJourneys(data.getJourneys)
         }
     }, [data])
 
-    return (
+    useEffect(() => {
+        getJourneys();
+    }, [page])
 
-    <Grid container justify="center" className="journeys" spacing={2}>
+    useEffect(() => {
+        if (!deleteLoading && deleteData) {
+            getJourneysLength();
+        }
+    }, [deleteData])
+
+    const handlePagination = (e, value) => {
+        e.preventDefault();
+        setPage(value);
+    }
+
+    const removeJourney = (journeyId) => {
+        deleteJourney({
+            variables: {
+                journeyId
+            }
+        })
+    }
+    
+
+    return (
+    <Stack justify="center" className="journeys" spacing={2}>
+        <Pagination sx={{margin: "auto"}} count={Math.ceil(length / 10)} color="primary" shape="rounded" onChange={handlePagination}/>
         {journeys.length === 0 ? (
             <Paper>
                 No journeys :(.
             </Paper>
         ) : (
         journeys.map((journey) => (
-            <Grid key={`grid-id-${journey.id}`} item xs={12} sm={6} md={4}>
-                <Link key={`link-id-${journey.id}`} className="link" to={"journey/" + journey.id} state={{journey}}>
-                    <Journey
-                        key={`journey-id-${journey.id}`}
-                        journey={journey}
-                        />
-                </Link>
-            </Grid>
+            <Link key={`link-id-${journey.id}`} className="link" to={"journey/" + journey.id} state={{journey}}>
+                <Journey
+                    key={`journey-id-${journey.id}`}
+                    username={username}
+                    journey={journey}
+                    removeJourney={removeJourney}
+                    />
+            </Link>
         ))
         )}
-    </Grid>
+    </Stack>    
     );
 }

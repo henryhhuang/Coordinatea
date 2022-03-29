@@ -3,8 +3,8 @@ import { gql } from '@apollo/client';
 //TODO PAGINATION
 export const Journey_Querys = {
     GET_JOURNEYS: gql`
-        query GetJourneys {
-            getJourneys {
+        query GetJourneys($page: Float!) {
+            getJourneys(page: $page) {
                 id,
                 username,
                 title,
@@ -28,6 +28,11 @@ export const Journey_Querys = {
                 toDate,
                 suggestionsEnabled
             }
+        }
+    `,
+    GET_JOURNEYS_LENGTH: gql`
+        query GetJourneysLength {
+            getJourneysLength
         }
     `,
     GET_MARKERS: gql`

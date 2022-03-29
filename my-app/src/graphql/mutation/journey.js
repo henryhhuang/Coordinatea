@@ -41,5 +41,19 @@ export const Journey_Mutations = {
             latitude,
             username
         }
-    }`
+    }`,
+    DELETE_JOURNEY: gql`
+    mutation deleteJourney($journeyId: ID!) {
+        deleteJourney(journeyId: $journeyId) {
+            id,
+            username,
+            title,
+            imageId,
+            description,
+            fromDate,
+            toDate,
+            suggestionsEnabled
+        }
+    }
+    `
 }

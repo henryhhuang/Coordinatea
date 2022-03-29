@@ -77,7 +77,7 @@ function App() {
         <div className='App'>
           <NavBar username={username} setUsername={setUsername}></NavBar>
           <Routes>
-            <Route path="/" element={<Journeys />}></Route>
+            <Route path="/" element={<Journeys username={username} />}></Route>
             <Route path="/journey/:journeyId" element={<ViewJourney />}></Route>
             <Route path="/journey/:journeyId/:markerId" element={<ViewJourney />}></Route>
             <Route path="/journey/create/" element={<CreateJourney />}></Route>

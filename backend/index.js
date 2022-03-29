@@ -139,11 +139,6 @@ app.get('/api/imageIds/:id/:action', async function (req, res, next) {
 
 //Get the path of the image
 app.get('/api/image/:imageId/', async function (req, res, next) {
-    console.log(req.params.imageId);
-    if (req.params.imageId.length < 12) {
-        //for the bad data in our db atm
-        return res.json("oops");
-    }
     let image = await Image.findById(req.params.imageId);
     res.setHeader('Content-Type', image.mimetype);
     res.sendFile(image.path);

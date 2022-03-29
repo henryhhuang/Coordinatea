@@ -6,11 +6,14 @@ const Suggestion = require('../../models/Suggestion');
 
 const journeyResolvers = {
     Query: {
-        getJourneys: async () => {
-            return await Journey.find();
+        getJourneys: async (_, { page }) => {
+            return await Journey.find({}).sort({ createdAt: -1}).skip(page * 10).limit(10);
         },
         getJourney: async (_, { journeyId }) => {
             return await Journey.findById(journeyId);
+        },
+        getJourneysLength: async (_, args) => {
+            return await Journey.count({});
         },
         getMarkers: async (_, args) => {
             const { journeyId } = args;
@@ -69,6 +72,13 @@ const journeyResolvers = {
                 await suggestion.save();
                 return suggestion;
             }
+        },
+        deleteJourney: async (_, {journeyId}, context) => {
+            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            const journey = await Journey.findById(journeyId);
+            if (context.req.session.username != journey.username) throw new Error("Can not delete other user's journeys");
+            await Journey.deleteOne(journey)
+            return journey;
         }
     }
 }

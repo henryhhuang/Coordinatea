@@ -1,9 +1,16 @@
 .journeys {
     padding-top: 20px;
-    padding-left: 120px;
-    padding-right: 120px;
+    padding-left: 200px;
+    padding-right: 200px;
+    padding-bottom: 40px;
 }
 
 .link {
+    text-decoration: none;
+    color: black;
+}
+
+.link:focus {
+    color: black;
     text-decoration: none;
 }

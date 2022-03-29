@@ -88,8 +88,9 @@ module.exports = gql`
         getUserComments(username: String): [Comment!]!
         getParentComments(id: ID): [Comment!]!
         getUserJourneys(username: String): [Journey!]!
-        getJourneys: [Journey!]!
-        getJourney(journeyId: ID): Journey!
+        getJourneys(page: Float!): [Journey!]!
+        getJourney(journeyId: ID!): Journey!
+        getJourneysLength: Float!
         getMarkers(journeyId: ID): [Marker!]!
         getMapboxKey: String!
         getSuggestions(markerId: ID): [Suggestion!]!
@@ -102,5 +103,6 @@ module.exports = gql`
         createJourney(journey: JourneyInput): Journey!
         createMarker(marker: MarkerInput): Marker!
         createSuggestion(suggestion: SuggestionInput): Suggestion!
+        deleteJourney(journeyId: ID!): Journey!
     }
 `
