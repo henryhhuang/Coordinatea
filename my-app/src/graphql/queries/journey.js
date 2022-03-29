@@ -11,7 +11,22 @@ export const Journey_Querys = {
                 imageId,
                 description,
                 fromDate,
-                toDate
+                toDate,
+                suggestionsEnabled
+            }
+        }
+    `,
+    GET_JOURNEY: gql`
+        query GetJourney($journeyId: ID!) {
+            getJourney(journeyId: $journeyId) {
+                id,
+                username,
+                title,
+                imageId,
+                description,
+                fromDate,
+                toDate,
+                suggestionsEnabled
             }
         }
     `,
