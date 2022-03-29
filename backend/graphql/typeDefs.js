@@ -104,5 +104,6 @@ module.exports = gql`
         createMarker(marker: MarkerInput): Marker!
         createSuggestion(suggestion: SuggestionInput): Suggestion!
         deleteJourney(journeyId: ID!): Journey!
+        deleteSuggestion(suggestionId: ID!): Suggestion!
     }
 `

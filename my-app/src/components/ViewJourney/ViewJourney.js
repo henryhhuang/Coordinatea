@@ -55,7 +55,9 @@ const CreateMarkerButton = withStyles({
 
 const url = window.location.href;
 
-export function ViewJourney() {
+export function ViewJourney(props) {
+    const { username } = props;
+
     const [tabValue, setTabValue] = useState("1");
     const [markers, setMarkers] = useState([]);
     const [currentMarker, setCurrentMarker] = useState();
@@ -86,6 +88,7 @@ export function ViewJourney() {
     })
 
     const [createSuggestion, { loading: createLoading, error: createError, data: createData }] = useMutation(Journey_Mutations.CREATE_SUGGESTION)
+    const [deleteSuggestion, { loading: deleteLoading, error: deleteError, data: deleteData }] = useMutation(Journey_Mutations.DELETE_SUGGESTION);
 
     const navigate = useNavigate();
 
@@ -146,12 +149,12 @@ export function ViewJourney() {
         }
     }, [imageMarker])
 
-    //resend get request for suggestions after a new suggestion is saved
+    //resend get request for suggestions after a new suggestion is saved or deleted
     useEffect(() => {
-        if (!createLoading && createData) {
+        if ((!createLoading && createData) || (!deleteLoading && deleteData)) {
             getSuggestions();
         }
-    }, [createData]);
+    }, [createData, deleteData]);
 
     const handleChange = (event, value) => {
         setCurrentMarker(value);
@@ -159,6 +162,15 @@ export function ViewJourney() {
 
     const handleTabChange = (event, value) => {
         setTabValue(value);
+    }
+
+    const removeSuggestion = (event, suggestionId) => {
+        console.log(suggestionId);
+        deleteSuggestion({
+            variables: {
+                suggestionId
+            }
+        })
     }
 
     //todo: doesn't work when user clicks browser's back button
@@ -249,6 +261,9 @@ export function ViewJourney() {
                     onCommentMarkerCreate={onCommentMarkerCreate}
                     onCommentMarkerSubmit={onCommentMarkerSubmit}
                     suggestions={suggestions}
+                    journeyOwner={journey.username}
+                    username={username}
+                    removeSuggestion={removeSuggestion}
                     accessToken={accessToken}></Mapbox>
             </Grid>
             }

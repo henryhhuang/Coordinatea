@@ -78,8 +78,8 @@ function App() {
           <NavBar username={username} setUsername={setUsername}></NavBar>
           <Routes>
             <Route path="/" element={<Journeys username={username} />}></Route>
-            <Route path="/journey/:journeyId" element={<ViewJourney />}></Route>
-            <Route path="/journey/:journeyId/:markerId" element={<ViewJourney />}></Route>
+            <Route path="/journey/:journeyId" element={<ViewJourney username={username}/>}></Route>
+            <Route path="/journey/:journeyId/:markerId" element={<ViewJourney username={username}/>}></Route>
             <Route path="/journey/create/" element={<CreateJourney />}></Route>
             <Route path="/journey/create/:journeyId" element={<CreateMarker />}></Route>
             <Route path="/signin/" element={<SignIn setUsername={setUsername} />}></Route>

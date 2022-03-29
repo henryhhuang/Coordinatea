@@ -16,8 +16,6 @@ mapboxgl.workerClass = MapboxWorker;
 //todo id from backend when markers are saved
 let id = 1;
 
-
-
 export function Mapbox(props) {
   let { onSearch, 
     changeCurrentMarker, 
@@ -26,7 +24,10 @@ export function Mapbox(props) {
     accessToken, 
     commentMarkerCreation,
     onCommentMarkerCreate,
-    onCommentMarkerSubmit} = props;
+    onCommentMarkerSubmit,
+    removeSuggestion,
+    username,
+    journeyOwner} = props;
 
   const [markers, setMarkers] = useState([]);
   const [marker, setMarker] = useState(0);
@@ -146,7 +147,6 @@ export function Mapbox(props) {
 
   const createMarker = (e) => {
     if (commentMarkerCreation && commentMarkerCreation != null && mapRef.current.getZoom() > 9) {
-      console.log(e);
       const suggestion = {
         markerId: currentMarker,
         longitude: e.lngLat.lng,
@@ -191,6 +191,9 @@ export function Mapbox(props) {
         {commentMarkers.map((commentMarker) => (
           <Suggestion
             suggestion={commentMarker}
+            username={username}
+            removeSuggestion={removeSuggestion}
+            journeyOwner={journeyOwner}
           />
         ))} 
         {createSuggestion && (<CreateSuggestion

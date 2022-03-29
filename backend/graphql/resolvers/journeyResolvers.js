@@ -32,24 +32,25 @@ const journeyResolvers = {
     },
     Mutation: {
         createJourney: async (_, args, context) => {
-            if (context.req.session && context.req.session.username) {
-                const { title, imageId, description, fromDate, toDate, suggestionsEnabled } = args.journey
-                const journey = new Journey(
-                    { username: context.req.session.username, 
-                        title, 
-                        imageId, 
-                        description, 
-                        fromDate, 
-                        toDate, 
-                        published: false,
-                        suggestionsEnabled
-                    })
-                await journey.save();
-                console.log(journey);
-                return journey;
-            }
+            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            const { title, imageId, description, fromDate, toDate, suggestionsEnabled } = args.journey
+            const journey = new Journey(
+                { username: context.req.session.username, 
+                    title, 
+                    imageId, 
+                    description, 
+                    fromDate, 
+                    toDate, 
+                    published: false,
+                    suggestionsEnabled
+                })
+            await journey.save();
+            console.log(journey);
+            return journey;
+            
         },
-        createMarker: async (_, args) => {
+        createMarker: async (_, args, context) => {
+            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
             const { journeyId, title, place, description, date, latitude, longitude, imageId } = args.marker;
             //todo: so when someone makes a journey without markers, it's not shown until they create one
             Journey.updateOne({_id : journeyId}, { $set: {published: true} });
@@ -79,6 +80,15 @@ const journeyResolvers = {
             if (context.req.session.username != journey.username) throw new Error("Can not delete other user's journeys");
             await Journey.deleteOne(journey)
             return journey;
+        },
+        deleteSuggestion: async (_, {suggestionId}, context) => {
+            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            const suggestion = await Suggestion.findById(suggestionId);
+            const marker = await Marker.findById(suggestion.markerId);
+            const journey = await Journey.findById(marker.journeyId);
+            if (context.req.session.username != suggestion.username && context.req.session.username != journey.username) throw new Error("Can not delete other user's suggestions");
+            await Suggestion.deleteOne(suggestion)
+            return suggestion;
         }
     }
 }

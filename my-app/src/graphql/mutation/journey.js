@@ -55,5 +55,18 @@ export const Journey_Mutations = {
             suggestionsEnabled
         }
     }
+    `,
+    DELETE_SUGGESTION: gql`
+    mutation deleteSuggestion($suggestionId: ID!) {
+        deleteSuggestion(suggestionId: $suggestionId) {
+            id,
+            markerId,
+            description,
+            imageId,
+            longitude,
+            latitude,
+            username
+        }
+    }
     `
 }
