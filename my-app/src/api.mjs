@@ -1,5 +1,5 @@
 
-const env = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'api.coordinatea.me';
+const env = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://api.coordinatea.me';
 
 export const uploadImage = (file, callback) => {
     const formData = new FormData();
