@@ -73,7 +73,7 @@ export function ViewJourney(props) {
     const menuOpen = Boolean(anchorEl);
     const [suggestions, setSuggestions] = useState([]);
     const [journey, setJourney] = useState();
-
+    const [journeyOwner, setJourneyOwner] = useState();
     const { loading: journeyLoading, error: journeyError, data: journeyData} = useQuery(Journey_Querys.GET_JOURNEY, {
         variables: { journeyId }
     });
@@ -95,6 +95,7 @@ export function ViewJourney(props) {
     useEffect(() => {
         if (!journeyLoading && journeyData) {
             setJourney(journeyData.getJourney)
+            setJourneyOwner(journeyData.getJourney.username);
         }
     }, [journeyData])
     
@@ -261,7 +262,7 @@ export function ViewJourney(props) {
                     onCommentMarkerCreate={onCommentMarkerCreate}
                     onCommentMarkerSubmit={onCommentMarkerSubmit}
                     suggestions={suggestions}
-                    journeyOwner={journey.username}
+                    journeyOwner={journeyOwner}
                     username={username}
                     removeSuggestion={removeSuggestion}
                     accessToken={accessToken}></Mapbox>
