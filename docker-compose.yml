@@ -39,6 +39,8 @@ services:
     image: ghcr.io/utscc09/backend-henryhhuang
     container_name: backend
     restart: always
+    volumes:
+      - ./uploads:/backend/uploads
     expose:
       - 5000
     environment:

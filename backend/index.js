@@ -11,7 +11,13 @@ const path = require('path');
 require('dotenv').config();
 
 let multer  = require('multer');
-let upload = multer({ dest: path.join(__dirname, 'uploads')});
+
+let upload;
+if (process.env.NODE_ENV === "production") {
+    upload = multer({ dest: "/backend/uploads"});
+} else {
+    upload = multer({ dest: path.join(__dirname, 'uploads')});
+}
 
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers/index');
