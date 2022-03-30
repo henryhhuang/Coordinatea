@@ -1,12 +1,10 @@
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const express = require('express');
 const bcrypt = require('bcrypt');
-const https = require('https');
 const app = express();
-const _ = require('lodash');
 const path = require('path');
 require('dotenv').config();
 
