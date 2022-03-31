@@ -7,11 +7,10 @@ import { Button } from '@mui/material';
 import { useRef, useState } from 'react';
 
 export function CreateMarkerContent (props) {
-    const {handleSubmit, handleBack, title, images, description} = props;
+    const {handleSubmit, handleBack, setErrorSnackbar} = props;
 
     const [selectedFile, setSelectedFile] = useState();
 	const [isFilePicked, setIsFilePicked] = useState(false);
-    const [formError, setFormError] = useState(false);
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
 
@@ -26,10 +25,9 @@ export function CreateMarkerContent (props) {
         const title = titleRef.current.value;
         const description = descriptionRef.current.value;
         if (!(isFilePicked && title && description)) {
-            setFormError(true);
+            setErrorSnackbar("A title, description and image are required.")
             return;
         }
-        setFormError(false);
         handleSubmit(e, title, description, selectedFile);
     }
 
@@ -76,9 +74,6 @@ export function CreateMarkerContent (props) {
             <Button type='submit' variant="outlined" size="medium">
                 Save Marker
             </Button>
-            {formError ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
-                A title, description and image are required.
-            </Typography> : <></>}
         </Container>
         </form>
     )

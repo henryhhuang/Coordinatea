@@ -11,7 +11,7 @@ import { Button } from '@mui/material';
 import "./CreateSuggestion.css";
 
 export function CreateSuggestion (props) {
-    const {longitude, latitude, type, markerId, cancelCreate, submitSuggestion} = props;
+    const {longitude, latitude, type, markerId, cancelCreate, submitSuggestion, setErrorSnackbar} = props;
 
     const [selectedImage, setSelectedImage] = useState();
     const descriptionRef = useRef();
@@ -32,10 +32,12 @@ export function CreateSuggestion (props) {
 
     const validateSubmit = (e) => {
         e.preventDefault();
-        if (descriptionRef.current.value && selectedImage) {
-            submitSuggestion(markerId, descriptionRef.current.value, selectedImage, longitude, latitude, type)
-            cancelCreate();
+        if (!descriptionRef.current.value || !selectedImage) {
+            setErrorSnackbar("A description is required")
+            return;
         }
+        submitSuggestion(markerId, descriptionRef.current.value, selectedImage, longitude, latitude, type)
+        cancelCreate();
     }
 
     return (

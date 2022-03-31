@@ -2,12 +2,10 @@ import { Mapbox } from '../Mapbox/Mapbox';
 
 import Grid from '@mui/material/Grid';
 import React, { useRef, useState, useEffect } from 'react';
-import mock from '../ViewJourney/mock.json';
 import journeyMock from '../ViewJourney/journey_mock.json'
 import { useParams, useLocation } from "react-router-dom";
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-
 import List from '@mui/material/List';
 import { withStyles } from "@material-ui/core/styles";
 import { ListItem } from '@mui/material';
@@ -31,6 +29,15 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import { format } from 'date-fns' 
 import { uploadImage } from '../../api.mjs';
+import { MarkerContent } from '../MarkerContent/MarkerContent';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 const ListItemButton = withStyles({
     root: {
@@ -43,13 +50,17 @@ const ListItemButton = withStyles({
 
 const url = window.location.href;
 
-export function CreateMarker () {
+export function CreateMarker (props) {
+    const { username } = props;
+
     const { journeyId, id2 } = useParams();
     const [open, setOpen] = React.useState(0);
     const [currentMarker, setCurrentMarker] = React.useState(0);
-    const [openMarker, setOpenMarker] = React.useState(id2 || 0);
+    const [openMarker, setOpenMarker] = React.useState(null);
+
+    // const [openMarker, setOpenMarker] = React.useState(id2 || 0);
     // todo let user edit their journey card here
-    const [journey, setJourney] = useState(journeyMock)
+    const [journey, setJourney] = useState()
     const [markers, setMarkers] = useState([]);
     // const [image, setImage] = useState();
     const [uploadedImage, setUploadedImage] = useState();
@@ -57,13 +68,24 @@ export function CreateMarker () {
     const [accessToken, setAccessToken] = useState();
     const [date, setDate] = useState();
     const markerPlaceRef = useRef(null);
-    const markerDateRef = useRef(null);
-    const [formError, setFormError] = useState(false);
+
+    const [openSnackbar, setOpenSnackbar] = useState(true);
+    const [snackbar, setSnackbar] = useState({
+        serverity: "success",
+        message: "Journey successfully created, search a place to add a marker"
+    });
+
     const navigate = useNavigate();
+
 
     const [getMarkers, {data, loading, error}] = useLazyQuery(Journey_Querys.GET_MARKERS, {
         variables: { journeyId }
     })
+
+    const [getJourney, {loading: journeyLoading, error: journeyError, data: journeyData}] = useLazyQuery(Journey_Querys.GET_JOURNEY, {
+        variables: { journeyId }
+    });
+
     const {loading: getKeyLoading, error: getKeyError, data: getKeyData} = useQuery(Common_Queries.GET_MAPBOX_KEY)
 
     //initialize key
@@ -74,10 +96,12 @@ export function CreateMarker () {
     }, [getKeyData])
 
     const [createMarker, { data: createData, loading: createLoading, error: createError }] = useMutation(Journey_Mutations.CREATE_MARKER);
+    const [deleteMarker, { data: deleteData, loading: deleteLoading, error: deleteError }] = useMutation(Journey_Mutations.DELETE_MARKER);
 
     //get markers on render
     useEffect(() => {
         getMarkers();
+        getJourney();
     }, [])
 
     //set markers once data is retrieved
@@ -86,6 +110,12 @@ export function CreateMarker () {
             setMarkers(data.getMarkers)
         }
     }, [data])
+
+    useEffect(() => {
+        if (!journeyLoading && journeyData) {
+            setJourney(journeyData.getJourney);
+        }
+    }, [journeyData])
 
     useEffect(() => {
         if (newMarker && uploadedImage) {
@@ -107,11 +137,19 @@ export function CreateMarker () {
     }, [uploadedImage])
 
     useEffect(() => {
-        if (!createLoading && createData) {
+        if ((!createLoading && createData) || (!deleteLoading && deleteData)) {
             getMarkers();
             // navigate(createData.createMarker.id, { replace: true });
         }
-    }, [createData])
+    }, [createData, deleteData])
+
+    useEffect(() => {
+        if (!createLoading && createError) {
+            setErrorSnackbar(createError.message);
+        } else if (!deleteLoading && deleteError) {
+            setErrorSnackbar(deleteError.message);
+        }
+    }, [createError, deleteError])
 
     const handleChange = (event, value) => {
         setCurrentMarker(value);
@@ -120,6 +158,7 @@ export function CreateMarker () {
     const handleBack = () => {
         window.history.pushState({}, null, url);
         setOpen(false);
+        setOpenMarker({});
     }
 
     const onSearch = (result) => {
@@ -136,22 +175,22 @@ export function CreateMarker () {
     const handleMarkerSubmit = (e) => {
         e.preventDefault();
         if (!(date && markerPlaceRef.current.value)) {
-            console.log(markerPlaceRef.current.value);
-            setFormError(true);
+            setSnackbar({
+                serverity: "error",
+                message: "A place and date are required."
+            })
+            setOpenSnackbar(true);
             return;
         }
-        setFormError(false);
         let marker = newMarker;
         marker.date = date;
         marker.place = markerPlaceRef.current.value;
-
         setOpen(true);
         setNewMarker(marker);
     }
 
     const handleSubmit = (e, title, description, image) => {
         if (!(image && title && description)) {
-            setFormError(true);
             return;
         }
         setOpen(false);
@@ -167,14 +206,31 @@ export function CreateMarker () {
             latitude: newMarker.center[1],
         }
         setNewMarker(marker)
-        uploadImage(image, setUploadedImage);
+        uploadImage(image, setUploadedImage, setErrorSnackbar);
     }
 
-    const handleContentOpen = () => {
+    const handleContentOpen = (e, marker) => {
         //todo: check if url ends with /
         // window.history.pushState({}, null, url + "/1");
-        setOpenMarker(1);
+        // setOpenMarker(1);
+        setOpenMarker(marker);
         setOpen(true);
+    }
+
+    const setErrorSnackbar = (message) => {
+        setSnackbar({
+            serverity: "error",
+            message: message
+        });
+        setOpenSnackbar(true);
+    }
+
+    const removeMarker = (event, markerId) => {
+        deleteMarker({
+            variables: {
+                markerId
+            }
+        })
     }
 
     return (<>
@@ -203,10 +259,22 @@ export function CreateMarker () {
         alignItems="center"
         xs={4}>
             {open ? (
-                <CreateMarkerContent className="marker-content"
-                    handleBack={handleBack}
-                    handleSubmit={handleSubmit}>
-                </CreateMarkerContent>
+                <div>
+                {openMarker != null ? (
+                    <MarkerContent className="marker-content"
+                        title={openMarker.title}
+                        description={openMarker.description}
+                        images={openMarker.imageId}
+                        handleBack={handleBack}
+                        />     
+                ) : (
+                    <CreateMarkerContent className="marker-content"
+                        setErrorSnackbar={setErrorSnackbar}
+                        handleBack={handleBack}
+                        handleSubmit={handleSubmit}>
+                    </CreateMarkerContent> 
+                )}
+                </div>
             ) : (
                 <List sx={{ maxHeight: '800px', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
                     {newMarker &&
@@ -215,7 +283,7 @@ export function CreateMarker () {
                                 required
                                 id="outlined-required"
                                 label="Required"
-                                defaultValue={newMarker.place}
+                                value={newMarker.place}
                                 inputRef={markerPlaceRef}
                                 />
                             <LocalizationProvider className="fromDate" dateAdapter={AdapterDateFns}>
@@ -233,9 +301,6 @@ export function CreateMarker () {
                                     <AddCircleOutline sx={{ color: blue[500] }}/>
                                 </Avatar>
                             </ListItemButton> 
-                            {formError ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
-                                A place and date are required.
-                            </Typography> : <></>}
                         </ListItem>
                     }
                     {/* <Divider variant="inset" component="li" /> */}
@@ -243,9 +308,9 @@ export function CreateMarker () {
                         <div className="marker-container">
                             <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
                                 <ListItemAvatar>
-                                <Avatar>
-                                    <BeachAccessIcon sx={{ color: blue[500] }}/>
-                                </Avatar>
+                                    <Avatar sx={{ backgroundColor: blue[500] }}>
+                                        <BeachAccessIcon/>
+                                    </Avatar>
                                 </ListItemAvatar>
                                         <ListItemText
                                         primary={marker.place}
@@ -259,7 +324,7 @@ export function CreateMarker () {
                                             >
                                             {format(new Date(marker.date * 1), 'yyyy-MM-dd')}
                                             </Typography>
-                                            <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
+                                            <IconButton disabled={!(currentMarker == marker.id)} onClick={((e) => handleContentOpen(e, marker))}>
                                                 <Typography
                                                     sx={{ display: 'inline' }}
                                                     component="span"
@@ -268,6 +333,11 @@ export function CreateMarker () {
                                                     >Read more
                                                 </Typography>
                                             </IconButton>
+                                            {journey && journey.username === username &&
+                                                <IconButton onClick={((e) => removeMarker(e, marker.id))}>
+                                                    <DeleteIcon></DeleteIcon>
+                                                </IconButton>
+                                            }
                                             </React.Fragment>
                                         }
                                         />
@@ -277,6 +347,11 @@ export function CreateMarker () {
                     ))}
                 </List>
             )}
+            <Snackbar open={openSnackbar} onClose={((e) => setOpenSnackbar(false))} autoHideDuration={6000}>
+                <Alert severity={snackbar.serverity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Grid>
     </Grid>
     </>)

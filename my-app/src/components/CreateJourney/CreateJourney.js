@@ -18,7 +18,14 @@ import DatePicker from '@mui/lab/DatePicker';
 import { uploadImage } from '../../api.mjs';
 import { Switch } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 import "./CreateJourney.css"
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const url = window.location.href;
 
@@ -32,8 +39,11 @@ export function CreateJourney(props) {
     const [uploadedImage, setUploadedImage] = useState();
     const [isImageUploaded, setIsImageUploaded] = useState(false);
     const [journey, setJourney] = useState();
-    const [formError, setFormError] = useState(false);
     const [suggestionsEnabled, setSuggestionsEnabled] = useState(true);
+
+    const [open, setOpen] = useState();
+    const [snackbar, setSnackbar] = useState();
+
     const navigate = useNavigate();
 
     const [createJourney, { data, loading, error }] = useMutation(Journey_Mutations.CREATE_JOURNEY)
@@ -68,6 +78,17 @@ export function CreateJourney(props) {
         }
     }, [data])
 
+    const setErrorSnackbar = (message) => {
+        setSnackbar(message);
+        setOpen(true);
+    }
+
+    useEffect(() => {
+        if (!loading && error) {
+            setErrorSnackbar(error.message);
+        }
+    }, [error])
+
     const handleChange = (event) => {
         setSuggestionsEnabled(event.target.checked);
       };
@@ -75,10 +96,10 @@ export function CreateJourney(props) {
     const onSubmit = (e) => {
         e.preventDefault();
         if (!(isImageUploaded && titleRef.current.value && descriptionRef.current.value)) {
-            setFormError(true);
+            setSnackbar("A title, description, dates and image are required")
+            setOpen(true);
             return;
         }
-        setFormError(false);
         let newJourney = {
             title: titleRef.current.value,
             description: descriptionRef.current.value,
@@ -86,7 +107,7 @@ export function CreateJourney(props) {
             fromDate: fromDate
         }
         setJourney(newJourney);
-        uploadImage(image, setUploadedImage);
+        uploadImage(image, setUploadedImage, setErrorSnackbar);
     };
 
     return (
@@ -178,9 +199,11 @@ export function CreateJourney(props) {
                     >
                         Create Journey
                     </Button>
-                     {formError ? <Typography component="p" variant="p" sx={{ mt: 2, color: 'red' }}>
-                        A title, description, dates and image are required.
-                    </Typography> : <></>}
+                    <Snackbar open={open} onClose={((e) => setOpen(false))}autoHideDuration={6000}>
+                        <Alert severity="error" sx={{ width: '100%' }}>
+                            {snackbar}
+                        </Alert>
+                    </Snackbar>
                 </Box>
             </Box>
         </Container>

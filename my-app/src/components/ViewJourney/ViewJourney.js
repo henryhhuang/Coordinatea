@@ -22,11 +22,16 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import PublicIcon from '@mui/icons-material/Public';
 import PlaceIcon from '@mui/icons-material/Place';
 import HotelIcon from '@mui/icons-material/Hotel';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const CreateMarkerButton = withStyles({
     root: {
@@ -74,6 +79,10 @@ export function ViewJourney(props) {
     const [suggestions, setSuggestions] = useState([]);
     const [journey, setJourney] = useState();
     const [journeyOwner, setJourneyOwner] = useState();
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbar, setSnackbar] = useState();
+
     const { loading: journeyLoading, error: journeyError, data: journeyData} = useQuery(Journey_Querys.GET_JOURNEY, {
         variables: { journeyId }
     });
@@ -157,6 +166,12 @@ export function ViewJourney(props) {
         }
     }, [createData, deleteData]);
 
+    useEffect(() => {
+        if (!createLoading && createError) {
+            setErrorSnackbar(createError.message)
+        }
+    }, [createError])
+
     const handleChange = (event, value) => {
         setCurrentMarker(value);
     };
@@ -166,7 +181,6 @@ export function ViewJourney(props) {
     }
 
     const removeSuggestion = (event, suggestionId) => {
-        console.log(suggestionId);
         deleteSuggestion({
             variables: {
                 suggestionId
@@ -198,7 +212,7 @@ export function ViewJourney(props) {
     }
 
     const onCommentMarkerSubmit = (markerId, description, image, longitude, latitude, type) => {
-        uploadImage(image, setSuggestionImage)
+        uploadImage(image, setSuggestionImage, setErrorSnackbar)
         setNewSuggestion({
             markerId,
             description,
@@ -218,6 +232,11 @@ export function ViewJourney(props) {
             setCommentMarkerCreation(type);
         }
     };
+
+    const setErrorSnackbar = (message) => {
+        setSnackbar(message);
+        setOpenSnackbar(true);
+    }
 
     return (<>
         <Grid container>
@@ -265,6 +284,7 @@ export function ViewJourney(props) {
                     journeyOwner={journeyOwner}
                     username={username}
                     removeSuggestion={removeSuggestion}
+                    setErrorSnackbar={setErrorSnackbar}
                     accessToken={accessToken}></Mapbox>
             </Grid>
             }
@@ -303,23 +323,11 @@ export function ViewJourney(props) {
                         <CommentList parentId={journeyId} />
                     </TabPanel>
                 </TabContext>
-                {/*open && openMarker != null ? (
-                    <MarkerContent className="marker-content"
-                        title={openMarker.title}
-                        description={openMarker.description}
-                        images={imageMarker}
-                        handleBack={handleBack}
-                    ></MarkerContent>
-                ) : commentsOpen ?
-                    (<CommentList parentId={journeyId} />) : (
-                        markers && (
-                            <Markers
-                                markers={markers}
-                                handleChange={handleChange}
-                                handleContentOpen={handleContentOpen}
-                                handleBack={handleBack}
-                                currentMarker={currentMarker}></Markers>)
-                        )*/}
+                <Snackbar open={openSnackbar} onClose={((e) => setOpenSnackbar(false))} autoHideDuration={6000}>
+                <Alert severity="error" sx={{ width: '100%' }}>
+                    {snackbar}
+                </Alert>
+                </Snackbar>
             </Grid>
         </Grid>
     </>)

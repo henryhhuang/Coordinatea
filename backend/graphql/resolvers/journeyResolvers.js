@@ -2,7 +2,15 @@ const Journey = require('../../models/Journey')
 const Marker = require('../../models/Marker');
 const Suggestion = require('../../models/Suggestion');
 
-//TODO VALIDATION 
+const isAuthenticated = (context) => {
+    if (!context.req.session || !context.req.session.username) throw new Error("User is not authenticated.");
+}
+
+const isAuthorized = (context, username, owner = null) => {
+    console.log(context);
+    console.log(username);
+    if (context.req.session.username != username && context.req.session.username != owner) throw new Error("User is not authorized.");
+}
 
 const journeyResolvers = {
     Query: {
@@ -32,7 +40,7 @@ const journeyResolvers = {
     },
     Mutation: {
         createJourney: async (_, args, context) => {
-            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            isAuthenticated(context);
             const { title, imageId, description, fromDate, toDate, suggestionsEnabled } = args.journey
             const journey = new Journey(
                 { username: context.req.session.username, 
@@ -50,7 +58,7 @@ const journeyResolvers = {
             
         },
         createMarker: async (_, args, context) => {
-            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            isAuthenticated(context);
             const { journeyId, title, place, description, date, latitude, longitude, imageId } = args.marker;
             //todo: so when someone makes a journey without markers, it's not shown until they create one
             Journey.updateOne({_id : journeyId}, { $set: {published: true} });
@@ -59,34 +67,45 @@ const journeyResolvers = {
             return marker;
         },
         createSuggestion: async (_, args, context) => {
-            if (context.req.session && context.req.session.username) {
-                const { markerId, imageId, description, type, longitude, latitude} = args.suggestion;
-                const suggestion = new Suggestion({
-                    markerId,
-                    imageId,
-                    description,
-                    type,
-                    longitude,
-                    latitude,
-                    username: context.req.session.username
-                })
-                await suggestion.save();
-                return suggestion;
-            }
+            isAuthenticated(context);
+            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            const { markerId, imageId, description, type, longitude, latitude} = args.suggestion;
+            const suggestion = new Suggestion({
+                markerId,
+                imageId,
+                description,
+                type,
+                longitude,
+                latitude,
+                username: context.req.session.username
+            })
+            await suggestion.save();
+            return suggestion;
         },
         deleteJourney: async (_, {journeyId}, context) => {
-            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            isAuthenticated(context);
             const journey = await Journey.findById(journeyId);
-            if (context.req.session.username != journey.username) throw new Error("Can not delete other user's journeys");
+            isAuthorized(context, journey.username);
+            // if (context.req.session.username != journey.username) throw new Error("Can not delete other user's journeys");
             await Journey.deleteOne(journey)
             return journey;
         },
+        deleteMarker: async (_, {markerId}, context) => {
+            isAuthenticated(context);
+            const marker = await Marker.findById(markerId);
+            const journey = await Journey.findById(marker.journeyId);
+            isAuthorized(context, journey.username);
+            // if (context.req.session.username != marker.username) throw new Error("User is not authorized");
+            await Marker.deleteOne(marker);
+            return marker;
+        },
         deleteSuggestion: async (_, {suggestionId}, context) => {
-            if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
+            isAuthenticated(context);
             const suggestion = await Suggestion.findById(suggestionId);
             const marker = await Marker.findById(suggestion.markerId);
             const journey = await Journey.findById(marker.journeyId);
-            if (context.req.session.username != suggestion.username && context.req.session.username != journey.username) throw new Error("Can not delete other user's suggestions");
+            isAuthorized(context, suggestion.username, journey.username);
+            // if (context.req.session.username != suggestion.username && context.req.session.username != journey.username) throw new Error("Can not delete other user's suggestions");
             await Suggestion.deleteOne(suggestion)
             return suggestion;
         }

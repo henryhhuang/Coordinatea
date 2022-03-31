@@ -27,7 +27,8 @@ export function Mapbox(props) {
     onCommentMarkerSubmit,
     removeSuggestion,
     username,
-    journeyOwner} = props;
+    journeyOwner,
+    setErrorSnackbar} = props;
 
   const [markers, setMarkers] = useState([]);
   const [marker, setMarker] = useState(0);
@@ -203,6 +204,7 @@ export function Mapbox(props) {
             markerId={newSuggestion.markerId}
             cancelCreate={cancelCreate}
             submitSuggestion={onCommentMarkerSubmit}
+            setErrorSnackbar={setErrorSnackbar}
         />)}    
       </ReactMapGL>
   );

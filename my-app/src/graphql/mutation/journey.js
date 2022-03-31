@@ -56,6 +56,21 @@ export const Journey_Mutations = {
         }
     }
     `,
+    DELETE_MARKER: gql`
+    mutation deleteMarker($markerId: ID!) {
+        deleteMarker(markerId: $markerId) {
+            id,
+            journeyId,
+            title,
+            place,
+            description,
+            date,
+            longitude,
+            latitude,
+            imageId
+        }
+    }
+    `,
     DELETE_SUGGESTION: gql`
     mutation deleteSuggestion($suggestionId: ID!) {
         deleteSuggestion(suggestionId: $suggestionId) {

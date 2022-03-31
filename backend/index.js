@@ -100,9 +100,14 @@ app.post('/signin/', async (req, res, next) => {
     return res.json("signed in");
 });
 
+let isAuthenticated = function(req, res, next) {
+    if (!req.session.username) return res.status(401).json({ error: "User must be authenticated."});
+    next();
+};
+
 //The following are REST endpoints to handle images, https://piazza.com/class/kxgjicgvryu3h8?cid=359
 //Upload an image
-app.post('/api/image/:id', upload.single('file'), async function (req, res, next) {
+app.post('/api/image/:id', isAuthenticated, upload.single('file'), async function (req, res, next) {
     const newImage = Image({
         journeyId: '',
         markerId: '',

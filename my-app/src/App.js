@@ -81,7 +81,7 @@ function App() {
             <Route path="/journey/:journeyId" element={<ViewJourney username={username}/>}></Route>
             <Route path="/journey/:journeyId/:markerId" element={<ViewJourney username={username}/>}></Route>
             <Route path="/journey/create/" element={<CreateJourney />}></Route>
-            <Route path="/journey/create/:journeyId" element={<CreateMarker />}></Route>
+            <Route path="/journey/create/:journeyId" element={<CreateMarker username={username}/>}></Route>
             <Route path="/signin/" element={<SignIn setUsername={setUsername} />}></Route>
             <Route path="/signup/" element={<SignUp setUsername={setUsername} />}></Route>
             <Route path="/follow/" element={<Follow />}></Route>
