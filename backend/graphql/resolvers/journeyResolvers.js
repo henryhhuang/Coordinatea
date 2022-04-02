@@ -14,8 +14,9 @@ const isAuthorized = (context, username, owner = null) => {
 
 const journeyResolvers = {
     Query: {
-        getJourneys: async (_, { page }) => {
-            return await Journey.find({}).sort({ createdAt: -1}).skip(page * 10).limit(10);
+        getJourneys: async (_, { page }, context) => {
+            isAuthenticated(context)
+            return await Journey.find({}).sort({ createdAt: -1 }).skip(page * 10).limit(10);
         },
         getJourney: async (_, { journeyId }) => {
             return await Journey.findById(journeyId);
@@ -43,25 +44,26 @@ const journeyResolvers = {
             isAuthenticated(context);
             const { title, imageId, description, fromDate, toDate, suggestionsEnabled } = args.journey
             const journey = new Journey(
-                { username: context.req.session.username, 
-                    title, 
-                    imageId, 
-                    description, 
-                    fromDate, 
-                    toDate, 
+                {
+                    username: context.req.session.username,
+                    title,
+                    imageId,
+                    description,
+                    fromDate,
+                    toDate,
                     published: false,
                     suggestionsEnabled
                 })
             await journey.save();
             console.log(journey);
             return journey;
-            
+
         },
         createMarker: async (_, args, context) => {
             isAuthenticated(context);
             const { journeyId, title, place, description, date, latitude, longitude, imageId } = args.marker;
             //todo: so when someone makes a journey without markers, it's not shown until they create one
-            Journey.updateOne({_id : journeyId}, { $set: {published: true} });
+            Journey.updateOne({ _id: journeyId }, { $set: { published: true } });
             const marker = new Marker({ journeyId, title, place, description, date, latitude, longitude, imageId })
             await marker.save();
             return marker;
@@ -69,7 +71,7 @@ const journeyResolvers = {
         createSuggestion: async (_, args, context) => {
             isAuthenticated(context);
             if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
-            const { markerId, imageId, description, type, longitude, latitude} = args.suggestion;
+            const { markerId, imageId, description, type, longitude, latitude } = args.suggestion;
             const suggestion = new Suggestion({
                 markerId,
                 imageId,
@@ -82,7 +84,7 @@ const journeyResolvers = {
             await suggestion.save();
             return suggestion;
         },
-        deleteJourney: async (_, {journeyId}, context) => {
+        deleteJourney: async (_, { journeyId }, context) => {
             isAuthenticated(context);
             const journey = await Journey.findById(journeyId);
             isAuthorized(context, journey.username);
@@ -90,7 +92,7 @@ const journeyResolvers = {
             await Journey.deleteOne(journey)
             return journey;
         },
-        deleteMarker: async (_, {markerId}, context) => {
+        deleteMarker: async (_, { markerId }, context) => {
             isAuthenticated(context);
             const marker = await Marker.findById(markerId);
             const journey = await Journey.findById(marker.journeyId);
@@ -99,7 +101,7 @@ const journeyResolvers = {
             await Marker.deleteOne(marker);
             return marker;
         },
-        deleteSuggestion: async (_, {suggestionId}, context) => {
+        deleteSuggestion: async (_, { suggestionId }, context) => {
             isAuthenticated(context);
             const suggestion = await Suggestion.findById(suggestionId);
             const marker = await Marker.findById(suggestion.markerId);
