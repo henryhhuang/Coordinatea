@@ -38,7 +38,7 @@ export function CommentList(props) {
 
     return (
         <Box sx={{}}>
-            <List sx={{ height: '85vh', overflow: 'auto', width: '100%' }}>
+            <List sx={{ height: '80vh', overflow: 'auto', width: '100%' }}>
                 {comments.map((comment) => (
                     <div key={'list-' + comment.id}>
                         <ListItem divider>
