@@ -6,14 +6,12 @@ import { CreateJourney } from './components/CreateJourney/CreateJourney';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Journeys } from './components/Journeys/Journeys';
 import { Route, Routes } from 'react-router-dom';
+import { LandingPage } from './components/LandingPage/LandingPage'
 import { SignIn } from './components/SignIn/SignIn';
 import { SignUp } from './components/SignUp/SignUp';
-import { Comment } from './components/Comments/Comment/Comment';
-import { CommentForm } from './components/Comments/CommentForm/CommentForm';
 import { Follow } from './components/Follow/Follow';
 import { gql, useQuery } from "@apollo/client";
-import { CommentList } from './components/Comments/CommentList/CommentList';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CssBaseline } from '@mui/material/';
 
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
@@ -75,11 +73,11 @@ function App() {
   return (
     <ApolloProvider client={apolloClient}>
       <ThemeProvider theme={theme}>
-        <CssBaseline/>
+        <CssBaseline />
         <div className='App'>
           <NavBar username={username} setUsername={setUsername}></NavBar>
           <Routes>
-            <Route path="/" element={<Journeys username={username} />}></Route>
+            <Route path="/" element={username ? <Journeys username={username} /> : <LandingPage />}></Route>
             <Route path="/journey/:journeyId" element={<ViewJourney username={username} />}></Route>
             <Route path="/journey/:journeyId/:markerId" element={<ViewJourney username={username} />}></Route>
             <Route path="/journey/create/" element={<CreateJourney />}></Route>

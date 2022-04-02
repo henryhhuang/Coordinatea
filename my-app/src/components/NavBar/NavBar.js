@@ -54,7 +54,7 @@ const ResponsiveAppBar = (props) => {
     <AppBar elevation={0} position="static" sx={{ backgroundColor: 'secondary' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Link to="/" style={{color: "white", textDecoration: 'none' }}>
+          <Link to="/" style={{ color: "white", textDecoration: 'none' }}>
             <Typography
               variant="h6"
               noWrap
@@ -62,7 +62,7 @@ const ResponsiveAppBar = (props) => {
               sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
             >
               {/*todo: center */}
-              <EmojiFoodBeverageIcon sx={{ mr: 1}}/>
+              <EmojiFoodBeverageIcon sx={{ mr: 1 }} />
               COORDINATE
             </Typography>
           </Link>
