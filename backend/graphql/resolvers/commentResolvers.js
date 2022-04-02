@@ -4,6 +4,7 @@ const Journey = require('../../models/Journey');
 
 const commentResolvers = {
     Query: {
+        /*
         getUserComments: async (_, { id }, context) => {
             console.log(context.req.session);
             const user = await User.findById(id);
@@ -14,6 +15,7 @@ const commentResolvers = {
                 return comments
             return []
         },
+        */
         getParentComments: async (_, { id }, context) => {
             console.log(context.req.session)
             const journey = await Journey.findById(id);
