@@ -40,11 +40,6 @@ export function Comment(props) {
         <Container component="main" maxWidth="md" sx={{ mt: 1 }}>
             <Grid container spacing={1}>
                 <CssBaseline />
-                <Grid item >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <AccountCircleIcon />
-                    </Avatar>
-                </Grid>
                 <Grid item xs={10}>
                     <Grid container spacing={1}>
                         <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
@@ -61,6 +56,7 @@ export function Comment(props) {
                     <Typography align='left' sx={{ mt: 1, fontSize: 16 }}>
                         {content}
                     </Typography>
+                    {/*
                     <Grid container spacing={1}>
                         <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
                             <IconButton align='left'>
@@ -78,6 +74,7 @@ export function Comment(props) {
                             </IconButton>
                         </Grid>
                     </Grid>
+                    */}
                 </Grid>
             </Grid>
         </Container>

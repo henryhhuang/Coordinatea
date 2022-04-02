@@ -1,7 +1,5 @@
 import React from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { Mutations } from '../../../graphql/mutation';
-import { useAuthToken } from '../../../util/authentication';
 import {
     Avatar,
     Grid,
@@ -49,6 +47,7 @@ export function CommentForm(props) {
                     content: data.get('content')
                 }
             });
+            event.currentTarget.reset();
         } catch (error) {
             console.log(error);
         }
@@ -57,12 +56,7 @@ export function CommentForm(props) {
     return (
         <Container height="10%" maxWidth="md" component='form' onSubmit={handleSubmit}>
             <Grid container spacing={1}>
-                <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <AccountCircleIcon />
-                    </Avatar>
-                </Grid>
-                <Grid item xs={9} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         margin="normal"
                         required
@@ -74,15 +68,6 @@ export function CommentForm(props) {
                         autoComplete="content"
                         autoFocus
                     />
-                </Grid>
-                <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                        color="secondary"
-                    ><SendIcon /></IconButton>
                 </Grid>
             </Grid>
         </Container>

@@ -37,7 +37,7 @@ export function CommentList(props) {
 
     return (
         <Box sx={{}}>
-            <List sx={{ height: '75vh', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
+            <List sx={{ height: '80vh', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
                 {comments.map((comment) => (
                     <ListItem divider>
                         <Comment username={comment.username} content={comment.content} createdAt={comment.createdAt} />
