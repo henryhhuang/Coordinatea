@@ -16,7 +16,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CreateIcon from '@mui/icons-material/Create';
-
+import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
 const ResponsiveAppBar = (props) => {
 
   const { username, setUsername } = props;
@@ -51,16 +51,18 @@ const ResponsiveAppBar = (props) => {
   }
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'secondary' }}>
+    <AppBar elevation={0} position="static" sx={{ backgroundColor: 'secondary' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+          <Link to="/" style={{color: "white", textDecoration: 'none' }}>
             <Typography
               variant="h6"
               noWrap
               component="div"
               sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
             >
+              {/*todo: center */}
+              <EmojiFoodBeverageIcon sx={{ mr: 1}}/>
               COORDINATE
             </Typography>
           </Link>
@@ -116,26 +118,26 @@ const ResponsiveAppBar = (props) => {
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
-          ><Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+          ><Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
               COORDINATE</Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {username ?
               <div style={{ display: 'flex' }}>
                 <Link to="/following" style={{ textDecoration: 'none' }}>
-                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                  <Button sx={{ my: 2, display: 'flex', color: 'primary.text' }} >
                     <FavoriteIcon sx={{ mr: 1 }} />
                     <Typography>Following</Typography>
                   </Button>
                 </Link>
                 <Link to="/discover" style={{ textDecoration: 'none' }}>
-                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                  <Button sx={{ my: 2, display: 'flex', color: 'primary.text' }} >
                     <PublicIcon sx={{ mr: 1 }} />
                     <Typography>Discover</Typography>
                   </Button>
                 </Link>
                 <Link to="/journey/create" style={{ textDecoration: 'none' }}>
-                  <Button sx={{ my: 2, display: 'flex', color: 'white' }} >
+                  <Button sx={{ my: 2, display: 'flex', color: 'primary.text' }} >
                     <CreateIcon sx={{ mr: 1 }} />
                     <Typography>Create Journey</Typography>
                   </Button>

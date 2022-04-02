@@ -195,7 +195,7 @@ export function CreateJourney(props) {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
-                        color="secondary"
+                        color="primary"
                     >
                         Create Journey
                     </Button>

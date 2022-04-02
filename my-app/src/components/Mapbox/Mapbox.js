@@ -171,7 +171,7 @@ export function Mapbox(props) {
         className="map"
         initialViewState={viewport}
         mapStyle="mapbox://styles/mapbox/streets-v11"
-        maxZoom={11}
+        maxZoom={14}
         mapboxAccessToken={accessToken}
         ref={mapRef}
         onLoad={onMapLoad}
@@ -185,7 +185,12 @@ export function Mapbox(props) {
         </Geocoder>
         {markers.map((marker) => (
           <div key={marker.id}>
-            <Marker key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`} className="marker" longitude={marker.longitude} latitude={marker.latitude} onClick={(e) => zoomToPopup(e, marker.id)} anchor="bottom" >
+            <Marker 
+              key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`} 
+              className="marker" longitude={marker.longitude} latitude={marker.latitude} 
+              onClick={(e) => zoomToPopup(e, marker.id)} 
+              anchor="bottom" 
+              color="#8c9cd8">
             </Marker>
           </div>
         ))}        

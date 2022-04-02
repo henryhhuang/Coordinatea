@@ -16,7 +16,7 @@ export function Journey(props) {
     let fromDate = format(new Date(journey.fromDate * 1), 'yyyy-MM-dd')
 
     return (
-        <Container className="journey-card" sx={{display: "flex", flexDirection: "row", maxWidth: 500, boxShadow: 1}}>
+        <Container className="journey-card" backgroundColor="primary.main" sx={{display: "flex", flexDirection: "row", maxWidth: 500, boxShadow: 1, backgroundColor: "#f4f4f9"}}>
             <Container sx={{flexDirection: "column", paddingBottom: "40px"}}>
                 <CardHeader
                     titleTypographyProps={{variant: 'h6', align: 'left'}}

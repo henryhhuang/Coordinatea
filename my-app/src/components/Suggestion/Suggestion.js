@@ -1,4 +1,3 @@
-import Container from '@mui/material/Container';
 import PublicIcon from '@mui/icons-material/Public';
 import PlaceIcon from '@mui/icons-material/Place';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -37,7 +36,7 @@ export function Suggestion (props) {
     return (
         <div>
             {popup && (
-            <Popup key={`popup-id-` + suggestion.id} longitude={suggestion.longitude} latitude={suggestion.latitude+0.01}
+            <Popup key={`popup-id-` + suggestion.id} longitude={suggestion.longitude} latitude={suggestion.latitude+0.001}
                 className="popup"
                 anchor="bottom"
                 closeOnClick={false}
@@ -58,7 +57,7 @@ export function Suggestion (props) {
                 latitude={suggestion.latitude} 
                 onClick={(e) => setPopup(true)} 
                 anchor="bottom" >
-                    <Avatar sx={{backgroundColor: "orange"}}>
+                    <Avatar sx={{backgroundColor: "#d78cc1"}}>
                     {renderIcon(suggestion.type)}
                     </Avatar>
             </Marker>

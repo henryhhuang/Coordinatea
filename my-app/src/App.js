@@ -14,6 +14,7 @@ import { Follow } from './components/Follow/Follow';
 import { gql, useLazyQuery } from "@apollo/client";
 import { CommentList } from './components/Comments/CommentList/CommentList';
 import React, { useEffect, useState } from 'react';
+import { CssBaseline } from '@mui/material/';
 
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 import { Profile } from './components/Profile/Profile';
@@ -35,9 +36,13 @@ const theme = createTheme({
   palette: {
     primary: {
       light: '#e6ffff',
-      main: '#b3e5fc',
-      dark: '#82b3c9',
-      contrastText: '#000',
+      main: '#1b264f',
+      dark: '#4f1b4d',
+      contrastText: '#fff',
+      text: '#ffffff'
+    },
+    background: {
+      default: '#f4f4f9'
     },
     secondary: {
       light: '#63a4ff',
@@ -74,6 +79,7 @@ function App() {
   return (
     <ApolloProvider client={apolloClient}>
       <ThemeProvider theme={theme}>
+        <CssBaseline/>
         <div className='App'>
           <NavBar username={username} setUsername={setUsername}></NavBar>
           <Routes>

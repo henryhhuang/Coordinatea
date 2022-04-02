@@ -73,7 +73,6 @@ export function Journeys(props) {
 
     return (
     <Stack justify="center" className="journeys" spacing={2}>
-        <Pagination sx={{margin: "auto"}} count={Math.ceil(length / 10)} color="primary" shape="rounded" onChange={handlePagination}/>
         {journeys.length === 0 ? (
             <Paper>
                 No journeys :(.
@@ -90,6 +89,7 @@ export function Journeys(props) {
             </Link>
         ))
         )}
+        <Pagination sx={{margin: "auto", display: "flex", justifyContent:"center"}} count={Math.ceil(length / 10)} color="primary" shape="rounded" onChange={handlePagination}/>
     </Stack>    
     );
 }

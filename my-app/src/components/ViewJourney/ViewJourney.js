@@ -125,6 +125,23 @@ export function ViewJourney(props) {
         }
     }, [suggestionImage]);
 
+    useEffect(() => {
+        if (newSuggestion) {
+            createSuggestion({
+                variables: {
+                    suggestion: {
+                        markerId: newSuggestion.markerId,
+                        description: newSuggestion.description,
+                        imageId: "",
+                        longitude: newSuggestion.longitude,
+                        latitude: newSuggestion.latitude,
+                        type: newSuggestion.type 
+                    }
+                }
+            })
+        }
+    }, [newSuggestion])
+
     //initialize key
     useEffect(() => {
         if (!getKeyLoading && getKeyData) {
@@ -212,7 +229,9 @@ export function ViewJourney(props) {
     }
 
     const onCommentMarkerSubmit = (markerId, description, image, longitude, latitude, type) => {
-        uploadImage(image, setSuggestionImage, setErrorSnackbar)
+        if (image) {
+            uploadImage(image, setSuggestionImage, setErrorSnackbar)
+        }
         setNewSuggestion({
             markerId,
             description,
@@ -301,7 +320,7 @@ export function ViewJourney(props) {
                             <Tab label="COMMENTS" value="2" />
                         </TabList>
                     </Box>
-                    <TabPanel value="1" sx={{ maxheight: '85vh', overflow: 'auto' }}>
+                    <TabPanel value="1" sx={{ height: '95vh', overflow: 'auto', padding:"0px"}}>
                         {open && openMarker != null ? (
                             <MarkerContent className="marker-content"
                                 title={openMarker.title}
@@ -319,7 +338,7 @@ export function ViewJourney(props) {
                                     currentMarker={currentMarker}></Markers>)
                         )}
                     </TabPanel>
-                    <TabPanel value="2" sx={{ height: '85vh' }}>
+                    <TabPanel value="2" sx={{ height: '100vh', padding:"0px"}}>
                         <CommentList parentId={journeyId} />
                     </TabPanel>
                 </TabContext>

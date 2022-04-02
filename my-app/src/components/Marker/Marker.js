@@ -1,4 +1,6 @@
-import { ListItemButton, ListItemText, ListItemAvatar } from "@mui/material";
+import { ListItemText, ListItemAvatar } from "@mui/material";
+import MuiListItemButton from '@mui/material/ListItemButton';
+import { withStyles } from "@material-ui/core/styles";
 import { Avatar } from "@mui/material";
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import { blue } from '@mui/material/colors';
@@ -6,37 +8,63 @@ import { IconButton } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useState, useCallback } from 'react';
 import { format } from 'date-fns'
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const ListItemButton = withStyles({
+    root: {
+      "&$selected": {
+        backgroundColor: '#8c9cd8'
+      }
+    },
+    selected: {}
+  })(MuiListItemButton);
 
 export function Marker(props) {
-    const { currentMarker, marker, handleChange, handleContentOpen } = props;
+    const { currentMarker, marker, handleChange, handleContentOpen, username, journeyOwner, removeMarker} = props;
     return (
         <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
             <ListItemAvatar>
-                <Avatar>
-                    <BeachAccessIcon sx={{ color: blue[500] }} />
+                <Avatar color="primary" sx={{backgroundColor: "#1b264f"}}>
+                    <BeachAccessIcon/>
                 </Avatar>
             </ListItemAvatar>
             <ListItemText
-                primary={marker.place}
-                secondary={
+                primary={
                     <React.Fragment>
                         <Typography
                             sx={{ display: 'inline' }}
+                            component="span"
+                            color="text.primary"
+                        >
+                            {marker.place}
+                        </Typography>
+
+                    </React.Fragment>
+                }
+                secondary={
+                    <React.Fragment>
+                        <Typography
+                            sx={{ display: 'flex' }}
                             component="span"
                             variant="body2"
                             color="text.primary"
                         >
                             {format(new Date(marker.date * 1), 'yyyy-MM-dd')}
                         </Typography>
-                        <IconButton disabled={!(currentMarker == marker.id)} onClick={handleContentOpen}>
+                        <IconButton sx={{padding: "0px"}} disabled={!(currentMarker == marker.id)} onClick={((e) => {handleContentOpen(e, marker)})}>
                             <Typography
-                                sx={{ display: 'inline' }}
+                                sx={{ display: 'inline', fontWeight: 'bold' }}
                                 component="span"
                                 variant="body2"
-                                color="blue"
+                                color="primary"
                             >Read more
                             </Typography>
                         </IconButton>
+                        {journeyOwner && journeyOwner === username &&
+                            <IconButton onClick={((e) => removeMarker(e, marker.id))}>
+                                <DeleteIcon></DeleteIcon>
+                            </IconButton>
+                        }
                     </React.Fragment>
                 }
             />

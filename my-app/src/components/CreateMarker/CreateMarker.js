@@ -1,8 +1,6 @@
 import { Mapbox } from '../Mapbox/Mapbox';
-
 import Grid from '@mui/material/Grid';
 import React, { useRef, useState, useEffect } from 'react';
-import journeyMock from '../ViewJourney/journey_mock.json'
 import { useParams, useLocation } from "react-router-dom";
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
@@ -14,7 +12,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import MuiListItemButton from '@mui/material/ListItemButton';
-import { blue } from '@mui/material/colors';
 import { IconButton } from '@mui/material';
 import { CreateMarkerContent } from '../CreateMarkerContent/CreateMarkerContent'
 import TextField from '@mui/material/TextField';
@@ -27,12 +24,12 @@ import { useNavigate } from "react-router-dom";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import { format } from 'date-fns' 
 import { uploadImage } from '../../api.mjs';
 import { MarkerContent } from '../MarkerContent/MarkerContent';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import DeleteIcon from '@mui/icons-material/Delete';
+import "./CreateMarker.css";
+import { Markers } from '../Markers/Markers';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -42,7 +39,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const ListItemButton = withStyles({
     root: {
       "&$selected": {
-        backgroundColor: '#67B7D1'
+        backgroundColor: '#8c9cd8'
       }
     },
     selected: {}
@@ -268,7 +265,7 @@ export function CreateMarker (props) {
                         handleBack={handleBack}
                         />     
                 ) : (
-                    <CreateMarkerContent className="marker-content"
+                    <CreateMarkerContent
                         setErrorSnackbar={setErrorSnackbar}
                         handleBack={handleBack}
                         handleSubmit={handleSubmit}>
@@ -276,9 +273,9 @@ export function CreateMarker (props) {
                 )}
                 </div>
             ) : (
-                <List sx={{ maxHeight: '800px', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
+                <List sx={{maxHeight: '100vh', overflow: 'auto', width: '100%' }}>
                     {newMarker &&
-                        <ListItem sx={{display: 'flex', flexDirection: 'column'}} component="form">
+                        <ListItem sx={{paddingTop: "40px", display: 'flex', flexDirection: 'column'}} component="form">
                             <TextField sx={{width: '80%', paddingBottom:'20px'}}
                                 required
                                 id="outlined-required"
@@ -297,54 +294,25 @@ export function CreateMarker (props) {
                                 />
                             </LocalizationProvider>
                             <ListItemButton onClick={handleMarkerSubmit}>
-                                <Avatar>
-                                    <AddCircleOutline sx={{ color: blue[500] }}/>
+                                <Avatar sx={{ backgroundColor: "#1b264f" }}>
+                                    <AddCircleOutline/>
                                 </Avatar>
                             </ListItemButton> 
                         </ListItem>
                     }
                     {/* <Divider variant="inset" component="li" /> */}
-                    {markers.map((marker) => (
-                        <div className="marker-container">
-                            <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
-                                <ListItemAvatar>
-                                    <Avatar sx={{ backgroundColor: blue[500] }}>
-                                        <BeachAccessIcon/>
-                                    </Avatar>
-                                </ListItemAvatar>
-                                        <ListItemText
-                                        primary={marker.place}
-                                        secondary={
-                                            <React.Fragment>
-                                            <Typography
-                                                sx={{ display: 'inline' }}
-                                                component="span"
-                                                variant="body2"
-                                                color="text.primary"
-                                            >
-                                            {format(new Date(marker.date * 1), 'yyyy-MM-dd')}
-                                            </Typography>
-                                            <IconButton disabled={!(currentMarker == marker.id)} onClick={((e) => handleContentOpen(e, marker))}>
-                                                <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="blue"
-                                                    >Read more
-                                                </Typography>
-                                            </IconButton>
-                                            {journey && journey.username === username &&
-                                                <IconButton onClick={((e) => removeMarker(e, marker.id))}>
-                                                    <DeleteIcon></DeleteIcon>
-                                                </IconButton>
-                                            }
-                                            </React.Fragment>
-                                        }
-                                        />
-                            </ListItemButton>
-                            <Divider variant="inset" component="li" />
-                        </div>
-                    ))}
+                    {markers && journey && (
+                        <Markers
+                        markers={markers}
+                            handleChange={handleChange}
+                            handleContentOpen={handleContentOpen}
+                            handleBack={handleBack}
+                            currentMarker={currentMarker}
+                            username={username}
+                            journeyOwner={journey.username}
+                            removeMarker={removeMarker}/>
+                        )
+                    }
                 </List>
             )}
             <Snackbar open={openSnackbar} onClose={((e) => setOpenSnackbar(false))} autoHideDuration={6000}>

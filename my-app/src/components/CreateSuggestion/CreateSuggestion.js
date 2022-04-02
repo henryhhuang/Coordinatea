@@ -32,7 +32,7 @@ export function CreateSuggestion (props) {
 
     const validateSubmit = (e) => {
         e.preventDefault();
-        if (!descriptionRef.current.value || !selectedImage) {
+        if (!descriptionRef.current.value) {
             setErrorSnackbar("A description is required")
             return;
         }
@@ -42,7 +42,7 @@ export function CreateSuggestion (props) {
 
     return (
         <div key="create-marker-container">
-            <Popup key={"create-suggestion-popup"} longitude={longitude} latitude={latitude+0.01}
+            <Popup key={"create-suggestion-popup"} longitude={longitude} latitude={latitude+0.001}
             className="popup"
             anchor="bottom"
             closeOnClick={false}
@@ -80,7 +80,7 @@ export function CreateSuggestion (props) {
             className="marker" longitude={longitude} 
             latitude={latitude} 
             anchor="bottom" >
-                <Avatar sx={{backgroundColor: "orange"}}>
+                <Avatar sx={{backgroundColor: "#d78cc1"}}>
                     {renderIcon(type)}
                 </Avatar>
         </Marker>
