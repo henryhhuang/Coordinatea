@@ -14,6 +14,7 @@ module.exports = gql`
         parentId: ID
         username: String
         createdAt: String
+        parent: Journey
         content: String
         comments: [Comment]
     }

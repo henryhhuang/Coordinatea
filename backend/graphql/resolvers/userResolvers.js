@@ -45,7 +45,15 @@ const userResolvers = {
         getUserComments: async (_, { username }, context) => {
             console.log(context.req.session);
             console.log(username);
-            return await Comment.find({ username: username });
+            const comments = await Comment.find({ username: username });
+            const result = await Promise.all(comments.map(async (comment) => {
+                var journey = await Journey.findById(comment.parentId).then();
+                var newComment = { ...comment._doc, parent: journey }
+                console.log(newComment);
+                return newComment
+            }));
+            console.log(result);
+            return result;
         }
         /*
         getUserComments: async (_, { id }, context) => {
