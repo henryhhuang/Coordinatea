@@ -2,13 +2,12 @@ import { ListItemText, ListItemAvatar } from "@mui/material";
 import MuiListItemButton from '@mui/material/ListItemButton';
 import { withStyles } from "@material-ui/core/styles";
 import { Avatar } from "@mui/material";
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
-import { blue } from '@mui/material/colors';
 import { IconButton } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { format } from 'date-fns'
 import DeleteIcon from '@mui/icons-material/Delete';
+import RoomIcon from '@mui/icons-material/Room';
 
 const ListItemButton = withStyles({
     root: {
@@ -25,7 +24,7 @@ export function Marker(props) {
         <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(e, marker.id)} alignItems="flex-start">
             <ListItemAvatar>
                 <Avatar color="primary" sx={{backgroundColor: "#1b264f"}}>
-                    <BeachAccessIcon/>
+                    <RoomIcon/>
                 </Avatar>
             </ListItemAvatar>
             <ListItemText

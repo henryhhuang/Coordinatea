@@ -83,30 +83,38 @@ export function ViewJourney(props) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbar, setSnackbar] = useState();
 
-    const { loading: journeyLoading, error: journeyError, data: journeyData} = useQuery(Journey_Querys.GET_JOURNEY, {
-        variables: { journeyId }
-    });
-
-    const { loading, error, data } = useQuery(Journey_Querys.GET_MARKERS, {
-        variables: { journeyId }
-    });
-    const {loading: getKeyLoading, error: getKeyError, data: getKeyData} = useQuery(Common_Queries.GET_MAPBOX_KEY)
-
-    const [getSuggestions, {loading: suggestionLoading, error: suggestionError, data: suggestionData}] = useLazyQuery(Journey_Querys.GET_SUGGESTIONS, {
-        variables: { markerId: currentMarker }
+    useQuery(Common_Queries.GET_MAPBOX_KEY, {
+        onCompleted: data => setAccessToken(data.getMapboxKey)
     })
 
-    const [createSuggestion, { loading: createLoading, error: createError, data: createData }] = useMutation(Journey_Mutations.CREATE_SUGGESTION)
-    const [deleteSuggestion, { loading: deleteLoading, error: deleteError, data: deleteData }] = useMutation(Journey_Mutations.DELETE_SUGGESTION);
+    useQuery(Journey_Querys.GET_JOURNEY, {
+        variables: { journeyId },
+        onCompleted: data => {
+            setJourney(data.getJourney);
+            setJourneyOwner(data.getJourney.username);
+        }
+    });
+
+    useQuery(Journey_Querys.GET_MARKERS, {
+        variables: { journeyId },
+        onCompleted: data => setMarkers(data.getMarkers)
+    });
+
+    const [getSuggestions] = useLazyQuery(Journey_Querys.GET_SUGGESTIONS, {
+        variables: { markerId: currentMarker },
+        onCompleted: data => setSuggestions(data.getSuggestions)
+    })
+
+    const [createSuggestion] = useMutation(Journey_Mutations.CREATE_SUGGESTION, {
+        onCompleted: data => getSuggestions(),
+        onError: error => setErrorSnackbar(error.message)
+    })
+
+    const [deleteSuggestion] = useMutation(Journey_Mutations.DELETE_SUGGESTION, {
+        onCompleted: data => getSuggestions()
+    });
 
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!journeyLoading && journeyData) {
-            setJourney(journeyData.getJourney)
-            setJourneyOwner(journeyData.getJourney.username);
-        }
-    }, [journeyData])
     
     useEffect(() => {
         if (newSuggestion && suggestionImage) {
@@ -142,19 +150,6 @@ export function ViewJourney(props) {
         }
     }, [newSuggestion])
 
-    //initialize key
-    useEffect(() => {
-        if (!getKeyLoading && getKeyData) {
-            setAccessToken(getKeyData.getMapboxKey);
-        }
-    }, [getKeyData]);
-
-    useEffect(() => {
-        if (!loading) {
-            setMarkers(data.getMarkers)
-        }
-    }, [data])
-
     //get suggestions for new marker
     useEffect(() => {
         if (currentMarker) {
@@ -162,32 +157,12 @@ export function ViewJourney(props) {
         }
     }, [currentMarker])
 
-    //set suggestion data
-    useEffect(() => {
-        if (!suggestionLoading && suggestionData) {
-            setSuggestions(suggestionData.getSuggestions);
-        }
-    }, [suggestionData])
-
     //wait to get imageId before opening content panel
     useEffect(() => {
         if (openMarker && imageMarker) {
             setOpen(true);
         }
     }, [imageMarker])
-
-    //resend get request for suggestions after a new suggestion is saved or deleted
-    useEffect(() => {
-        if ((!createLoading && createData) || (!deleteLoading && deleteData)) {
-            getSuggestions();
-        }
-    }, [createData, deleteData]);
-
-    useEffect(() => {
-        if (!createLoading && createError) {
-            setErrorSnackbar(createError.message)
-        }
-    }, [createError])
 
     const handleChange = (event, value) => {
         setCurrentMarker(value);
@@ -320,6 +295,7 @@ export function ViewJourney(props) {
                             <Tab label="COMMENTS" value="2" />
                         </TabList>
                     </Box>
+                    {/* todo: to center the markers/comments in tabpanel horizontally. display: "flex", alignItems: "center", this works for markers but breaks comments*/}
                     <TabPanel value="1" sx={{ height: '95vh', overflow: 'auto', padding:"0px"}}>
                         {open && openMarker != null ? (
                             <MarkerContent className="marker-content"

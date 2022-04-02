@@ -1,18 +1,12 @@
 import { Mapbox } from '../Mapbox/Mapbox';
 import Grid from '@mui/material/Grid';
 import React, { useRef, useState, useEffect } from 'react';
-import { useParams, useLocation } from "react-router-dom";
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
+import { useParams } from "react-router-dom";
 import List from '@mui/material/List';
 import { withStyles } from "@material-ui/core/styles";
 import { ListItem } from '@mui/material';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import MuiListItemButton from '@mui/material/ListItemButton';
-import { IconButton } from '@mui/material';
 import { CreateMarkerContent } from '../CreateMarkerContent/CreateMarkerContent'
 import TextField from '@mui/material/TextField';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
@@ -20,7 +14,6 @@ import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
 import { Journey_Mutations } from '../../graphql/mutation/journey'
 import { Journey_Querys } from '../../graphql/queries/journey'
 import { Common_Queries } from '../../graphql/queries/common';
-import { useNavigate } from "react-router-dom";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
@@ -72,47 +65,39 @@ export function CreateMarker (props) {
         message: "Journey successfully created, search a place to add a marker"
     });
 
-    const navigate = useNavigate();
-
-
-    const [getMarkers, {data, loading, error}] = useLazyQuery(Journey_Querys.GET_MARKERS, {
-        variables: { journeyId }
+    useQuery(Common_Queries.GET_MAPBOX_KEY, {
+        onCompleted: data => setAccessToken(data.getMapboxKey)
     })
 
-    const [getJourney, {loading: journeyLoading, error: journeyError, data: journeyData}] = useLazyQuery(Journey_Querys.GET_JOURNEY, {
-        variables: { journeyId }
+    const [getMarkers] = useLazyQuery(Journey_Querys.GET_MARKERS, {
+        variables: { journeyId },
+        onCompleted: data => setMarkers(data.getMarkers),
+        onError: error => setErrorSnackbar(error.message)
+    })
+
+    const [getJourney] = useLazyQuery(Journey_Querys.GET_JOURNEY, {
+        variables: { journeyId },
+        onCompleted: journeyData => setJourney(journeyData.getJourney),
+        onError: error => setErrorSnackbar(error.message)
+    });
+      
+
+
+    const [createMarker] = useMutation(Journey_Mutations.CREATE_MARKER, {
+        onCompleted: data => getMarkers(),
+        onError: error => setErrorSnackbar(error.message)
     });
 
-    const {loading: getKeyLoading, error: getKeyError, data: getKeyData} = useQuery(Common_Queries.GET_MAPBOX_KEY)
-
-    //initialize key
-    useEffect(() => {
-        if (!getKeyLoading && getKeyData) {
-            setAccessToken(getKeyData.getMapboxKey);
-        }
-    }, [getKeyData])
-
-    const [createMarker, { data: createData, loading: createLoading, error: createError }] = useMutation(Journey_Mutations.CREATE_MARKER);
-    const [deleteMarker, { data: deleteData, loading: deleteLoading, error: deleteError }] = useMutation(Journey_Mutations.DELETE_MARKER);
+    const [deleteMarker] = useMutation(Journey_Mutations.DELETE_MARKER, {
+        onCompleted: data => getMarkers(),
+        onError: error => setErrorSnackbar(error.message)
+    });
 
     //get markers on render
     useEffect(() => {
         getMarkers();
         getJourney();
     }, [])
-
-    //set markers once data is retrieved
-    useEffect(() => {
-        if (!loading && data) {
-            setMarkers(data.getMarkers)
-        }
-    }, [data])
-
-    useEffect(() => {
-        if (!journeyLoading && journeyData) {
-            setJourney(journeyData.getJourney);
-        }
-    }, [journeyData])
 
     useEffect(() => {
         if (newMarker && uploadedImage) {
@@ -132,21 +117,6 @@ export function CreateMarker (props) {
             });
         }
     }, [uploadedImage])
-
-    useEffect(() => {
-        if ((!createLoading && createData) || (!deleteLoading && deleteData)) {
-            getMarkers();
-            // navigate(createData.createMarker.id, { replace: true });
-        }
-    }, [createData, deleteData])
-
-    useEffect(() => {
-        if (!createLoading && createError) {
-            setErrorSnackbar(createError.message);
-        } else if (!deleteLoading && deleteError) {
-            setErrorSnackbar(deleteError.message);
-        }
-    }, [createError, deleteError])
 
     const handleChange = (event, value) => {
         setCurrentMarker(value);
