@@ -77,6 +77,7 @@ export function Profile() {
     const [commentCount, setCommentCount] = useState(0);
     const [tabValue, setTabValue] = useState("1");
     const [edit, setEdit] = useState(false);
+    const [followers, setFollowers] = useState([])
 
 
     var { error, loading, data } = useQuery(getUserByUsernameQuery, {
@@ -102,7 +103,6 @@ export function Profile() {
             username: username
         },
         onCompleted: (data) => {
-            console.log(data);
             setUserJourneys(data.getUserJourneys);
             setJourneyCount(data.getUserJourneys.length);
         }
@@ -118,6 +118,8 @@ export function Profile() {
             setCommentCount(data.getUserComments.length);
         }
     });
+
+    //var { error, loading, data} = useQuery(getUserFollower)
 
     const handleTabChange = (event, value) => {
         setTabValue(value);
@@ -262,16 +264,11 @@ export function Profile() {
                             ))
                         }
                     </TabPanel>
-                    <TabPanel value="2" sx={{ height: '80vh', overflow: 'auto' }}>
+                    <TabPanel value="2" sx={{ height: '90vh', overflow: 'auto' }}>
                         {
                             userComments.map((comment) => (
                                 <Link to={"../journey/" + comment.parentId} style={{ textDecoration: 'none' }}>
                                     <Card sx={{ m: 3 }}>
-                                        {/*
-                                        titleTypographyProps={{ variant: 'body1', align: 'left' }}
-                                        subheaderTypographyProps={{ variant: 'body', align: 'left' }}
-                                        title={comment.parent ? username + " commented on " + comment.parent.title
-                            + " posted by " + comment.parent.username : "[DELETED]"} /> */}
                                         <CardContent>
                                             <Typography align="left" variant="body1" sx={{ fontSize: 16 }}>
                                                 <Link to={"../profile/" + comment.username} style={{ color: "black", fontWeight: 'bold' }}>{userProfile.username}</Link> commented on <Link to={"../journey/" + comment.parentId} style={{ color: "black", textDecoration: 'none', fontWeight: 'bold' }}>{comment.parent ? comment.parent.title : "unknown"}</Link> posted by <Link to={comment.parent ? "../profile/" + comment.parent.username : "."} style={{ color: "black", fontWeight: 'bold' }}>{comment.parent ? comment.parent.username : "unknown"}</Link>
