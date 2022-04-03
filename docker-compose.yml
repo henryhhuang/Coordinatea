@@ -41,7 +41,7 @@ services:
     restart: always
     volumes:
       - ./uploads:/backend/uploads
-      - ./config:/backend/config
+      - ./config:/usr/src/app/config
     expose:
       - 5000
     environment:
