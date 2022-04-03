@@ -7,16 +7,29 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Container } from '@mui/material';
 import { format } from 'date-fns'
+import EventIcon from '@mui/icons-material/Event';
+import { Switch } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FlightLandIcon from '@mui/icons-material/FlightLand';
+import { Chip } from '@mui/material';
 import "./Journey.css"
 
 export function Journey(props) {
     const { journey, username, removeJourney } = props;
 
+    const renderJourneyType = (type) => {
+        if (type === "PREVIOUS") {
+            return <Chip label="Past Journey" icon={<FlightLandIcon/>}/>
+        } else {
+            return <Chip label="Journey Plan" icon={<EventIcon/>}/>
+        }
+    }
+
     let toDate = format(new Date(journey.toDate * 1), 'yyyy-MM-dd')
     let fromDate = format(new Date(journey.fromDate * 1), 'yyyy-MM-dd')
 
     return (
-        <Container className="journey-card" backgroundColor="primary.main" sx={{display: "flex", flexDirection: "row", maxWidth: 500, boxShadow: 1, backgroundColor: "#f4f4f9"}}>
+        <Container className="journey-card" sx={{display: "flex", flexDirection: "row", maxWidth: 500, boxShadow: 1, borderRadius: 4, borderColor: 'primary.main', backgroundColor: "#f6f7fc"}}>
             <Container sx={{flexDirection: "column", paddingBottom: "40px"}}>
                 <CardHeader
                     titleTypographyProps={{variant: 'h6', align: 'left'}}
@@ -37,7 +50,7 @@ export function Journey(props) {
             </Container>
                 <Container sx={{flexDirection: "column", paddingBottom: "40px", margin:"20px"}}>
                     <CardContent sx={{maxHeight: "400px", overflow: "auto"}}>
-                        <Typography align='left' variant="body1" color="text.secondary">
+                        <Typography align='left' variant="body1" color="text.primary">
                             {journey.description}
                         </Typography>
                     </CardContent>
@@ -47,6 +60,8 @@ export function Journey(props) {
                         </Typography>
                     </CardContent>
                     <CardActions sx={{paddingTop: 4}} disableSpacing>
+                        <FormControlLabel disabled={true} onClick={((e) => e.preventDefault())} onChange={((e) => e.stopPropagation())} control={<Switch checked={journey.suggestionsEnabled} />} label="Suggestions"></FormControlLabel>
+                       {renderJourneyType(journey.journeyType)}
                         {journey.username === username &&
                         <IconButton onClick={((e) => {
                             e.preventDefault() 

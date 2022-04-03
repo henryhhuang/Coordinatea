@@ -12,7 +12,8 @@ export const Journey_Querys = {
                 description,
                 fromDate,
                 toDate,
-                suggestionsEnabled
+                suggestionsEnabled,
+                journeyType
             }
         }
     `,
@@ -26,7 +27,8 @@ export const Journey_Querys = {
                 description,
                 fromDate,
                 toDate,
-                suggestionsEnabled
+                suggestionsEnabled,
+                journeyType
             }
         }
     `,

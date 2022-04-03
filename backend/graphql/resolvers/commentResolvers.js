@@ -1,15 +1,7 @@
 const Comment = require('../../models/Comment');
 const User = require('../../models/User');
 const Journey = require('../../models/Journey');
-
-const isAuthorized = (context, username, owner = null) => {
-    console.log(context);
-    console.log(username);
-    if (context.req.session.username != username && context.req.session.username != owner) throw new Error("User is not authorized.");
-}
-const isAuthenticated = (context) => {
-    if (!context.req.session || !context.req.session.username) throw new Error("User is not authenticated.");
-}
+const resolverUtils = require('./resolverUtils');
 
 const commentResolvers = {
     Query: {
@@ -26,7 +18,7 @@ const commentResolvers = {
         },
         */
         getParentComments: async (_, { id }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             const journey = await Journey.findById(id);
             const comment = await Comment.findById(id);
             if (!(journey || comment))
@@ -39,7 +31,7 @@ const commentResolvers = {
     },
     Mutation: {
         createComment: async (_, { parentId, content }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             const user = await User.findById(context.req.session.uid);
             if (!user)
                 throw new Error("User does not exist");

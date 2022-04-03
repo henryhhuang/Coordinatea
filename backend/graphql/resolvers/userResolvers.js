@@ -1,20 +1,12 @@
 const User = require('../../models/User');
 const Comment = require('../../models/Comment');
 const Journey = require('../../models/Journey');
-
-const isAuthorized = (context, username, owner = null) => {
-    console.log(context);
-    console.log(username);
-    if (context.req.session.username != username && context.req.session.username != owner) throw new Error("User is not authorized.");
-}
-const isAuthenticated = (context) => {
-    if (!context.req.session || !context.req.session.username) throw new Error("User is not authenticated.");
-}
+const resolverUtils = require('./resolverUtils');
 
 const userResolvers = {
     Query: {
         getUser: async (_, __, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             if (context.req.session.uid) {
                 const user = await User.findById(context.req.session.uid);
                 if (!user)
@@ -25,42 +17,42 @@ const userResolvers = {
             return null;
         },
         getUserById: async (_, { id }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             const user = await User.findById(id);
             if (!user)
                 throw new Error("User does not exist");
             return user;
         },
         getUserByUsername: async (_, { username }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             const user = await User.findOne({ username: username });
             if (!user)
                 throw new Error("User does not exist");
             return user;
         },
         getFollowing: async (_, { username }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             const user = await User.find({ username: username });
             if (!user)
                 throw new Error("User does not exist");
             return user.following;
         },
         getFollowers: async (_, { username }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             const user = await User.find({ username: username });
             if (!user)
                 throw new Error("User does not exist");
             return user.followers;
         },
         getUserJourneys: async (_, { username }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             //console.log(context.req.session)
             //console.log(username);
             const journeys = await Journey.find({ username: username });
             return journeys;
         },
         getUserComments: async (_, { username }, context) => {
-            isAuthenticated(context)
+            resolverUtils.isAuthenticated(context)
             const comments = await Comment.find({ username: username });
             const result = await Promise.all(comments.map(async (comment) => {
                 var journey = await Journey.findById(comment.parentId).then();
@@ -88,8 +80,8 @@ const userResolvers = {
     },
     Mutation: {
         follow: async (_, { subscriberUsername, publisherUsername }, context) => {
-            isAuthenticated(context)
-            isAuthorized(context, subscriberUsername);
+            resolverUtils.isAuthenticated(context)
+            resolverUtils.isAuthorized(context, subscriberUsername);
             const subscriber = await User.find({ username: subscriberUsername });
             const publisher = await User.find({ username: publisherUsername });
             if (!(subscriber && publisher))
@@ -101,8 +93,8 @@ const userResolvers = {
             return await User.find({ username: { $in: newFollowing } });;
         },
         unfollow: async (_, { subscriberUsername, publisherUsername }, context) => {
-            isAuthenticated(context)
-            isAuthorized(context, subscriberUsername);
+            resolverUtils.isAuthenticated(context)
+            resolverUtils.isAuthorized(context, subscriberUsername);
             const subscriber = await User.findById(subscriberUsername);
             const publisher = await User.findById(publisherUsername);
             if (!(subscriber && publisher))

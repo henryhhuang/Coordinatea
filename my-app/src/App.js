@@ -41,7 +41,7 @@ const theme = createTheme({
       text: '#ffffff'
     },
     background: {
-      default: '#f4f4f9'
+      default: '#ebecf3'
     },
     secondary: {
       light: '#63a4ff',

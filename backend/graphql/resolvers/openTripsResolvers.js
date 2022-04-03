@@ -1,10 +1,11 @@
 const fetch = require('cross-fetch');
 const { OPENTRIPS_API } = require('../../config');
+const resolverUtils = require('./resolverUtils');
 
 const openTripsResolvers = {
     Query: {
         getPlaceSuggestions: (_, args, context) => {
-            if (!context.req.session || !context.req.session.username) throw new Error("User is not authenticated.");
+            resolverUtils.isAuthenticated(context)
             
             let { latitude, longitude, radius } = args.place;
 

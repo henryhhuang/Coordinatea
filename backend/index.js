@@ -11,10 +11,16 @@ require('dotenv').config();
 let multer  = require('multer');
 
 let upload;
+let isProduction = false;
+let domain;
+
 if (process.env.NODE_ENV === "production") {
     upload = multer({ dest: "/backend/uploads"});
+    isProduction = true;
+    domain = "coordinatea.me";
 } else {
     upload = multer({ dest: path.join(__dirname, 'uploads')});
+    domain = "localhost";
 }
 
 const typeDefs = require('./graphql/typeDefs');
@@ -35,10 +41,6 @@ app.use(cors({
 
 app.set('trust proxy', 1)
 
-if (process.env.NODE_ENV === "production") {
-    app.set('trust proxy', 1)
-}
-
 //todo: https://stackoverflow.com/questions/44882535/warning-connect-session-memorystore-is-not-designed-for-a-production-environm
 const session = require('express-session');
 app.use(session({
@@ -46,10 +48,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        domain: process.env.NODE_ENV === 'production' ? "coordinatea.me" : "localhost",
-        proxy: process.env.NODE_ENV === 'production',
+        domain: domain,
+        proxy: isProduction,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isProduction,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
@@ -152,8 +154,6 @@ app.get('/api/image/:imageId/', async function (req, res, next) {
     res.setHeader('Content-Type', image.mimetype);
     res.sendFile(image.path);
 });
-
-
 
 app.get('/signout/', async (req, res, next) => {
     req.session.destroy(function () {
