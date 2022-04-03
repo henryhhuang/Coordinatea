@@ -41,7 +41,7 @@ services:
     restart: always
     volumes:
       - ./uploads:/backend/uploads
-      - ./backend/config.js:/backend/config.js
+      - ./backend/config:/backend/config
     expose:
       - 5000
     environment:

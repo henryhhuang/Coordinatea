@@ -27,7 +27,7 @@ const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers/index');
 
 
-const { MONGODB, SESSION_SECRET, SALT_ROUNDS } = require('./config');
+const { MONGODB, SESSION_SECRET, SALT_ROUNDS } = require('./config/config');
 const User = require('./models/User');
 const Image = require('./models/Image');
 

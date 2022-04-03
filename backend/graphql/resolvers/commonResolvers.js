@@ -1,4 +1,4 @@
-const { MAPBOX_KEY } = require('../../config');
+const { MAPBOX_KEY } = require('../../config/config');
 
 const commonResolvers = {
     Query: {

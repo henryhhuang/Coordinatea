@@ -1,5 +1,5 @@
 const fetch = require('cross-fetch');
-const { OPENTRIPS_API } = require('../../config');
+const { OPENTRIPS_API } = require('../../config/config');
 const resolverUtils = require('./resolverUtils');
 
 const openTripsResolvers = {
