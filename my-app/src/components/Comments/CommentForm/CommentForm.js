@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import {
     Avatar,
@@ -6,16 +6,20 @@ import {
     Button,
     Container,
     TextField,
-    IconButton
+    IconButton,
+    Alert
 } from '@mui/material';
 
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Snackbar } from '@material-ui/core';
 
 
 export function CommentForm(props) {
 
     const { comments, setComments, parentId } = props;
+    const [snackbar, setSnackbar] = useState();
+    const [open, setOpen] = useState();
 
     const createCommentMutation = gql`
         mutation($parentId: ID, $content: String) {
@@ -26,6 +30,7 @@ export function CommentForm(props) {
             }
         }
     `
+
 
     const [createComment, { data, loading, error }] = useMutation(createCommentMutation, {
         onCompleted: (data) => {
@@ -53,8 +58,19 @@ export function CommentForm(props) {
         }
     }
 
+    const setErrorSnackbar = (message) => {
+        setSnackbar(message);
+        setOpen(true);
+    }
+
+    useEffect(() => {
+        if (!loading && error) {
+            setErrorSnackbar(error.message);
+        }
+    }, [error])
+
     return (
-        <Container height="10%" maxWidth="md" component='form' onSubmit={handleSubmit}>
+        <Container maxWidth="md" component='form' onSubmit={handleSubmit}>
             <Grid container spacing={1}>
                 <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
@@ -70,6 +86,11 @@ export function CommentForm(props) {
                     />
                 </Grid>
             </Grid>
+            <Snackbar open={open} onClose={((e) => setOpen(false))} autoHideDuration={6000}>
+                <Alert severity="error" sx={{ width: '100%' }}>
+                    {snackbar}
+                </Alert>
+            </Snackbar>
         </Container>
     )
 }

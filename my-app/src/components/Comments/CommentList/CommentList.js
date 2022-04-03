@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 const getParentCommentsQuery = gql`
     query ($id: ID) {
         getParentComments(id: $id) {
+            id
             username
             content
             createdAt
@@ -37,11 +38,13 @@ export function CommentList(props) {
 
     return (
         <Box sx={{}}>
-            <List sx={{ height: '80vh', overflow: 'auto', width: '100%', bgcolor: 'background.paper' }}>
+            <List sx={{ height: '80vh', overflow: 'auto', width: '100%' }}>
                 {comments.map((comment) => (
-                    <ListItem divider>
-                        <Comment username={comment.username} content={comment.content} createdAt={comment.createdAt} />
-                    </ListItem>
+                    <div key={'list-' + comment.id}>
+                        <ListItem divider>
+                            <Comment username={comment.username} content={comment.content} createdAt={comment.createdAt} />
+                        </ListItem>
+                    </div>
                 ))}
             </List>
             <CommentForm comments={comments} setComments={setComments} parentId={parentId} />

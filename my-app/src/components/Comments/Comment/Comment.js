@@ -4,6 +4,7 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Link } from 'react-router-dom';
 
 const intervals = {
     year: 60 * 60 * 24 * 365,
@@ -37,44 +38,25 @@ export function Comment(props) {
     const { username, content, createdAt } = props
 
     return (
-        <Container component="main" maxWidth="md" sx={{ mt: 1 }}>
+        <Container component="main" maxWidth="md">
             <Grid container spacing={1}>
                 <CssBaseline />
                 <Grid item xs={10}>
                     <Grid container spacing={1}>
                         <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography align='left' variant='h6' sx={{ fontSize: 16, fontWeight: 'bold' }}>
-                                {username}
+                            <Typography align='left' variant='body1' sx={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'none' }}>
+                                <Link style={{ color: 'black' }} to={"../../profile/" + username}>{username}</Link>
                             </Typography>
                         </Grid>
                         <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography align='left' variant='h6' sx={{ color: '#9e9e9e', fontSize: 12 }}>
+                            <Typography align='left' variant='body2' sx={{ color: '#9e9e9e', fontSize: 12 }}>
                                 {commentAge(new Date(createdAt))}
                             </Typography>
                         </Grid>
                     </Grid>
-                    <Typography align='left' sx={{ mt: 1, fontSize: 16 }}>
+                    <Typography align='left' variant='body1' sx={{ borderLeft: 1, ml: 2, p: 2, fontSize: 20 }}>
                         {content}
                     </Typography>
-                    {/*
-                    <Grid container spacing={1}>
-                        <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                            <IconButton align='left'>
-                                <ThumbUpIcon> Reply </ThumbUpIcon>
-                            </IconButton>
-                        </Grid>
-                        <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                            <IconButton align='left'>
-                                <ThumbDownAltIcon> Reply </ThumbDownAltIcon>
-                            </IconButton>
-                        </Grid>
-                        <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-                            <IconButton align='left'>
-                                <ReplyIcon> Reply </ReplyIcon>
-                            </IconButton>
-                        </Grid>
-                    </Grid>
-                    */}
                 </Grid>
             </Grid>
         </Container>

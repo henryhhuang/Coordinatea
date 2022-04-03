@@ -1,10 +1,10 @@
 import { Mapbox } from '../Mapbox/Mapbox';
 import Grid from '@mui/material/Grid';
 import './ViewJourney.css';
-import React, { useState, useCallback } from 'react';
-import { useParams, useLocation } from "react-router-dom";
+import React, { useState } from 'react';
+import { useParams } from "react-router-dom";
 import { CommentList } from '../Comments/CommentList/CommentList';
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import { MarkerContent } from '../MarkerContent/MarkerContent'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import { Journey_Querys } from '../../graphql/queries/journey'
@@ -115,7 +115,7 @@ export function ViewJourney(props) {
     });
 
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         if (newSuggestion && suggestionImage) {
             createSuggestion({
@@ -143,7 +143,7 @@ export function ViewJourney(props) {
                         imageId: "",
                         longitude: newSuggestion.longitude,
                         latitude: newSuggestion.latitude,
-                        type: newSuggestion.type 
+                        type: newSuggestion.type
                     }
                 }
             })
@@ -214,11 +214,11 @@ export function ViewJourney(props) {
             latitude,
             type
         })
-    }   
+    }
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
-      };
+    };
 
     const handleClose = (type) => {
         setAnchorEl(null);
@@ -233,54 +233,54 @@ export function ViewJourney(props) {
     }
 
     return (<>
-        <Grid container>
+        <Grid container >
             {accessToken &&
-            <Grid className="map-container" item xs={8}>
-                {currentMarker && journey && journey.suggestionsEnabled && (
-                    <React.Fragment>
-                        <CreateMarkerButton
-                            id="basic-button"
-                            aria-controls={menuOpen ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={menuOpen ? 'true' : undefined}
-                            onClick={handleClick}
-                        >
-                            Drop a suggestion for this marker
-                        </CreateMarkerButton>
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={menuOpen}
-                            onClose={(() => {handleClose("close")})}
-                            MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            <MenuItem onClick={(() => {handleClose("general")})}>
-                                <PublicIcon sx={{paddingRight: "8px"}}></PublicIcon>
-                                General
-                            </MenuItem>
-                            <MenuItem onClick={(() => {handleClose("hotel")})}><HotelIcon sx={{paddingRight: "8px"}}></HotelIcon>Hotel</MenuItem>
-                            <MenuItem onClick={(() => {handleClose("restaurant")})}><RestaurantIcon sx={{paddingRight: "8px"}}></RestaurantIcon>Restaurant</MenuItem>
-                            <MenuItem onClick={(() => {handleClose("tourist")})}><PlaceIcon sx={{paddingRight: "8px"}}></PlaceIcon>Tourist Attraction</MenuItem>
-                        </Menu>
-                    </React.Fragment>
-                )}
-                <Mapbox 
-                    changeCurrentMarker={handleChange} 
-                    currentMarker={currentMarker} 
-                    markersParent={markers} 
-                    markerCreation={false}
-                    commentMarkerCreation={commentMarkerCreation}
-                    onCommentMarkerCreate={onCommentMarkerCreate}
-                    onCommentMarkerSubmit={onCommentMarkerSubmit}
-                    suggestions={suggestions}
-                    journeyOwner={journeyOwner}
-                    username={username}
-                    removeSuggestion={removeSuggestion}
-                    setErrorSnackbar={setErrorSnackbar}
-                    accessToken={accessToken}></Mapbox>
-            </Grid>
+                <Grid className="map-container" item xs={8}>
+                    {currentMarker && journey && journey.suggestionsEnabled && (
+                        <React.Fragment>
+                            <CreateMarkerButton
+                                id="basic-button"
+                                aria-controls={menuOpen ? 'basic-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={menuOpen ? 'true' : undefined}
+                                onClick={handleClick}
+                            >
+                                Drop a suggestion for this marker
+                            </CreateMarkerButton>
+                            <Menu
+                                id="basic-menu"
+                                anchorEl={anchorEl}
+                                open={menuOpen}
+                                onClose={(() => { handleClose("close") })}
+                                MenuListProps={{
+                                    'aria-labelledby': 'basic-button',
+                                }}
+                            >
+                                <MenuItem onClick={(() => { handleClose("general") })}>
+                                    <PublicIcon sx={{ paddingRight: "8px" }}></PublicIcon>
+                                    General
+                                </MenuItem>
+                                <MenuItem onClick={(() => { handleClose("hotel") })}><HotelIcon sx={{ paddingRight: "8px" }}></HotelIcon>Hotel</MenuItem>
+                                <MenuItem onClick={(() => { handleClose("restaurant") })}><RestaurantIcon sx={{ paddingRight: "8px" }}></RestaurantIcon>Restaurant</MenuItem>
+                                <MenuItem onClick={(() => { handleClose("tourist") })}><PlaceIcon sx={{ paddingRight: "8px" }}></PlaceIcon>Tourist Attraction</MenuItem>
+                            </Menu>
+                        </React.Fragment>
+                    )}
+                    <Mapbox
+                        changeCurrentMarker={handleChange}
+                        currentMarker={currentMarker}
+                        markersParent={markers}
+                        markerCreation={false}
+                        commentMarkerCreation={commentMarkerCreation}
+                        onCommentMarkerCreate={onCommentMarkerCreate}
+                        onCommentMarkerSubmit={onCommentMarkerSubmit}
+                        suggestions={suggestions}
+                        journeyOwner={journeyOwner}
+                        username={username}
+                        removeSuggestion={removeSuggestion}
+                        setErrorSnackbar={setErrorSnackbar}
+                        accessToken={accessToken}></Mapbox>
+                </Grid>
             }
             <Grid
                 item
@@ -314,14 +314,14 @@ export function ViewJourney(props) {
                                     currentMarker={currentMarker}></Markers>)
                         )}
                     </TabPanel>
-                    <TabPanel value="2" sx={{ height: '100vh', padding:"0px"}}>
+                    <TabPanel value="2" sx={{ padding: "0px" }}>
                         <CommentList parentId={journeyId} />
                     </TabPanel>
                 </TabContext>
                 <Snackbar open={openSnackbar} onClose={((e) => setOpenSnackbar(false))} autoHideDuration={6000}>
-                <Alert severity="error" sx={{ width: '100%' }}>
-                    {snackbar}
-                </Alert>
+                    <Alert severity="error" sx={{ width: '100%' }}>
+                        {snackbar}
+                    </Alert>
                 </Snackbar>
             </Grid>
         </Grid>
