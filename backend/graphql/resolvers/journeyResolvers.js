@@ -7,8 +7,6 @@ const isAuthenticated = (context) => {
 }
 
 const isAuthorized = (context, username, owner = null) => {
-    console.log(context);
-    console.log(username);
     if (context.req.session.username != username && context.req.session.username != owner) throw new Error("User is not authorized.");
 }
 
@@ -41,7 +39,7 @@ const journeyResolvers = {
     Mutation: {
         createJourney: async (_, args, context) => {
             isAuthenticated(context);
-            const { title, imageId, description, fromDate, toDate, suggestionsEnabled } = args.journey
+            const { title, imageId, description, fromDate, toDate, suggestionsEnabled, isPublic, journeyType } = args.journey
             const journey = new Journey(
                 { username: context.req.session.username, 
                     title, 
@@ -50,7 +48,9 @@ const journeyResolvers = {
                     fromDate, 
                     toDate, 
                     published: false,
-                    suggestionsEnabled
+                    suggestionsEnabled,
+                    isPublic,
+                    journeyType
                 })
             await journey.save();
             console.log(journey);

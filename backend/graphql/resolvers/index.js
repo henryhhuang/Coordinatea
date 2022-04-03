@@ -2,6 +2,7 @@ const journeyResolvers = require('./journeyResolvers');
 const userResolvers = require('./userResolvers');
 const commentResolvers = require('./commentResolvers');
 const commonResolvers = require('./commonResolvers');
+const openTripsResolvers = require('./openTripsResolvers');
 
 module.exports = {
     Query: {
@@ -9,6 +10,7 @@ module.exports = {
         ...commonResolvers.Query,
         ...userResolvers.Query,
         ...journeyResolvers.Query,
+        ...openTripsResolvers.Query
     },
     Mutation: {
         ...commentResolvers.Mutation,

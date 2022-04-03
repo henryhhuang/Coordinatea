@@ -164,7 +164,7 @@ export function ViewJourney(props) {
         }
     }, [imageMarker])
 
-    const handleChange = (event, value) => {
+    const handleChange = (value) => {
         setCurrentMarker(value);
     };
 
@@ -295,7 +295,7 @@ export function ViewJourney(props) {
                             <Tab label="COMMENTS" value="2" />
                         </TabList>
                     </Box>
-                    {/* todo: to center the markers/comments in tabpanel horizontally. display: "flex", alignItems: "center", this works for markers but breaks comments*/}
+                    {/* todo: to center the markers/comments in tabpanel horizontally. display: "flex", alignItems: "center", this works for markers but breaks*/}
                     <TabPanel value="1" sx={{ height: '95vh', overflow: 'auto', padding:"0px"}}>
                         {open && openMarker != null ? (
                             <MarkerContent className="marker-content"

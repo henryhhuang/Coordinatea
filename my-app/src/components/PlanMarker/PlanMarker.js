@@ -3,8 +3,8 @@ import Grid from '@mui/material/Grid';
 import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import List from '@mui/material/List';
-import { withStyles } from "@material-ui/core/styles";
-import { ListItem } from '@mui/material';
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { ListItem, Tabs } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import MuiListItemButton from '@mui/material/ListItemButton';
 import { CreateMarkerContent } from '../CreateMarkerContent/CreateMarkerContent'
@@ -14,6 +14,7 @@ import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
 import { Journey_Mutations } from '../../graphql/mutation/journey'
 import { Journey_Querys } from '../../graphql/queries/journey'
 import { Common_Queries } from '../../graphql/queries/common';
+import { Suggestion_Queries } from '../../graphql/queries/suggestions';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
@@ -21,13 +22,22 @@ import { uploadImage } from '../../api.mjs';
 import { MarkerContent } from '../MarkerContent/MarkerContent';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import "./CreateMarker.css";
 import { Markers } from '../Markers/Markers';
-
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import Box from '@mui/material/Box';
+import { PlaceSuggestions } from '../PlaceSuggestions/PlaceSuggestion';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+const useStyles = makeStyles({
+    tabPanelRoot: {
+        padding: 0
+    },
+});
 
 const ListItemButton = withStyles({
     root: {
@@ -40,21 +50,25 @@ const ListItemButton = withStyles({
 
 const url = window.location.href;
 
-export function CreateMarker (props) {
+export function PlanMarker (props) {
+    const classes = useStyles();
+
     const { username } = props;
 
+    const [tabValue, setTabValue] = useState("1");
     const { journeyId, id2 } = useParams();
-    const [open, setOpen] = React.useState(0);
-    const [currentMarker, setCurrentMarker] = React.useState(0);
-    const [openMarker, setOpenMarker] = React.useState(null);
+    const [open, setOpen] = useState(0);
+    const [currentMarker, setCurrentMarker] = useState(0);
+    const [openMarker, setOpenMarker] = useState(null);
 
+    const [placeSuggestions, setPlaceSuggestions] = useState([]);
     // const [openMarker, setOpenMarker] = React.useState(id2 || 0);
     // todo let user edit their journey card here
     const [journey, setJourney] = useState()
     const [markers, setMarkers] = useState([]);
     // const [image, setImage] = useState();
     const [uploadedImage, setUploadedImage] = useState();
-    const [newMarker, setNewMarker] = useState();
+    const [newMarker, setNewMarker] = useState(null);
     const [accessToken, setAccessToken] = useState();
     const [date, setDate] = useState();
     const markerPlaceRef = useRef(null);
@@ -80,7 +94,6 @@ export function CreateMarker (props) {
         onCompleted: journeyData => setJourney(journeyData.getJourney),
         onError: error => setErrorSnackbar(error.message)
     });
-      
 
     const [createMarker] = useMutation(Journey_Mutations.CREATE_MARKER, {
         onCompleted: data => getMarkers(),
@@ -91,6 +104,14 @@ export function CreateMarker (props) {
         onCompleted: data => getMarkers(),
         onError: error => setErrorSnackbar(error.message)
     });
+
+    const [getSuggestions] = useLazyQuery(Suggestion_Queries.GET_PLACE_SUGGESTIONS, {
+        onCompleted: data => {
+            console.log('data', data);
+            setPlaceSuggestions(data.getPlaceSuggestions)}
+            ,
+        onError: error => setErrorSnackbar(error.message)
+    })
 
     //get markers on render
     useEffect(() => {
@@ -117,8 +138,12 @@ export function CreateMarker (props) {
         }
     }, [uploadedImage])
 
-    const handleChange = (value) => {
-        setCurrentMarker(value);
+    const handleChange = (marker, value) => {
+        if (value) {
+            console.log(value);
+            setTabValue(value)
+        }
+        setCurrentMarker(marker);
     };
 
     const handleBack = () => {
@@ -132,8 +157,8 @@ export function CreateMarker (props) {
             bbox: result.bbox,
             center: result.center,
             place: result.place_name,
-            longitude: result.longitude,
-            latitude: result.latitude
+            longitude: result.center[0],
+            latitude: result.center[1]
         }
         setNewMarker(marker);
     }
@@ -160,7 +185,6 @@ export function CreateMarker (props) {
             return;
         }
         setOpen(false);
-        setNewMarker();
         // setImage(image);
         let marker = {
             journeyId: journeyId,
@@ -168,9 +192,10 @@ export function CreateMarker (props) {
             description: description,
             place: newMarker.place,
             date: newMarker.date,
-            longitude: newMarker.center[0],
-            latitude: newMarker.center[1],
+            longitude: newMarker.longitude,
+            latitude: newMarker.latitude,
         }
+        console.log(marker);
         setNewMarker(marker)
         uploadImage(image, setUploadedImage, setErrorSnackbar);
     }
@@ -199,6 +224,37 @@ export function CreateMarker (props) {
         })
     }
 
+    const handleTabChange = (event, value) => {
+        setTabValue(value);
+        if (value === "2") {
+            getSuggestions({
+                variables: {
+                    place: {
+                        longitude: newMarker.center[0],
+                        latitude: newMarker.center[1],
+                        radius: 10000
+                    }
+                }
+            })
+        }
+    }
+
+    const addMarker = (name, longitude, latitude) => {
+        setTabValue("1");
+        let marker = {
+            place: name,
+            longitude: longitude,
+            latitude: latitude
+        }
+        setNewMarker(marker);
+    }
+
+    const onPlaceClick = (xid, longitude, latitude) => {
+        setCurrentMarker(xid);
+        setTabValue("2");
+    }
+    
+
     return (<>
     <Grid container>
         <Grid className="map-container" item xs={8}>
@@ -214,76 +270,97 @@ export function CreateMarker (props) {
                     onCommentMarkerCreate={null}
                     onCommentMarkerSubmit={null}
                     suggestions={[]}
+                    onPlaceClick={onPlaceClick}
+                    placeSuggestions={placeSuggestions}
                     ></Mapbox>
             }
         </Grid>
         <Grid
-        item
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-        xs={4}>
-            {open ? (
-                <div>
-                {openMarker != null ? (
-                    <MarkerContent className="marker-content"
-                        title={openMarker.title}
-                        description={openMarker.description}
-                        images={openMarker.imageId}
-                        handleBack={handleBack}
-                        />     
-                ) : (
-                    <CreateMarkerContent
-                        setErrorSnackbar={setErrorSnackbar}
-                        handleBack={handleBack}
-                        handleSubmit={handleSubmit}>
-                    </CreateMarkerContent> 
-                )}
-                </div>
-            ) : (
-                <List sx={{maxHeight: '100vh', overflow: 'auto', width: '100%' }}>
-                    {newMarker &&
-                        <ListItem sx={{paddingTop: "40px", display: 'flex', flexDirection: 'column'}} component="form">
-                            <TextField sx={{width: '80%', paddingBottom:'20px'}}
-                                required
-                                id="outlined-required"
-                                label="Required"
-                                value={newMarker.place}
-                                inputRef={markerPlaceRef}
-                                />
-                            <LocalizationProvider className="fromDate" dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="Pick a date"
-                                    value={date}
-                                    onChange={(newValue) => {
-                                        setDate(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-                            <ListItemButton onClick={handleMarkerSubmit}>
-                                <Avatar sx={{ backgroundColor: "#1b264f" }}>
-                                    <AddCircleOutline/>
-                                </Avatar>
-                            </ListItemButton> 
-                        </ListItem>
-                    }
-                    {/* <Divider variant="inset" component="li" /> */}
-                    {markers && journey && (
-                        <Markers
-                        markers={markers}
-                            handleChange={handleChange}
-                            handleContentOpen={handleContentOpen}
+            item
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            xs={4}>
+            <TabContext value={tabValue}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <TabList onChange={handleTabChange}>
+                        <Tab label="JOURNEY" value="1" />
+                        <Tab disabled={newMarker == null || !newMarker.center} label="SUGGESTIONS" value="2" />
+                    </TabList>
+                </Box>
+                {/* todo: to center the markers/comments in tabpanel horizontally. display: "flex", alignItems: "center", this works for markers but breaks comments*/}
+                <TabPanel value="1" sx={{width: '100%', height: '95vh', overflow: 'auto', padding:"0px"}}>
+                    {open ? (
+                    <div>
+                    {openMarker != null ? (
+                        <MarkerContent className="marker-content"
+                            title={openMarker.title}
+                            description={openMarker.description}
+                            images={openMarker.imageId}
                             handleBack={handleBack}
+                            />     
+                    ) : (
+                        <CreateMarkerContent
+                            setErrorSnackbar={setErrorSnackbar}
+                            handleBack={handleBack}
+                            handleSubmit={handleSubmit}>
+                        </CreateMarkerContent> 
+                    )}
+                    </div>
+                    ) : (
+                    <List sx={{maxHeight: '100vh', overflow: 'auto'}}>
+                        {newMarker &&
+                            <ListItem sx={{paddingTop: "40px", display: 'flex', flexDirection: 'column'}} component="form">
+                                <TextField sx={{width: '80%', paddingBottom:'20px'}}
+                                    required
+                                    id="outlined-required"
+                                    label="Required"
+                                    value={newMarker.place}
+                                    inputRef={markerPlaceRef}
+                                    />
+                                <LocalizationProvider className="fromDate" dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        label="Pick a date"
+                                        value={date}
+                                        onChange={(newValue) => {
+                                            setDate(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </LocalizationProvider>
+                                <ListItemButton onClick={handleMarkerSubmit}>
+                                    <Avatar sx={{ backgroundColor: "#1b264f" }}>
+                                        <AddCircleOutline/>
+                                    </Avatar>
+                                </ListItemButton> 
+                            </ListItem>
+                        }
+                        {markers && journey && (
+                            <Markers
+                                markers={markers}
+                                handleChange={handleChange}
+                                handleContentOpen={handleContentOpen}
+                                handleBack={handleBack}
+                                currentMarker={currentMarker}
+                                username={username}
+                                journeyOwner={journey.username}
+                                removeMarker={removeMarker}/>
+                            )
+                        }
+                    </List>
+                    )}
+                </TabPanel>
+                <TabPanel value="2" sx={{ width: '100%', padding: "0px", height: '95vh', padding:"0px"}}>
+                        <PlaceSuggestions
+                            placeSuggestions={placeSuggestions}
                             currentMarker={currentMarker}
-                            username={username}
-                            journeyOwner={journey.username}
-                            removeMarker={removeMarker}/>
-                        )
-                    }
-                </List>
-            )}
+                            handleChange={handleChange}
+                            addMarker={addMarker}
+                            >
+                        </PlaceSuggestions>
+                </TabPanel>
+            </TabContext>
             <Snackbar open={openSnackbar} onClose={((e) => setOpenSnackbar(false))} autoHideDuration={6000}>
                 <Alert severity={snackbar.serverity} sx={{ width: '100%' }}>
                     {snackbar.message}

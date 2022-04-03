@@ -20,6 +20,10 @@ import { Switch } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 import "./CreateJourney.css"
 
@@ -39,14 +43,26 @@ export function CreateJourney(props) {
     const [uploadedImage, setUploadedImage] = useState();
     const [isImageUploaded, setIsImageUploaded] = useState(false);
     const [journey, setJourney] = useState();
+
+    const [journeyType, setJourneyType] = useState("PREVIOUS");
     const [suggestionsEnabled, setSuggestionsEnabled] = useState(true);
+    const [isPublic, setIsPublic] = useState(true);
 
     const [open, setOpen] = useState();
     const [snackbar, setSnackbar] = useState();
 
     const navigate = useNavigate();
 
-    const [createJourney, { data, loading, error }] = useMutation(Journey_Mutations.CREATE_JOURNEY)
+    const [createJourney] = useMutation(Journey_Mutations.CREATE_JOURNEY, {
+        onCompleted: data => {
+            if (data.createJourney.journeyType === "PLAN") {
+                navigate("../journey/plan/" + data.createJourney.id, { replace: true })
+            } else {
+                navigate(data.createJourney.id, { replace: true })
+            }
+        },
+        onError: error => setErrorSnackbar(error.message)
+    })
 
     const fileChange = (e) => {
         setImage(e.target.files[0]);
@@ -64,66 +80,76 @@ export function CreateJourney(props) {
                         imageId: uploadedImage,
                         toDate: journey.toDate,
                         fromDate: journey.fromDate,
-                        suggestionsEnabled
+                        suggestionsEnabled,
+                        isPublic,
+                        journeyType
                     }
                 }
             })
         }
     }, [uploadedImage])
 
-    //Redirect to marker creation once journy is created
     useEffect(() => {
-        if (!loading && data) {
-            navigate(data.createJourney.id, { replace: true });
+        if (journey && journey.imageId === "") {
+            createJourney({
+                variables: {
+                    journey: {
+                        title: journey.title,
+                        description: journey.description,
+                        imageId: journey.imageId,
+                        toDate: journey.toDate,
+                        fromDate: journey.fromDate,
+                        suggestionsEnabled,
+                        isPublic,
+                        journeyType
+                    }
+                }
+            })
         }
-    }, [data])
+    }, [journey])
 
     const setErrorSnackbar = (message) => {
         setSnackbar(message);
         setOpen(true);
     }
 
-    useEffect(() => {
-        if (!loading && error) {
-            setErrorSnackbar(error.message);
+    const handleChange = (event, value) => {
+        switch(value) {
+            case 'suggestions':
+                setSuggestionsEnabled(event.target.checked);
+            case 'public':
+                setIsPublic(event.target.checked);
+            default:
+                setJourneyType(event.target.value);
         }
-    }, [error])
-
-    const handleChange = (event) => {
-        setSuggestionsEnabled(event.target.checked);
-      };
+    };
 
     const onSubmit = (e) => {
         e.preventDefault();
-        if (!(isImageUploaded && titleRef.current.value && descriptionRef.current.value)) {
+        if (!titleRef.current.value || !descriptionRef.current.value) {
             setSnackbar("A title, description, dates and image are required")
             setOpen(true);
             return;
         }
-        let newJourney = {
-            title: titleRef.current.value,
-            description: descriptionRef.current.value,
-            toDate: toDate,
-            fromDate: fromDate
+
+        if (isImageUploaded) {
+            uploadImage(image, setUploadedImage, setErrorSnackbar);
+        } else {
+            let newJourney = {
+                title: titleRef.current.value,
+                description: descriptionRef.current.value,
+                imageId: "",
+                toDate: toDate,
+                fromDate: fromDate
+            }
+            setJourney(newJourney);
         }
-        setJourney(newJourney);
-        uploadImage(image, setUploadedImage, setErrorSnackbar);
     };
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                {/* {loading ? <Loading /> : <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                <LockOutlinedIcon />
-            </Avatar>} */}
+            <Box sx={{marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <Typography component="h1" variant="h5">
                     Create a Journey
                 </Typography>
@@ -152,6 +178,19 @@ export function CreateJourney(props) {
                         autoFocus
                         inputRef={descriptionRef}
                     />
+                    <FormControl sx={{ marginTop: "20px" }} fullWidth>
+                        <InputLabel id="demo-simple-select-label">Journey Type</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={journeyType}
+                            label="Journey Type"
+                            onChange={((e) => handleChange(e, "type"))}
+                            >
+                            <MenuItem value={"PREVIOUS"}>Past Journey</MenuItem>
+                            <MenuItem value={"PLAN"}>Plan</MenuItem>
+                        </Select>
+                    </FormControl>
                     <div className='dates'>
                         <LocalizationProvider className="fromDate" dateAdapter={AdapterDateFns}>
                             <DatePicker
@@ -188,7 +227,8 @@ export function CreateJourney(props) {
                         />
                     </Button>
                     <div>
-                        <FormControlLabel onChange={handleChange} control={<Switch defaultChecked />} label="Viewer Suggestions"></FormControlLabel>
+                        <FormControlLabel onChange={((e) => handleChange(e, "suggestions"))} control={<Switch defaultChecked />} label="Viewer Suggestions"></FormControlLabel>
+                        <FormControlLabel onChange={((e) => handleChange(e, "public"))}  control={<Switch defaultChecked />} label="Public"></FormControlLabel>
                     </div>
                     <Button
                         type="submit"

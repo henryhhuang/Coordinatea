@@ -11,7 +11,9 @@ export const Journey_Mutations = {
                 description,
                 fromDate,
                 toDate,
-                suggestionsEnabled
+                suggestionsEnabled,
+                isPublic,
+                journeyType
             }
         }
     `,

@@ -9,7 +9,14 @@ const JourneySchema = new Schema({
     fromDate: Date,
     toDate: Date,
     published: Boolean,
-    suggestionsEnabled: Boolean
+    suggestionsEnabled: Boolean,
+    isPublic: Boolean,
+    viewers: [String],
+    journeyType: {
+        type: String,
+        enum : ['PREVIOUS', 'PLAN'],
+        default: 'PREVIOUS'
+    }
 });
 
 module.exports = model("Journey", JourneySchema);

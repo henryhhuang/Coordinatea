@@ -8,14 +8,12 @@ import { Journeys } from './components/Journeys/Journeys';
 import { Route, Routes } from 'react-router-dom';
 import { SignIn } from './components/SignIn/SignIn';
 import { SignUp } from './components/SignUp/SignUp';
-import { Comment } from './components/Comments/Comment/Comment';
-import { CommentForm } from './components/Comments/CommentForm/CommentForm';
 import { Follow } from './components/Follow/Follow';
 import { gql, useQuery } from "@apollo/client";
-import { CommentList } from './components/Comments/CommentList/CommentList';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CssBaseline } from '@mui/material/';
 
+import { PlanMarker } from './components/PlanMarker/PlanMarker';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 import { Profile } from './components/Profile/Profile';
 
@@ -84,6 +82,7 @@ function App() {
             <Route path="/journey/:journeyId/:markerId" element={<ViewJourney username={username} />}></Route>
             <Route path="/journey/create/" element={<CreateJourney />}></Route>
             <Route path="/journey/create/:journeyId" element={<CreateMarker username={username} />}></Route>
+            <Route path="/journey/plan/:journeyId" element={<PlanMarker username={username}/>}></Route>
             <Route path="/signin/" element={<SignIn setUsername={setUsername} />}></Route>
             <Route path="/signup/" element={<SignUp setUsername={setUsername} />}></Route>
             <Route path="/follow/" element={<Follow />}></Route>

@@ -24,14 +24,16 @@ export function Journey(props) {
                     title={journey.title}
                     subheader={fromDate + ' to ' + toDate}
                 />
-                <CardMedia
-                    className="img"
-                    component="img"
-                    height="194"
-                    image={process.env.NODE_ENV === "production" ? "https://api.coordinatea.me/api/image/" + journey.imageId + "/" :
-                        "http://localhost:5000/api/image/" + journey.imageId + "/"}
-                    alt="Failed to retrieve image"
-            />
+                {journey.imageId &&
+                    <CardMedia
+                        className="img"
+                        component="img"
+                        height="194"
+                        image={process.env.NODE_ENV === "production" ? "https://api.coordinatea.me/api/image/" + journey.imageId + "/" :
+                            "http://localhost:5000/api/image/" + journey.imageId + "/"}
+                        alt="Failed to retrieve image"
+                    />
+                }
             </Container>
                 <Container sx={{flexDirection: "column", paddingBottom: "40px", margin:"20px"}}>
                     <CardContent sx={{maxHeight: "400px", overflow: "auto"}}>

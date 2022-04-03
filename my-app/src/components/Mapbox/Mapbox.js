@@ -28,13 +28,11 @@ export function Mapbox(props) {
     removeSuggestion,
     username,
     journeyOwner,
-    setErrorSnackbar} = props;
+    setErrorSnackbar,
+    placeSuggestions} = props;
 
   const [markers, setMarkers] = useState([]);
-  const [marker, setMarker] = useState(0);
   const [commentMarkers, setCommentMarkers] = useState([]);
-  const [image, setImage] = useState();
-  const descriptionRef = useRef(null);
   const [newSuggestion, setNewSuggestion] = useState();
   const [createSuggestion, setCreateSuggestion] = useState();
 
@@ -60,10 +58,11 @@ export function Mapbox(props) {
 
   useEffect(() => {
     if (mapRef && mapRef.current) {
-    // if (mapRef && mapRef.current && markers.length != 0) {
         currentMarker = props.currentMarker
-        setMarker(currentMarker)
-        zoomToPopup(null, currentMarker);
+        // setMarker(currentMarker)
+        // zoomToMarker(null, currentMarker);
+        zoomToMarker(null, currentMarker);
+        // zoomToPopup(null, currentMarker);
     }
   }, [props.currentMarker])
 
@@ -127,13 +126,35 @@ export function Mapbox(props) {
       });
   }
 
-  const zoomToPopup = useCallback((e, id) => {
-    changeCurrentMarker(null, id);
-    setMarker(id)
 
+  const zoomToMarker = (e, id) => {
     let index = markers.findIndex((marker => marker.id == id));
+    let longitude = 0;
+    let latitude = 0;
+    if (index === -1) {
+      index = placeSuggestions.findIndex((place => place.xid == id));
+      longitude = placeSuggestions[index].longitude;
+      latitude = placeSuggestions[index].latitude;
+    } else {
+      longitude = markers[index].longitude;
+      latitude = markers[index].latitude;
+    }
+    flyTo(longitude, latitude);
+  }
+
+  const markerClick = (e, id, longitude, latitude) => {
+    changeCurrentMarker(id, "1");
+    flyTo(longitude, latitude);
+  }
+
+  const placeSuggestionClick = ((e, xid, longitude, latitude) => {
+    changeCurrentMarker(xid, "2");
+    flyTo(longitude, latitude)
+  })
+
+  const flyTo = (longitude, latitude) => {
     mapRef.current.flyTo({
-      center: [markers[index].longitude, markers[index].latitude],
+      center: [longitude, latitude],
       zoom: 13,
       bearing: 0,
       speed: 2, // make the flying slow
@@ -143,8 +164,8 @@ export function Mapbox(props) {
       easing: (t) => t,
       // this animation is considered essential with respect to prefers-reduced-motion
       essential: true
-      });
-  });
+    });
+  }
 
   const createMarker = (e) => {
     if (commentMarkerCreation && commentMarkerCreation != null && mapRef.current.getZoom() > 9) {
@@ -188,12 +209,21 @@ export function Mapbox(props) {
             <Marker 
               key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`} 
               className="marker" longitude={marker.longitude} latitude={marker.latitude} 
-              onClick={(e) => zoomToPopup(e, marker.id)} 
+              onClick={(e) => markerClick(e, marker.id, marker.longitude, marker.latitude)} 
               anchor="bottom" 
               color="#8c9cd8">
             </Marker>
           </div>
-        ))}        
+        ))} 
+        {placeSuggestions && placeSuggestions.map((placeSuggestion) => (
+          <Marker 
+            key={`marker-id-lng${placeSuggestion.longitude + `lat` + placeSuggestion.latitude}`} 
+            className="marker" longitude={placeSuggestion.longitude} latitude={placeSuggestion.latitude} 
+            onClick={(e) => placeSuggestionClick(e, placeSuggestion.xid, placeSuggestion.longitude, placeSuggestion.latitude)} 
+            anchor="bottom" 
+            color="#4f1b26">
+          </Marker>
+        ))}       
         {commentMarkers.map((commentMarker) => (
           <Suggestion
             suggestion={commentMarker}

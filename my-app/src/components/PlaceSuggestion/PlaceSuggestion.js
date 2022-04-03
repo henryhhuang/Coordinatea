@@ -2,12 +2,10 @@ import { ListItemText, ListItemAvatar } from "@mui/material";
 import MuiListItemButton from '@mui/material/ListItemButton';
 import { withStyles } from "@material-ui/core/styles";
 import { Avatar } from "@mui/material";
-import { IconButton } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import { format } from 'date-fns'
-import DeleteIcon from '@mui/icons-material/Delete';
 import RoomIcon from '@mui/icons-material/Room';
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 
 const ListItemButton = withStyles({
     root: {
@@ -18,12 +16,13 @@ const ListItemButton = withStyles({
     selected: {}
   })(MuiListItemButton);
 
-export function Marker(props) {
-    const { currentMarker, marker, handleChange, handleContentOpen, username, journeyOwner, removeMarker} = props;
+export function PlaceSuggestion(props) {
+    const { placeSuggestion, currentMarker, handleChange, addMarker} = props;
+
     return (
-        <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(marker.id)} alignItems="flex-start">
+        <ListItemButton selected={currentMarker == placeSuggestion.xid} onClick={(e) => handleChange(placeSuggestion.xid)} alignItems="flex-start">
             <ListItemAvatar>
-                <Avatar color="primary" sx={{backgroundColor: "#1b264f"}}>
+                <Avatar color="primary" sx={{backgroundColor: "#4f1b26"}}>
                     <RoomIcon/>
                 </Avatar>
             </ListItemAvatar>
@@ -35,7 +34,7 @@ export function Marker(props) {
                             component="span"
                             color="text.primary"
                         >
-                            {marker.place}
+                            {placeSuggestion.name}
                         </Typography>
 
                     </React.Fragment>
@@ -48,25 +47,17 @@ export function Marker(props) {
                             variant="body2"
                             color="text.primary"
                         >
-                            {format(new Date(marker.date * 1), 'yyyy-MM-dd')}
+                            10km away
                         </Typography>
-                        <IconButton sx={{padding: "0px"}} disabled={!(currentMarker == marker.id)} onClick={((e) => {handleContentOpen(e, marker)})}>
-                            <Typography
-                                sx={{ display: 'inline', fontWeight: 'bold' }}
-                                component="span"
-                                variant="body2"
-                                color="primary"
-                            >Read more
-                            </Typography>
-                        </IconButton>
-                        {journeyOwner && journeyOwner === username &&
-                            <IconButton onClick={((e) => removeMarker(e, marker.id))}>
-                                <DeleteIcon></DeleteIcon>
-                            </IconButton>
-                        }
                     </React.Fragment>
                 }
             />
+            <ListItemAvatar>
+                <Avatar color="primary" sx={{backgroundColor: "#1b264f"}} 
+                    onClick={(() => addMarker(placeSuggestion.name, placeSuggestion.longitude, placeSuggestion.latitude))}>
+                    <AddCircleOutline/>
+                </Avatar>
+            </ListItemAvatar>
         </ListItemButton>
     );
 }
