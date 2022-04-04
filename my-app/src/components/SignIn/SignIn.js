@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+    Alert,
     Avatar,
     Box,
     Button,
     Container,
     CssBaseline,
     Link,
+    Snackbar,
     TextField,
     Typography
 } from '@mui/material';
@@ -17,31 +19,42 @@ import "./SignIn.css"
 export function SignIn(props) {
 
     const { setUsername } = props;
+    const [snackbar, setSnackbar] = useState();
+    const [open, setOpen] = useState();
     let navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        try {
-            const requestOptions = {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: data.get('username'),
-                    password: data.get('password'),
-                })
-            };
-            fetch(process.env.NODE_ENV === "production" ? 'https://api.coordinatea.me/signin' : 'http://localhost:5000/signin', requestOptions).then((res, err) => {
-                if (res.status === 200) {
+        const requestOptions = {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: data.get('username'),
+                password: data.get('password'),
+            })
+        };
+        fetch(process.env.NODE_ENV === "production" ? 'https://api.coordinatea.me/signin' : 'http://localhost:5000/signin', requestOptions)
+            .then((res) => {
+                if (res.ok) {
                     setUsername(data.get('username'))
-                    navigate(-1);
+                    navigate("/");
+                } else {
+                    return res.text().then((text) => {
+                        setErrorSnackbar(text)
+                    })
                 }
-
+            }).catch((error) => {
+                console.log(error)
             });
-        } catch (error) {
-            console.log(error);
-        }
+
+    }
+
+    const setErrorSnackbar = (message) => {
+        const messageJSON = JSON.parse(message)
+        setSnackbar(messageJSON.error);
+        setOpen(true);
     }
 
     return (
@@ -55,18 +68,18 @@ export function SignIn(props) {
                     alignItems: 'center',
                 }}
             >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
                         fullWidth
-                        color='secondary'
+                        color='primary'
                         id="username"
                         label="Username"
                         name="username"
@@ -77,7 +90,7 @@ export function SignIn(props) {
                         margin="normal"
                         required
                         fullWidth
-                        color='secondary'
+                        color='primary'
                         name="password"
                         label="Password"
                         type="password"
@@ -89,7 +102,7 @@ export function SignIn(props) {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
-                        color="secondary"
+                        color="primary"
                     >
                         Sign In
                     </Button>
@@ -98,6 +111,11 @@ export function SignIn(props) {
                     </Link>
                 </Box>
             </Box>
+            <Snackbar open={open} onClose={((e) => setOpen(false))} autoHideDuration={6000}>
+                <Alert severity="error" sx={{ width: '100%' }}>
+                    {snackbar}
+                </Alert>
+            </Snackbar>
         </Container>
     )
 }

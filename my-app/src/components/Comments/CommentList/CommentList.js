@@ -1,4 +1,4 @@
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Comment } from '../Comment/Comment';
@@ -17,20 +17,48 @@ const getParentCommentsQuery = gql`
     }
 `
 
+const deleteCommentMutation = gql`
+    mutation($commentId: ID) {
+        deleteComment(commentId: $commentId) {
+            username
+        }
+    }
+`
+
 export function CommentList(props) {
 
-    const { parentId } = props;
+    const { parentId, username } = props;
 
     const [comments, setComments] = useState([]);
 
-    const [getParentComments, { loading, error, data }] = useLazyQuery(getParentCommentsQuery, {
+    const [getParentComments] = useLazyQuery(getParentCommentsQuery, {
         variables: {
             id: parentId
         },
         onCompleted: (data) => {
+            console.log(data);
             setComments(data.getParentComments);
         }
     })
+
+    const [deleteComment] = useMutation(deleteCommentMutation, {
+        onCompleted: (data) => {
+            console.log(data);
+            getParentComments();
+        },
+        onError: error => {
+            console.log(username);
+            console.log(error)
+        }
+    })
+
+    const removeComment = (commentId) => {
+        deleteComment({
+            variables: {
+                commentId: commentId
+            }
+        })
+    }
 
     useEffect(() => {
         getParentComments()
@@ -42,12 +70,12 @@ export function CommentList(props) {
                 {comments.map((comment) => (
                     <div key={'list-' + comment.id}>
                         <ListItem divider>
-                            <Comment username={comment.username} content={comment.content} createdAt={comment.createdAt} />
+                            <Comment username={comment.username} content={comment.content} createdAt={comment.createdAt} owner={comment.username === username} id={comment.id} removeComment={removeComment} />
                         </ListItem>
                     </div>
                 ))}
             </List>
-            <CommentForm comments={comments} setComments={setComments} parentId={parentId} />
+            <CommentForm comments={comments} getComments={getParentComments} parentId={parentId} />
         </Box>
     )
 }

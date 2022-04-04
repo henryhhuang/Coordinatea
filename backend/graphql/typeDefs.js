@@ -6,6 +6,7 @@ module.exports = gql`
         id: ID!
         username: String
         email: String
+        description: String
         createdAt: String
         following: [User]
     }
@@ -122,11 +123,14 @@ module.exports = gql`
         follow(subscriberUsername: String, publisherUsername: String): [User!]!
         unfollow(subscriberUsername: String, publisherUsername: String): [User!]!
         createComment(parentId: ID, content: String): Comment!
+        deleteComment(commentId: ID): Comment!
         createJourney(journey: JourneyInput): Journey!
         createMarker(marker: MarkerInput): Marker!
         createSuggestion(suggestion: SuggestionInput): Suggestion!
         deleteJourney(journeyId: ID!): Journey!
         deleteMarker(markerId: ID!): Marker!
         deleteSuggestion(suggestionId: ID!): Suggestion!
+        updateProfile(username: String, email: String, description: String): User
+        changePassword(username: String, oldPassword: String, newPassword: String, passwordConfirm: String): User
     }
 `

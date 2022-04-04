@@ -49,15 +49,13 @@ const commentResolvers = {
             await newComment.save();
             return newComment;
         },
-        /*
-        deleteComment: async (_, { id }, context) => {
-            console.log(context);
-            const comment = await Comment.findById(id);
-            if (!comment)
-                throw new Error("Comment does not exist");
-
+        deleteComment: async (_, { commentId }, context) => {
+            resolverUtils.isAuthenticated(context)
+            const comment = await Comment.findById(commentId);
+            resolverUtils.isAuthorized(context, comment.username)
+            await Comment.deleteOne(comment)
+            return comment
         }
-        */
     }
 }
 

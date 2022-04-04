@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
+import avatar from '../../static/avatar.png';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
@@ -48,6 +49,7 @@ const ResponsiveAppBar = (props) => {
       console.log(res)
       setUsername(null)
     })
+    setAnchorElUser(null);
   }
 
   return (
@@ -68,50 +70,51 @@ const ResponsiveAppBar = (props) => {
           </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              <Link to="/following" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem>
-                  <Typography>Following</Typography>
-                </MenuItem>
-              </Link>
-              <Link to="/discover" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem>
-                  <Typography>Discover</Typography>
-                </MenuItem>
-              </Link>
-              <Link to="/journey/create" style={{ color: 'black', textDecoration: 'none' }}>
-                <MenuItem>
-                  <Typography>Create Journey</Typography>
-                </MenuItem>
-              </Link>
-            </Menu>
+            {username ?
+              (<div><IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  open={Boolean(anchorElNav)}
+                  onClose={handleCloseNavMenu}
+                  sx={{
+                    display: { xs: 'block', md: 'none' },
+                  }}
+                >
+                  <Link to="/following" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem>
+                      <Typography>Following</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link to="/discover" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem>
+                      <Typography>Discover</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link to="/journey/create" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem>
+                      <Typography>Create Journey</Typography>
+                    </MenuItem>
+                  </Link>
+                </Menu></div>) : (<></>)}
           </Box>
           <Typography
             variant="h6"
@@ -149,7 +152,7 @@ const ResponsiveAppBar = (props) => {
 
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar><AccountCircleIcon /></Avatar>
+                <Avatar src={avatar} />
               </IconButton>
             </Tooltip>
             <Menu
