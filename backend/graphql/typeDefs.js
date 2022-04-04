@@ -123,6 +123,7 @@ module.exports = gql`
         follow(subscriberUsername: String, publisherUsername: String): [User!]!
         unfollow(subscriberUsername: String, publisherUsername: String): [User!]!
         createComment(parentId: ID, content: String): Comment!
+        deleteComment(commentId: ID): Comment!
         createJourney(journey: JourneyInput): Journey!
         createMarker(marker: MarkerInput): Marker!
         createSuggestion(suggestion: SuggestionInput): Suggestion!

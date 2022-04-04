@@ -296,7 +296,7 @@ export function ViewJourney(props) {
                         </TabList>
                     </Box>
                     {/* todo: to center the markers/comments in tabpanel horizontally. display: "flex", alignItems: "center", this works for markers but breaks*/}
-                    <TabPanel value="1" sx={{ height: '95vh', overflow: 'auto', padding:"0px"}}>
+                    <TabPanel value="1" sx={{ height: '95vh', overflow: 'auto', padding: "0px" }}>
                         {open && openMarker != null ? (
                             <MarkerContent className="marker-content"
                                 title={openMarker.title}
@@ -315,7 +315,7 @@ export function ViewJourney(props) {
                         )}
                     </TabPanel>
                     <TabPanel value="2" sx={{ padding: "0px" }}>
-                        <CommentList parentId={journeyId} />
+                        <CommentList parentId={journeyId} username={username} />
                     </TabPanel>
                 </TabContext>
                 <Snackbar open={openSnackbar} onClose={((e) => setOpenSnackbar(false))} autoHideDuration={6000}>

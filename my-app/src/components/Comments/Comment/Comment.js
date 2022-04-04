@@ -5,6 +5,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const intervals = {
     year: 60 * 60 * 24 * 365,
@@ -35,7 +36,7 @@ function commentAge(date) {
 }
 
 export function Comment(props) {
-    const { username, content, createdAt } = props
+    const { username, content, owner, createdAt, id, removeComment } = props
 
     return (
         <Container component="main" maxWidth="md">
@@ -53,10 +54,20 @@ export function Comment(props) {
                                 {commentAge(new Date(createdAt))}
                             </Typography>
                         </Grid>
+                        {
+                            owner &&
+                            <IconButton onClick={((e) => {
+                                e.preventDefault()
+                                removeComment(id)
+                            })} aria-label="delete">
+                                <DeleteIcon />
+                            </IconButton>
+                        }
                     </Grid>
                     <Typography align='left' variant='body1' sx={{ borderLeft: 1, ml: 2, p: 2, fontSize: 20 }}>
                         {content}
                     </Typography>
+
                 </Grid>
             </Grid>
         </Container>
