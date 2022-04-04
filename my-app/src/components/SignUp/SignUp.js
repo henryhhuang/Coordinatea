@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+    Alert,
     Avatar,
     Box,
     Button,
     Container,
     CssBaseline,
     Link,
+    Snackbar,
     TextField,
     Typography,
 } from '@mui/material'
@@ -15,8 +17,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import "./SignUp.css"
 
 export function SignUp(props) {
-
     const { setUsername } = props;
+    const [snackbar, setSnackbar] = useState();
+    const [open, setOpen] = useState();
 
     let navigate = useNavigate()
 
@@ -39,10 +42,20 @@ export function SignUp(props) {
                 if (res.status === 200) {
                     setUsername(data.get('username'))
                     navigate(-1);
+                } else {
+                    return res.text().then((text) => {
+                        setErrorSnackbar(text)
+                    })
                 }
             })
         } catch (err) {
         }
+    }
+
+    const setErrorSnackbar = (message) => {
+        const messageJSON = JSON.parse(message)
+        setSnackbar(messageJSON.error);
+        setOpen(true);
     }
 
     return (
@@ -56,7 +69,7 @@ export function SignUp(props) {
                     alignItems: 'center',
                 }}
             >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
@@ -67,7 +80,7 @@ export function SignUp(props) {
                         margin="normal"
                         required
                         fullWidth
-                        color='secondary'
+                        color='primary'
                         id="username"
                         label="Username"
                         name="username"
@@ -78,7 +91,7 @@ export function SignUp(props) {
                         margin="normal"
                         required
                         fullWidth
-                        color='secondary'
+                        color='primary'
                         id="email"
                         label="Email Address"
                         name="email"
@@ -89,7 +102,7 @@ export function SignUp(props) {
                         margin="normal"
                         required
                         fullWidth
-                        color='secondary'
+                        color='primary'
                         name="password"
                         label="Password"
                         type="password"
@@ -100,7 +113,7 @@ export function SignUp(props) {
                         margin="normal"
                         required
                         fullWidth
-                        color='secondary'
+                        color='primary'
                         id="passwordConfirm"
                         type="password"
                         label="Confirm Password"
@@ -112,7 +125,7 @@ export function SignUp(props) {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
-                        color="secondary"
+                        color="primary"
                     >
                         Sign Up
                     </Button>
@@ -121,6 +134,11 @@ export function SignUp(props) {
                     </Link>
                 </Box>
             </Box>
+            <Snackbar open={open} onClose={((e) => setOpen(false))} autoHideDuration={6000}>
+                <Alert severity="error" sx={{ width: '100%' }}>
+                    {snackbar}
+                </Alert>
+            </Snackbar>
         </Container>
     )
 }
