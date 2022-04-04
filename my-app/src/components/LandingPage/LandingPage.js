@@ -69,7 +69,7 @@ export function LandingPage() {
                         Make Your Account Today!
                     </Typography>
                     <img src={astronaut4} style={{ p: '5vh', height: '50vh', width: '50vh' }} />
-                    <Button href={"./signup/"} sx={{ backgroundColor: 'white', color: 'black', width: '20vw', fontSize: 32, fontWeight: 'bold' }}>Sign Up</Button>
+                    <Button href={"./signup/"} variant='contained' sx={{ backgroundColor: 'white', color: 'black', width: '20vw', fontSize: 32, fontWeight: 'bold' }}>Sign Up</Button>
                 </div>
             </div >
         </div >
