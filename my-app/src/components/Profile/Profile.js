@@ -260,7 +260,7 @@ export function Profile() {
                             </TabList>
                         </Box>
                         <TabPanel value="1" sx={{ height: '90vh', overflow: 'auto' }}>
-                            <Box component="form" onSubmit={handleUpdateProfile} noValidate xs={4} sx={{ mt: 1 }}>
+                            <Box component="form" onSubmit={handleUpdateProfile} xs={4} sx={{ mt: 1 }}>
                                 <TextField
                                     margin="normal"
                                     required
@@ -328,7 +328,7 @@ export function Profile() {
                             </Box>
                         </TabPanel>
                         <TabPanel value="2" sx={{ height: '90vh', overflow: 'auto' }}>
-                            <Box component="form" onSubmit={hnadleChangePassword} noValidate xs={4} sx={{ mt: 1 }}>
+                            <Box component="form" onSubmit={hnadleChangePassword} xs={4} sx={{ mt: 1 }}>
                                 <TextField
                                     margin="normal"
                                     required

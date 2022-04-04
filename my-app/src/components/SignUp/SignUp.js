@@ -75,7 +75,7 @@ export function SignUp(props) {
                 <Typography component="h1" variant="h5">
                     Sign Up
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} afterSubmit={() => navigate("/")} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} afterSubmit={() => navigate("/")} sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
