@@ -35,7 +35,7 @@ export function SignIn(props) {
             fetch(process.env.NODE_ENV === "production" ? 'https://api.coordinatea.me/signin' : 'http://localhost:5000/signin', requestOptions).then((res, err) => {
                 if (res.status === 200) {
                     setUsername(data.get('username'))
-                    navigate(-1);
+                    navigate("/");
                 }
 
             });

@@ -49,6 +49,7 @@ const ResponsiveAppBar = (props) => {
       console.log(res)
       setUsername(null)
     })
+    setAnchorElUser(null);
   }
 
   return (
