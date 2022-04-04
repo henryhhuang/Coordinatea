@@ -8,18 +8,18 @@ const app = express();
 const path = require('path');
 require('dotenv').config();
 
-let multer  = require('multer');
+let multer = require('multer');
 
 let upload;
 let isProduction = false;
 let domain;
 
 if (process.env.NODE_ENV === "production") {
-    upload = multer({ dest: "/backend/uploads"});
+    upload = multer({ dest: "/backend/uploads" });
     isProduction = true;
     domain = "coordinatea.me";
 } else {
-    upload = multer({ dest: path.join(__dirname, 'uploads')});
+    upload = multer({ dest: path.join(__dirname, 'uploads') });
     domain = "localhost";
 }
 
@@ -78,6 +78,7 @@ app.post('/signup/', async (req, res, next) => {
         username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
+        description: '',
         createdAt: new Date().toISOString(),
     })
     await newUser.save((error, doc, _) => {
@@ -102,8 +103,8 @@ app.post('/signin/', async (req, res, next) => {
     return res.json("signed in");
 });
 
-let isAuthenticated = function(req, res, next) {
-    if (!req.session.username) return res.status(401).json({ error: "User must be authenticated."});
+let isAuthenticated = function (req, res, next) {
+    if (!req.session.username) return res.status(401).json({ error: "User must be authenticated." });
     next();
 };
 

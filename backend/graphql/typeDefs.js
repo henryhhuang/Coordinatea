@@ -6,6 +6,7 @@ module.exports = gql`
         id: ID!
         username: String
         email: String
+        description: String
         createdAt: String
         following: [User]
     }
@@ -128,5 +129,7 @@ module.exports = gql`
         deleteJourney(journeyId: ID!): Journey!
         deleteMarker(markerId: ID!): Marker!
         deleteSuggestion(suggestionId: ID!): Suggestion!
+        updateProfile(username: String, email: String, description: String): User
+        changePassword(username: String, oldPassword: String, newPassword: String, passwordConfirm: String): User
     }
 `
