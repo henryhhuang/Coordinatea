@@ -21,8 +21,6 @@ const deleteCommentMutation = gql`
     mutation($commentId: ID) {
         deleteComment(commentId: $commentId) {
             username
-            content
-            createdAt
         }
     }
 `
@@ -33,20 +31,23 @@ export function CommentList(props) {
 
     const [comments, setComments] = useState([]);
 
-    const [getParentComments, { loading, error, data }] = useLazyQuery(getParentCommentsQuery, {
+    const [getParentComments] = useLazyQuery(getParentCommentsQuery, {
         variables: {
             id: parentId
         },
         onCompleted: (data) => {
+            console.log(data);
             setComments(data.getParentComments);
         }
     })
 
     const [deleteComment] = useMutation(deleteCommentMutation, {
         onCompleted: (data) => {
+            console.log(data);
             getParentComments();
         },
         onError: error => {
+            console.log(username);
             console.log(error)
         }
     })
@@ -54,7 +55,7 @@ export function CommentList(props) {
     const removeComment = (commentId) => {
         deleteComment({
             variables: {
-                commentId
+                commentId: commentId
             }
         })
     }
@@ -74,7 +75,7 @@ export function CommentList(props) {
                     </div>
                 ))}
             </List>
-            <CommentForm comments={comments} setComments={setComments} parentId={parentId} />
+            <CommentForm comments={comments} getComments={getParentComments} parentId={parentId} />
         </Box>
     )
 }

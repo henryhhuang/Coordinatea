@@ -17,7 +17,7 @@ import { Snackbar } from '@material-ui/core';
 
 export function CommentForm(props) {
 
-    const { comments, setComments, parentId } = props;
+    const { comments, getComments, parentId } = props;
     const [snackbar, setSnackbar] = useState();
     const [open, setOpen] = useState();
 
@@ -34,8 +34,7 @@ export function CommentForm(props) {
 
     const [createComment, { data, loading, error }] = useMutation(createCommentMutation, {
         onCompleted: (data) => {
-            const newComments = [...comments, data.createComment];
-            setComments(newComments);
+            getComments()
         },
         onError: (error) => {
             console.log(error.message);

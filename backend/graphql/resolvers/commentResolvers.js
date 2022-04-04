@@ -53,9 +53,7 @@ const commentResolvers = {
             resolverUtils.isAuthenticated(context)
             const comment = await Comment.findById(commentId);
             resolverUtils.isAuthorized(context, comment.username)
-            if (!comment)
-                throw new Error("Comment does not exist");
-            await Comment.findOneAndRemove({ id: commentId })
+            await Comment.deleteOne(comment)
             return comment
         }
     }
