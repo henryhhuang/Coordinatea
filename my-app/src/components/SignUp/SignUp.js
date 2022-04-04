@@ -39,7 +39,7 @@ export function SignUp(props) {
                 })
             };
             fetch(process.env.NODE_ENV === "production" ? 'https://api.coordinatea.me/signup' : 'http://localhost:5000/signup', requestOptions).then(res => {
-                if (res.status === 200) {
+                if (res.ok) {
                     setUsername(data.get('username'))
                     navigate("/");
                 } else {
