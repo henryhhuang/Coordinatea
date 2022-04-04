@@ -20,6 +20,7 @@ const ListItemButton = withStyles({
 
 export function Marker(props) {
     const { currentMarker, marker, handleChange, handleContentOpen, username, journeyOwner, removeMarker} = props;
+
     return (
         <ListItemButton selected={currentMarker == marker.id} onClick={(e) => handleChange(marker.id)} alignItems="flex-start">
             <ListItemAvatar>

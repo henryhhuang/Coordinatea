@@ -44,8 +44,6 @@ export function Mapbox(props) {
 
   const mapRef = useRef(null);
 
-  //the below useEffects checks if parent props have been changed and if so updates this component
-  //todo: it might be inefficient for currentMarker
   useEffect(() => {
     if (props.markersParent) {
       setMarkers(props.markersParent)
@@ -59,24 +57,9 @@ export function Mapbox(props) {
   useEffect(() => {
     if (mapRef && mapRef.current) {
         currentMarker = props.currentMarker
-        // setMarker(currentMarker)
-        // zoomToMarker(null, currentMarker);
         zoomToMarker(null, currentMarker);
-        // zoomToPopup(null, currentMarker);
     }
   }, [props.currentMarker])
-
-  // useEffect(() => {//once the data is loaded and marker is not null, zoom to the marker
-  //   if (mapRef && mapRef.current) {
-  //     console.log(markers);
-  //     console.log(marker);
-  //     if (marker != 0 && markers.length != 0) {
-  //       console.log(markers);
-  //       console.log(marker)
-  //       zoomToPopup(null, marker);
-  //     }
-  //   }
-  // }, [markers])
 
   //can refactor to its own component
   //parts taken from https://codesandbox.io/s/l7p179qr6m?file=/src/index.js

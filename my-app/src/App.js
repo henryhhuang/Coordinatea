@@ -20,8 +20,6 @@ import { Profile } from './components/Profile/Profile';
 
 const env = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/graphql' : 'https://api.coordinatea.me/graphql';
 const link = createHttpLink({
-  // uri: 'http://147.182.149.236:5000/graphql',
-  // uri: 'https://api.coordinatea.me/graphql',
   uri: env,
   credentials: 'include'
 })
@@ -45,8 +43,8 @@ const theme = createTheme({
     },
     secondary: {
       light: '#63a4ff',
-      main: '#1976d2',
-      dark: '#004ba0',
+      main: '#361b4f',
+      dark: '#4f1b4d',
       contrastText: '#fff',
     },
   },

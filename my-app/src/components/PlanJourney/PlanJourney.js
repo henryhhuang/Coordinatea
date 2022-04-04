@@ -2,39 +2,26 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { Journey_Mutations } from '../../graphql/mutation/journey';
 import { useNavigate } from "react-router-dom";
-import {
-    Avatar,
-    Box,
-    Button,
-    Container,
-    CssBaseline,
-    Link,
-    TextField,
-    Typography,
-} from '@mui/material'
+import { Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import { uploadImage } from '../../util/uploadImage.mjs';
+import { uploadImage } from '../../api.mjs';
 import { Switch } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 
-import "./CreateJourney.css"
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const url = window.location.href;
-
-export function CreateJourney(props) {
-
+export function PlanJourney() {
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
     const [fromDate, setFromDate] = useState();
@@ -43,33 +30,23 @@ export function CreateJourney(props) {
     const [uploadedImage, setUploadedImage] = useState();
     const [isImageUploaded, setIsImageUploaded] = useState(false);
     const [journey, setJourney] = useState();
-
-    const [journeyType, setJourneyType] = useState("PREVIOUS");
     const [suggestionsEnabled, setSuggestionsEnabled] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
-
     const [open, setOpen] = useState();
     const [snackbar, setSnackbar] = useState();
 
     const navigate = useNavigate();
-
-    const [createJourney] = useMutation(Journey_Mutations.CREATE_JOURNEY, {
-        onCompleted: data => {
-            if (data.createJourney.journeyType === "PLAN") {
-                navigate("../journey/plan/" + data.createJourney.id, { replace: true })
-            } else {
-                navigate(data.createJourney.id, { replace: true })
-            }
-        },
-        onError: error => setErrorSnackbar(error.message)
-    })
 
     const fileChange = (e) => {
         setImage(e.target.files[0]);
         setIsImageUploaded(true);
     }
 
-    //Send request to save journey once image upload is complete
+    const [createJourney, { data, loading, error }] = useMutation(Journey_Mutations.CREATE_JOURNEY, {
+        onCompleted: data => navigate(data.createJourney.id, { replace: true }),
+        onError: error => setErrorSnackbar(error.message)
+    })
+
     useEffect(() => {
         if (journey && uploadedImage) {
             createJourney({
@@ -81,8 +58,7 @@ export function CreateJourney(props) {
                         toDate: journey.toDate,
                         fromDate: journey.fromDate,
                         suggestionsEnabled,
-                        isPublic,
-                        journeyType
+                        isPublic
                     }
                 }
             })
@@ -100,8 +76,7 @@ export function CreateJourney(props) {
                         toDate: journey.toDate,
                         fromDate: journey.fromDate,
                         suggestionsEnabled,
-                        isPublic,
-                        journeyType
+                        isPublic
                     }
                 }
             })
@@ -114,13 +89,10 @@ export function CreateJourney(props) {
     }
 
     const handleChange = (event, value) => {
-        switch(value) {
-            case 'suggestions':
-                setSuggestionsEnabled(event.target.checked);
-            case 'public':
-                setIsPublic(event.target.checked);
-            default:
-                setJourneyType(event.target.value);
+        if (value === "suggestions") {
+            setSuggestionsEnabled(event.target.checked);
+        } else {
+            setIsPublic(event.target.checked);
         }
     };
 
@@ -132,27 +104,33 @@ export function CreateJourney(props) {
             return;
         }
 
-        let newJourney = {
-            title: titleRef.current.value,
-            description: descriptionRef.current.value,
-            imageId: null,
-            toDate: toDate,
-            fromDate: fromDate
-        }        
         if (isImageUploaded) {
             uploadImage(image, setUploadedImage, setErrorSnackbar);
         } else {
-            newJourney.imageId = ""
+            let newJourney = {
+                title: titleRef.current.value,
+                description: descriptionRef.current.value,
+                imageId: "",
+                toDate: toDate,
+                fromDate: fromDate
+            }
+            setJourney(newJourney);
         }
-        setJourney(newJourney);
     };
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
-            <Box sx={{marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
                 <Typography component="h1" variant="h5">
-                    Create a Journey
+                    Plan a Journey
                 </Typography>
                 <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
@@ -179,19 +157,6 @@ export function CreateJourney(props) {
                         autoFocus
                         inputRef={descriptionRef}
                     />
-                    <FormControl sx={{ marginTop: "20px" }} fullWidth>
-                        <InputLabel id="demo-simple-select-label">Journey Type</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={journeyType}
-                            label="Journey Type"
-                            onChange={((e) => handleChange(e, "type"))}
-                            >
-                            <MenuItem value={"PREVIOUS"}>Past Journey</MenuItem>
-                            <MenuItem value={"PLAN"}>Plan</MenuItem>
-                        </Select>
-                    </FormControl>
                     <div className='dates'>
                         <LocalizationProvider className="fromDate" dateAdapter={AdapterDateFns}>
                             <DatePicker
@@ -219,7 +184,6 @@ export function CreateJourney(props) {
                     <Button
                         variant="contained"
                         component="label"
-                        color="secondary"
                     >
                         Upload File
                         <input
@@ -230,18 +194,18 @@ export function CreateJourney(props) {
                     </Button>
                     <div>
                         <FormControlLabel onChange={((e) => handleChange(e, "suggestions"))} control={<Switch defaultChecked />} label="Viewer Suggestions"></FormControlLabel>
-                        <FormControlLabel onChange={((e) => handleChange(e, "public"))}  control={<Switch defaultChecked />} label="Public"></FormControlLabel>
+                        <FormControlLabel onChange={((e) => handleChange(e, "public"))} control={<Switch defaultChecked />} label="Public"></FormControlLabel>
                     </div>
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
-                        color="secondary"
+                        color="primary"
                     >
-                        Create Journey
+                        Start planning
                     </Button>
-                    <Snackbar open={open} onClose={((e) => setOpen(false))}autoHideDuration={6000}>
+                    <Snackbar open={open} onClose={((e) => setOpen(false))} autoHideDuration={6000}>
                         <Alert severity="error" sx={{ width: '100%' }}>
                             {snackbar}
                         </Alert>

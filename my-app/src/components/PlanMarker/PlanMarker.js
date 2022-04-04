@@ -3,8 +3,8 @@ import Grid from '@mui/material/Grid';
 import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import List from '@mui/material/List';
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import { ListItem, Tabs } from '@mui/material';
+import { withStyles } from "@material-ui/core/styles";
+import { ListItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import MuiListItemButton from '@mui/material/ListItemButton';
 import { CreateMarkerContent } from '../CreateMarkerContent/CreateMarkerContent'
@@ -18,7 +18,7 @@ import { Suggestion_Queries } from '../../graphql/queries/suggestions';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import { uploadImage } from '../../api.mjs';
+import { uploadImage } from '../../util/uploadImage.mjs';
 import { MarkerContent } from '../MarkerContent/MarkerContent';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -33,12 +33,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const useStyles = makeStyles({
-    tabPanelRoot: {
-        padding: 0
-    },
-});
-
 const ListItemButton = withStyles({
     root: {
       "&$selected": {
@@ -48,25 +42,16 @@ const ListItemButton = withStyles({
     selected: {}
   })(MuiListItemButton);
 
-const url = window.location.href;
-
 export function PlanMarker (props) {
-    const classes = useStyles();
-
     const { username } = props;
-
     const [tabValue, setTabValue] = useState("1");
     const { journeyId, id2 } = useParams();
     const [open, setOpen] = useState(0);
     const [currentMarker, setCurrentMarker] = useState(0);
     const [openMarker, setOpenMarker] = useState(null);
-
     const [placeSuggestions, setPlaceSuggestions] = useState([]);
-    // const [openMarker, setOpenMarker] = React.useState(id2 || 0);
-    // todo let user edit their journey card here
     const [journey, setJourney] = useState()
     const [markers, setMarkers] = useState([]);
-    // const [image, setImage] = useState();
     const [uploadedImage, setUploadedImage] = useState();
     const [newMarker, setNewMarker] = useState(null);
     const [accessToken, setAccessToken] = useState();
@@ -147,7 +132,6 @@ export function PlanMarker (props) {
     };
 
     const handleBack = () => {
-        window.history.pushState({}, null, url);
         setOpen(false);
         setOpenMarker({});
     }
@@ -185,7 +169,6 @@ export function PlanMarker (props) {
             return;
         }
         setOpen(false);
-        // setImage(image);
         let marker = {
             journeyId: journeyId,
             title: title,
@@ -195,15 +178,11 @@ export function PlanMarker (props) {
             longitude: newMarker.longitude,
             latitude: newMarker.latitude,
         }
-        console.log(marker);
         setNewMarker(marker)
         uploadImage(image, setUploadedImage, setErrorSnackbar);
     }
 
     const handleContentOpen = (e, marker) => {
-        //todo: check if url ends with /
-        // window.history.pushState({}, null, url + "/1");
-        // setOpenMarker(1);
         setOpenMarker(marker);
         setOpen(true);
     }

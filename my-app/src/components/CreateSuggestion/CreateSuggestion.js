@@ -1,13 +1,8 @@
-import Container from '@mui/material/Container';
-import PublicIcon from '@mui/icons-material/Public';
-import PlaceIcon from '@mui/icons-material/Place';
-import HotelIcon from '@mui/icons-material/Hotel';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import { Avatar } from '@mui/material';
 import {Popup, Marker} from 'react-map-gl';
 import { useState, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
+import { SuggestionIcon } from '../SuggestionIcon';
 import "./CreateSuggestion.css";
 
 export function CreateSuggestion (props) {
@@ -15,20 +10,6 @@ export function CreateSuggestion (props) {
 
     const [selectedImage, setSelectedImage] = useState();
     const descriptionRef = useRef();
-
-    //todo: refactor
-    const renderIcon = (type) => {
-        switch(type) {
-            case 'hotel':
-                return <HotelIcon/>
-            case 'restaurant':
-                return <RestaurantIcon/>
-            case 'tourist':
-                return <PlaceIcon/>
-            default:
-                return <PublicIcon/>
-        }
-    }
 
     const validateSubmit = (e) => {
         e.preventDefault();
@@ -80,9 +61,9 @@ export function CreateSuggestion (props) {
             className="marker" longitude={longitude} 
             latitude={latitude} 
             anchor="bottom" >
-                <Avatar sx={{backgroundColor: "#d78cc1"}}>
-                    {renderIcon(type)}
-                </Avatar>
+                <SuggestionIcon 
+                    type={type}
+                />
         </Marker>
         </div>
     )

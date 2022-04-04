@@ -1,7 +1,7 @@
 
 import { Journey } from "../Journey/Journey";
 import Paper from '@mui/material/Paper';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLazyQuery, useMutation} from '@apollo/client'
 import { Journey_Querys } from '../../graphql/queries/journey'
 import { Journey_Mutations } from "../../graphql/mutation/journey";

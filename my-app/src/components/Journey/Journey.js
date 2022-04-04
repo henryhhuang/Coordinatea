@@ -19,9 +19,9 @@ export function Journey(props) {
 
     const renderJourneyType = (type) => {
         if (type === "PREVIOUS") {
-            return <Chip label="Past Journey" icon={<FlightLandIcon/>}/>
+            return <Chip disabled={true} color="secondary" label="Past Journey" icon={<FlightLandIcon/>}/>
         } else {
-            return <Chip label="Journey Plan" icon={<EventIcon/>}/>
+            return <Chip disabled={true} color="secondary" label="Journey Plan" icon={<EventIcon/>}/>
         }
     }
 
@@ -60,13 +60,13 @@ export function Journey(props) {
                         </Typography>
                     </CardContent>
                     <CardActions sx={{paddingTop: 4}} disableSpacing>
-                        <FormControlLabel disabled={true} onClick={((e) => e.preventDefault())} onChange={((e) => e.stopPropagation())} control={<Switch checked={journey.suggestionsEnabled} />} label="Suggestions"></FormControlLabel>
+                        <FormControlLabel disabled={true} onClick={((e) => e.preventDefault())} onChange={((e) => e.stopPropagation())} control={<Switch color="secondary" checked={journey.suggestionsEnabled} />} label="Suggestions"></FormControlLabel>
                        {renderJourneyType(journey.journeyType)}
                         {journey.username === username &&
                         <IconButton onClick={((e) => {
                             e.preventDefault() 
                             removeJourney(journey.id)})} aria-label="delete">
-                            <DeleteIcon/>
+                            <DeleteIcon color="secondary"/>
                         </IconButton>
                         }    
                     </CardActions>

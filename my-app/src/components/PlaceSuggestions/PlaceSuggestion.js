@@ -3,6 +3,7 @@ import { List } from "@mui/material";
 import RoomIcon from '@mui/icons-material/Room';
 import { Stack } from "@mui/material";
 import { PlaceSuggestion } from "../PlaceSuggestion/PlaceSuggestion";
+
 export function PlaceSuggestions(props) {
     const { placeSuggestions, currentMarker, handleChange, addMarker} = props;
 

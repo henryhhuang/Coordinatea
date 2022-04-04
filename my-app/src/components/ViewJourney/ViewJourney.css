@@ -1,13 +1,9 @@
 .toggle {
   position: relative;
   top: 0px;
-  /* left: 100px;
-  top: 150px; */
 }
 
 .map-container {
-  /* height: 100vh; */
-  /* min-height: 800px; */
   height: 100vh;
   width: 100%;
   position: relative;
@@ -25,41 +21,3 @@
   margin: 12px;
   border: 0px;
 }
-
-.item-enter {
-    opacity: 0;
-  }
-  .item-enter-active {
-    opacity: 1;
-    transition: opacity 500ms ease-in;
-  }
-  .item-exit {
-    opacity: 1;
-  }
-  .item-exit-active {
-    opacity: 0;
-    transition: opacity 500ms ease-in;
-  }
-
-  
-/* .markerTransition-enter {
-    opacity: 0.01;
-    transform: scale(1.1);
-}
-
-.markerTransition-enter-active {
-opacity: 1;
-transform: scale(1);
-transition: all 1000ms ease-in-out;
-}
-
-.markerTransition-exit {
-opacity: 1;
-transform: scale(1);
-}
-
-.markerTransition-exit-active {
-opacity: 0.01;
-transform: scale(1.1);
-transition: all 1000ms ease-in-out;
-} */

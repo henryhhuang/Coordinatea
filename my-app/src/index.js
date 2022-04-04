@@ -9,8 +9,6 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink} from "@apo
 
 const env = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/graphql' : 'https://api.coordinatea.me/graphql';
 const link = createHttpLink({
-  // uri: 'http://147.182.149.236:5000/graphql',
-  // uri: 'https://api.coordinatea.me/graphql'
   uri: env,
   credentials: 'include'
 })

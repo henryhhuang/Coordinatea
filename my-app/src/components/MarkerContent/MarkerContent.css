@@ -4,13 +4,3 @@
     width: '100%';
     transition: all 10s linear 10s;
 }
-
-/* .transition {
-    opacity: 1;
-    transition: all 250ms linear;
-  }
-  
-.transition-hidden {
-    opacity: 0;
-    transition: all 250ms linear;
-} */

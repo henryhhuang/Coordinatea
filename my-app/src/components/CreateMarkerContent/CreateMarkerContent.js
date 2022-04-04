@@ -1,10 +1,10 @@
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
-import './CreateMarkerContent.css'
 import { IconButton } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { useRef, useState } from 'react';
+import './CreateMarkerContent.css'
 
 export function CreateMarkerContent (props) {
     const {handleSubmit, handleBack, setErrorSnackbar} = props;
@@ -15,7 +15,6 @@ export function CreateMarkerContent (props) {
     const descriptionRef = useRef(null);
 
     const fileChange = (e) => {
-        console.log(e)
         setSelectedFile(e.target.files[0]);
         setIsFilePicked(true);
     }

@@ -17,12 +17,12 @@ import { Common_Queries } from '../../graphql/queries/common';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import { uploadImage } from '../../api.mjs';
+import { uploadImage } from '../../util/uploadImage.mjs';
 import { MarkerContent } from '../MarkerContent/MarkerContent';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import "./CreateMarker.css";
 import { Markers } from '../Markers/Markers';
+import "./CreateMarker.css";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -47,12 +47,8 @@ export function CreateMarker (props) {
     const [open, setOpen] = React.useState(0);
     const [currentMarker, setCurrentMarker] = React.useState(0);
     const [openMarker, setOpenMarker] = React.useState(null);
-
-    // const [openMarker, setOpenMarker] = React.useState(id2 || 0);
-    // todo let user edit their journey card here
     const [journey, setJourney] = useState()
     const [markers, setMarkers] = useState([]);
-    // const [image, setImage] = useState();
     const [uploadedImage, setUploadedImage] = useState();
     const [newMarker, setNewMarker] = useState();
     const [accessToken, setAccessToken] = useState();
@@ -122,7 +118,6 @@ export function CreateMarker (props) {
     };
 
     const handleBack = () => {
-        window.history.pushState({}, null, url);
         setOpen(false);
         setOpenMarker({});
     }
@@ -161,7 +156,6 @@ export function CreateMarker (props) {
         }
         setOpen(false);
         setNewMarker();
-        // setImage(image);
         let marker = {
             journeyId: journeyId,
             title: title,
@@ -176,9 +170,6 @@ export function CreateMarker (props) {
     }
 
     const handleContentOpen = (e, marker) => {
-        //todo: check if url ends with /
-        // window.history.pushState({}, null, url + "/1");
-        // setOpenMarker(1);
         setOpenMarker(marker);
         setOpen(true);
     }
@@ -269,7 +260,6 @@ export function CreateMarker (props) {
                             </ListItemButton> 
                         </ListItem>
                     }
-                    {/* <Divider variant="inset" component="li" /> */}
                     {markers && journey && (
                         <Markers
                         markers={markers}

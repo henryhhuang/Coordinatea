@@ -11,12 +11,11 @@ import { Journey_Querys } from '../../graphql/queries/journey'
 import { Common_Queries } from '../../graphql/queries/common';
 import { Journey_Mutations } from '../../graphql/mutation/journey';
 import { useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
 import { Markers } from '../Markers/Markers';
 import { Button } from '@mui/material';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { uploadImage } from '../../api.mjs';
+import { uploadImage } from '../../util/uploadImage.mjs';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -41,24 +40,16 @@ const CreateMarkerButton = withStyles({
         "&:hover": {
             backgroundColor: "white"
         },
-        // color: "black",
         backgroundColor: "white",
         position: "absolute",
         top: "5%",
         right: "0",
         zIndex: "1",
-        // textTransform: "none",
         margin: "12px"
     },
     selected: {},
     hover: {}
 })(Button)
-
-//cant use this since if someone enters the url state will be empty
-// const location = useLocation()
-// const { from } = location.state
-
-const url = window.location.href;
 
 export function ViewJourney(props) {
     const { username } = props;
@@ -67,9 +58,8 @@ export function ViewJourney(props) {
     const [markers, setMarkers] = useState([]);
     const [currentMarker, setCurrentMarker] = useState();
     const [open, setOpen] = useState(false);
-    const [openMarker, setOpenMarker] = useState({});
+    const [openMarker, setOpenMarker] = useState(null);
     const { journeyId, markerId } = useParams();
-    const [imageMarker, setImageMarker] = useState();
     const [accessToken, setAccessToken] = useState();
     const [commentMarkerCreation, setCommentMarkerCreation] = useState(false);
     const [suggestionImage, setSuggestionImage] = useState();
@@ -114,8 +104,6 @@ export function ViewJourney(props) {
         onCompleted: data => getSuggestions()
     });
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         if (newSuggestion && suggestionImage) {
             createSuggestion({
@@ -157,13 +145,6 @@ export function ViewJourney(props) {
         }
     }, [currentMarker])
 
-    //wait to get imageId before opening content panel
-    useEffect(() => {
-        if (openMarker && imageMarker) {
-            setOpen(true);
-        }
-    }, [imageMarker])
-
     const handleChange = (value) => {
         setCurrentMarker(value);
     };
@@ -180,23 +161,14 @@ export function ViewJourney(props) {
         })
     }
 
-    //todo: doesn't work when user clicks browser's back button
     const handleBack = () => {
         setOpen(false);
         setOpenMarker({});
-        navigate(-1)
     }
 
-    const handleContentOpen = () => {
-        //Todos: check if url ends with / and add the / in push if necessary
-        //add a check if the url has :journeyId/:markerId, we should show details about the openMarker
-        if (!url.includes(markerId)) {
-            navigate(currentMarker);
-        }
-        let openMarker = markers.find((marker => marker.id == currentMarker));
-        setOpenMarker(openMarker);
-        setImageMarker(openMarker.imageId);
-        // getMarkerImageIds(currentMarker);
+    const handleContentOpen = (e, marker) => {
+        setOpenMarker(marker);
+        setOpen(true);
     }
 
     const onCommentMarkerCreate = (e) => {
@@ -301,7 +273,7 @@ export function ViewJourney(props) {
                             <MarkerContent className="marker-content"
                                 title={openMarker.title}
                                 description={openMarker.description}
-                                images={imageMarker}
+                                images={openMarker.imageId}
                                 handleBack={handleBack}
                             ></MarkerContent>
                         ) : (
