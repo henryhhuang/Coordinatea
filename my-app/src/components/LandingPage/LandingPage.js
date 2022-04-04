@@ -12,10 +12,6 @@ import "./LandingPage.css"
 
 export function LandingPage() {
 
-    const scrollToSection3 = (event) => {
-        document.getElementById('section3').scrollIntoView();
-    }
-
     return (
         <div id="landing-page">
             <div id="section1" style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#282e2f', height: '100vh' }}>
@@ -66,8 +62,11 @@ export function LandingPage() {
                     </IconButton>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '95vh' }}>
-                    <Typography align='center' variant='h2' sx={{ p: '5vh', fontWeight: 'bold', color: 'white' }}>
-                        Make an Account Today!
+                    <Typography align='center' variant='h2' sx={{ fontWeight: 'bold', color: 'white' }}>
+                        Become and Explorer!
+                    </Typography>
+                    <Typography align='center' variant='h2' sx={{ fontWeight: 'bold', color: 'white' }}>
+                        Make Your Account Today!
                     </Typography>
                     <img src={astronaut4} style={{ p: '5vh', height: '50vh', width: '50vh' }} />
                     <Button href={"./signup/"} sx={{ backgroundColor: 'white', color: 'black', width: '20vw', fontSize: 32, fontWeight: 'bold' }}>Sign Up</Button>
