@@ -6,7 +6,9 @@ const resolverUtils = require('./resolverUtils');
 const journeyResolvers = {
     Query: {
         getJourneys: async (_, { page }, context) => {
-            return await Journey.find({}).sort({ createdAt: -1 }).skip(page * 10).limit(10);
+            console.log(page)
+            const journeys = await Journey.find({}).sort({ createdAt: -1 }).skip(page * 10)
+            return journeys.slice(0, 10)
         },
         getJourney: async (_, { journeyId }) => {
             return await Journey.findById(journeyId);
