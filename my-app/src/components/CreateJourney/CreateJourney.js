@@ -112,7 +112,7 @@ export function CreateJourney() {
     }
 
     const handleChange = (event, value) => {
-        switch(value) {
+        switch (value) {
             case 'suggestions':
                 setSuggestionsEnabled(event.target.checked);
             case 'public':
@@ -136,7 +136,7 @@ export function CreateJourney() {
             imageId: null,
             toDate: toDate,
             fromDate: fromDate
-        }        
+        }
         if (isImageUploaded) {
             uploadImage(image, setUploadedImage, setErrorSnackbar);
         } else {
@@ -148,11 +148,11 @@ export function CreateJourney() {
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
-            <Box sx={{marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Typography component="h1" variant="h5">
                     Create a Journey
                 </Typography>
-                <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
@@ -185,7 +185,7 @@ export function CreateJourney() {
                             value={journeyType}
                             label="Journey Type"
                             onChange={((e) => handleChange(e, "type"))}
-                            >
+                        >
                             <MenuItem value={"PREVIOUS"}>Past Journey</MenuItem>
                             <MenuItem value={"PLAN"}>Plan</MenuItem>
                         </Select>
@@ -239,7 +239,7 @@ export function CreateJourney() {
                     >
                         Create Journey
                     </Button>
-                    <Snackbar open={open} onClose={((e) => setOpen(false))}autoHideDuration={6000}>
+                    <Snackbar open={open} onClose={((e) => setOpen(false))} autoHideDuration={6000}>
                         <Alert severity="error" sx={{ width: '100%' }}>
                             {snackbar}
                         </Alert>

@@ -108,10 +108,12 @@ const journeyResolvers = {
             return suggestion;
         },
         deleteJourney: async (_, { journeyId }, context) => {
+            console.log(journeyId);
             resolverUtils.isAuthenticated(context);
             const journey = await Journey.findById(journeyId);
             resolverUtils.isAuthorized(context, journey.username);
-            await Journey.deleteOne(journey)
+            const result = await Journey.deleteOne(journey)
+            console.log(result);
             return journey;
         },
         deleteMarker: async (_, { markerId }, context) => {

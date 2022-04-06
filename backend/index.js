@@ -6,6 +6,67 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const app = express();
 const path = require('path');
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
+
+
+/* Citation: sentryConfig code below taken from : 
+https://medium.com/@mahyor.sam/tracking-errors-in-apollo-graphql-with-sentry-549ae52c0c76
+*/
+const sentryConfig = {
+    requestDidStart(_) {
+        return {
+            didEncounterErrors(ctx) {
+                // If we couldn't parse the operation (usually invalid queries)
+                if (!ctx.operation) {
+                    for (const err of ctx.errors) {
+                        Sentry.withScope(scope => {
+                            scope.setExtra('query', ctx.request.query);
+                            Sentry.captureException(err);
+                        });
+                    }
+                    return;
+                }
+
+                for (const err of ctx.errors) {
+                    // Add scoped report details and send to Sentry
+                    Sentry.withScope(scope => {
+                        // Annotate whether failing operation was query/mutation/subscription
+                        scope.setTag('kind', ctx.operation.operation);
+
+                        // Log query and variables as extras (make sure to strip out sensitive data!)
+                        scope.setExtra('query', ctx.request.query);
+                        scope.setExtra('variables', ctx.request.variables);
+
+                        if (err.path) {
+                            // We can also add the path as breadcrumb
+                            scope.addBreadcrumb({
+                                category: 'query-path',
+                                message: err.path.join(' > '),
+                                level: Sentry.Severity.Debug,
+                            });
+                        }
+
+                        const transactionId = ctx.request.http.headers.get(
+                            'x-transaction-id',
+                        );
+                        if (transactionId) {
+                            scope.setTransaction(transactionId);
+                        }
+
+                        Sentry.captureException(err);
+                    });
+                }
+            },
+        };
+    },
+};
+
+Sentry.init({
+    dsn: "https://b15301c746614f6d82c2666359ceab98@o1191121.ingest.sentry.io/6312367",
+    tracesSampleRate: 1.0,
+});
+
 require('dotenv').config();
 
 let multer = require('multer');
@@ -58,6 +119,8 @@ app.use(session({
 const server = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
+    introspection: true,
+    plugins: [sentryConfig],
     context: ({ req, res }) => {
         return { req, res }
     }
@@ -68,10 +131,14 @@ server.applyMiddleware({ app, cors: { origin: ['https://147.182.149.236', 'https
 // REST endpoint for signup from piazza post @342: https://piazza.com/class/kxgjicgvryu3h8?cid=342
 app.post('/signup/', async (req, res, next) => {
     const user = await User.findOne({ username: req.body.username });
-    if (user)
+    if (user) {
+        Sentry.captureException(new Error("Username taken"))
         return res.status(400).json({ error: "Username taken" });
-    if (req.body.password != req.body.passwordConfirm)
+    }
+    if (req.body.password != req.body.passwordConfirm) {
+        Sentry.captureException(new Error("Passwords do not Match"))
         return res.status(400).json({ error: "Passwords do not match" });
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, SALT_ROUNDS);
     const newUser = new User({
         username: req.body.username,
@@ -82,8 +149,10 @@ app.post('/signup/', async (req, res, next) => {
     })
     await newUser.save((error, doc, _) => {
         console.log(req.session)
-        if (error)
+        if (error) {
+            Sentry.captureException(error)
             throw new Error(error)
+        }
         req.session.uid = doc._id
         req.session.username = newUser.username
         return res.json(doc.username);
@@ -92,18 +161,25 @@ app.post('/signup/', async (req, res, next) => {
 
 app.post('/signin/', async (req, res, next) => {
     const user = await User.findOne({ username: req.body.username });
-    if (!user)
+    if (!user) {
+        Sentry.captureException(new Error("Username and password combination not found."))
         return res.status(400).json({ error: "Username and password combination not found." });
+    }
     const auth = await bcrypt.compare(req.body.password, user.password)
-    if (!auth)
+    if (!auth) {
+        Sentry.captureException(new Error("Username and password combination not found."))
         return res.status(400).json({ error: "Username and password combination not found." });
+    }
     req.session.uid = user._id
     req.session.username = user.username
     return res.json("signed in");
 });
 
 let isAuthenticated = function (req, res, next) {
-    if (!req.session.username) return res.status(401).json({ error: "User must be authenticated." });
+    if (!req.session.username) {
+        Sentry.captureException(new Error("User must be authenticated"))
+        return res.status(401).json({ error: "User must be authenticated." });
+    }
     next();
 };
 
@@ -170,5 +246,5 @@ mongoose.connect(MONGODB, { useNewUrlParser: true })
         console.log(`🚀 Server ready at https://147.182.149.236:5000${server.graphqlPath}`)
     })
     .catch((error) => {
-        console.log(error);
+        Sentry.captureException(error);
     })
