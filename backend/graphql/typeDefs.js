@@ -8,7 +8,7 @@ module.exports = gql`
         email: String
         description: String
         createdAt: String
-        following: [User]
+        following: [String]
     }
     type Comment {
         id: ID!

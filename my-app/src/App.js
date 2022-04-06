@@ -10,7 +10,7 @@ import { LandingPage } from './components/LandingPage/LandingPage'
 import { NotFound } from './components/NotFound/NotFound'
 import { SignIn } from './components/SignIn/SignIn';
 import { SignUp } from './components/SignUp/SignUp';
-import { Follow } from './components/Follow/Follow';
+import { Following } from './components/Following/Following';
 import { gql, useQuery } from "@apollo/client";
 import React, { useState } from 'react';
 import { CssBaseline } from '@mui/material/';
@@ -86,7 +86,7 @@ function App() {
             <Route path="/journey/plan/:journeyId" element={<PlanMarker username={username} />}></Route>
             <Route path="/signin/" element={<SignIn setUsername={setUsername} />}></Route>
             <Route path="/signup/" element={<SignUp setUsername={setUsername} />}></Route>
-            <Route path="/follow/" element={<Follow />}></Route>
+            <Route path="/following/" element={<Following username={username} />}></Route>
             <Route path="/profile/:username" element={<Profile />}></Route>
           </Routes>
         </div>

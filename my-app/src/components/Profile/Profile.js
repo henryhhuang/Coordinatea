@@ -7,10 +7,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
 import TabPanel from '@mui/lab/TabPanel';
 import { format } from 'date-fns'
-import EditIcon from '@mui/icons-material/Edit';
+import { Journey } from '../Journey/Journey';
+import { Journey_Mutations } from "../../graphql/mutation/journey";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 const getUserQuery = gql`
   query {
@@ -34,11 +36,15 @@ const getUserByUsernameQuery = gql`
 const getUserJourneysQuery = gql`
     query ($username: String) {
         getUserJourneys(username: $username) {
-            id
-            title
-            description
-            fromDate
-            toDate
+            id,
+            username,
+            title,
+            imageId,
+            description,
+            fromDate,
+            toDate,
+            suggestionsEnabled,
+            journeyType
         }
     }
 `
@@ -80,6 +86,30 @@ mutation($username: String, $oldPassword: String, $newPassword: String, $passwor
 }
 `
 
+const getFollowersQuery = gql`
+    query ($username: String) {
+        getFollowers(username: $username) {
+            username
+        }
+    }
+`
+
+const followMutation = gql`
+    mutation ($subscriberUsername: String, $publisherUsername: String) {
+        follow(subscriberUsername: $subscriberUsername, publisherUsername: $publisherUsername) {
+            username
+        }
+    }
+`
+
+const unfollowMutation = gql`
+    mutation ($subscriberUsername: String, $publisherUsername: String) {
+        unfollow(subscriberUsername: $subscriberUsername, publisherUsername: $publisherUsername) {
+            username
+        }
+    }
+`
+
 
 export function Profile() {
     const { username } = useParams();
@@ -93,7 +123,7 @@ export function Profile() {
     const [formTab, setFormTab] = useState("1");
     const [edit, setEdit] = useState(false);
     const [followers, setFollowers] = useState([])
-    const followerCount = 0
+    const [followerCount, setFollowerCount] = useState(0)
 
 
     const [getUserProfile] = useLazyQuery(getUserByUsernameQuery, {
@@ -101,7 +131,6 @@ export function Profile() {
             username: username
         },
         onCompleted: (data) => {
-            console.log(data);
             if (data.getUserByUsername)
                 setUserProfile(data.getUserByUsername)
         }
@@ -129,7 +158,6 @@ export function Profile() {
             username: username
         },
         onCompleted: (data) => {
-            console.log(data);
             setUserComments(data.getUserComments);
             setCommentCount(data.getUserComments.length);
         }
@@ -153,11 +181,44 @@ export function Profile() {
         }
     })
 
+    const [deleteJourney] = useMutation(Journey_Mutations.DELETE_JOURNEY, {
+        onCompleted: (data) => {
+            getUserJourneys()
+        },
+        onError: error => {
+            console.log(error)
+        }
+    })
+
+    const [getFollowers] = useLazyQuery(getFollowersQuery, {
+        variables: {
+            username: username
+        },
+        onCompleted: (data) => {
+            console.log(data);
+            setFollowers(data.getFollowers);
+            setFollowerCount(data.getFollowers.length);
+        }
+    })
+
+    const [followUser] = useMutation(followMutation, {
+        onCompleted: (data) => {
+            getFollowers();
+        }
+    })
+
+    const [unfollowUser] = useMutation(unfollowMutation, {
+        onCompleted: (data) => {
+            getFollowers();
+        }
+    })
+
     useEffect(() => {
         getUserProfile()
         getLoggedInUser()
         getUserJourneys()
         getUserComments()
+        getFollowers();
     }, [])
 
     //var { error, loading, data} = useQuery(getUserFollower)
@@ -187,7 +248,7 @@ export function Profile() {
 
     }
 
-    const hnadleChangePassword = async (event) => {
+    const handleChangePassword = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         try {
@@ -215,6 +276,37 @@ export function Profile() {
         setEdit(true);
     }
 
+    const handleFollow = (event) => {
+        event.preventDefault();
+        console.log('following')
+        followUser({
+            variables: {
+                subscriberUsername: loggedInUser,
+                publisherUsername: username
+            }
+        })
+    }
+
+    const handleUnfollow = async (event) => {
+        event.preventDefault();
+        console.log('unfollowing')
+        unfollowUser({
+            variables: {
+                subscriberUsername: loggedInUser,
+                publisherUsername: username
+            }
+        })
+    }
+
+    const removeJourney = (journeyId) => {
+        console.log(journeyId)
+        deleteJourney({
+            variables: {
+                journeyId
+            }
+        })
+    }
+
 
     return (
         <Grid container sx={{ height: '100vh' }}>
@@ -232,9 +324,14 @@ export function Profile() {
                             {userProfile.description ? userProfile.description.length != 0 ? '"' + userProfile.description + '"' : "Nothing to say" : "Nothing to say"}
                         </Typography>
                         <Typography align='left' variant="body1" sx={{ ml: 3, mb: 3, fontSize: 16 }}>~ {userProfile.username} {new Date().getFullYear()} </Typography>
-                        <Typography align='left' variant="body1" sx={{ mb: 1, fontSize: 20 }}>
-                            Followers: {followerCount}
-                        </Typography>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                            <Typography align='left' variant="body1" sx={{ fontSize: 20 }}>
+                                Followers: {followerCount}
+                            </Typography>
+                            <IconButton >
+                                {username != loggedInUser ? (followers.some((user) => user.username == loggedInUser) ? <FavoriteIcon onClick={handleUnfollow} /> : <FavoriteBorderIcon onClick={handleFollow} />) : <></>}
+                            </IconButton>
+                        </div>
                         <Typography align='left' variant="body1" sx={{ mb: 1, fontSize: 20 }}>
                             Number of Journeys: {journeyCount}
                         </Typography>
@@ -297,38 +394,10 @@ export function Profile() {
                                 >
                                     Update Profile
                                 </Button>
-                                { /*
-                                <Grid container justify="space-between" >
-                                    <Grid item xs={6}>
-                                        <Button
-                                            type="submit"
-                                            variant="contained"
-                                            sx={{ mt: 3, mb: 2, float: 'left' }}
-                                            color="secondary"
-                                            onClick={handleCancel}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Button
-                                            type="submit"
-                                            variant="contained"
-                                            onClick={handleUpdateProfile}
-                                            sx={{ mt: 3, mb: 2, float: 'right' }}
-                                            color="secondary"
-                                        >
-                                            Update Profile
-                                        </Button>
-
-                                    </Grid>
-                    
-                                </Grid>
-                                */}
                             </Box>
                         </TabPanel>
                         <TabPanel value="2" sx={{ height: '90vh', overflow: 'auto' }}>
-                            <Box component="form" onSubmit={hnadleChangePassword} xs={4} sx={{ mt: 1 }}>
+                            <Box component="form" onSubmit={handleChangePassword} xs={4} sx={{ mt: 1 }}>
                                 <TextField
                                     margin="normal"
                                     required
@@ -393,19 +462,16 @@ export function Profile() {
                     <TabPanel value="1" sx={{ height: '90vh', overflow: 'auto' }}>
                         {
                             userJourneys.map((journey) => (
-                                <Link to={"../journey/" + journey.id}>
-                                    <Card sx={{ m: 3 }}>
-                                        <CardHeader titleTypographyProps={{ variant: 'h6', align: 'left' }}
-                                            subheaderTypographyProps={{ variant: 'body2', align: 'left' }}
-                                            title={journey.title}
-                                            subheader={format(new Date(journey.fromDate * 1), 'yyyy-MM-dd') + ' to ' + format(new Date(journey.toDate * 1), 'yyyy-MM-dd')} />
-                                        <CardContent>
-                                            <Typography align='left' variant="body1" color="text.secondary">
-                                                {journey.description}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
+                                <div style={{ marginTop: '2vh', marginBottom: '2vh' }}>
+                                    <Link key={`link-id-${journey.id}`} className="link" to={"../../journey/" + journey.id} state={{ journey }}>
+                                        <Journey
+                                            key={`journey-id-${journey.id}`}
+                                            username={loggedInUser}
+                                            journey={journey}
+                                            removeJourney={removeJourney}
+                                        />
+                                    </Link>
+                                </div>
                             ))
                         }
                     </TabPanel>
