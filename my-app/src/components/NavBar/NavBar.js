@@ -18,6 +18,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CreateIcon from '@mui/icons-material/Create';
 import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
+import home from '../../static/home.svg'
 const ResponsiveAppBar = (props) => {
 
   const { username, setUsername } = props;
@@ -57,16 +58,7 @@ const ResponsiveAppBar = (props) => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/" style={{ color: "white", textDecoration: 'none' }}>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
-            >
-              {/*todo: center */}
-              <EmojiFoodBeverageIcon sx={{ mr: 1 }} />
-              COORDINATE
-            </Typography>
+            <img src={home} style={{ height: '5vh' }} />
           </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -150,9 +142,10 @@ const ResponsiveAppBar = (props) => {
           </Box>
           <Box sx={{ flexGrow: 0 }}>
 
-            <Tooltip title="Open settings">
+            <Tooltip title="Account">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar src={avatar} />
+                {username ? (<Typography sx={{ ml: 1, fontSize: 20, color: 'white' }}>{username} </Typography>) : <></>}
               </IconButton>
             </Tooltip>
             <Menu
@@ -174,20 +167,20 @@ const ResponsiveAppBar = (props) => {
               {!username ?
                 <div>
                   <Link to="/signup" style={{ color: 'black', textDecoration: 'none' }}>
-                    <MenuItem>
+                    <MenuItem onClick={(e) => { setAnchorElUser(null); }}>
                       <Typography>Sign Up</Typography>
                     </MenuItem>
                   </Link>
                   <Link to="/signin" style={{ color: 'black', textDecoration: 'none' }}>
-                    <MenuItem>
+                    <MenuItem onClick={(e) => { setAnchorElUser(null); }}>
                       <Typography>Sign In</Typography>
                     </MenuItem>
                   </Link>
                 </div> :
                 <div>
                   <Link to={"/profile/" + username} style={{ color: 'black', textDecoration: 'none' }}>
-                    <MenuItem>
-                      <Typography>Profile</Typography>
+                    <MenuItem onClick={(e) => { setAnchorElUser(null); }} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <Typography align='left'>Profile</Typography>
                     </MenuItem>
                   </Link>
                   <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
