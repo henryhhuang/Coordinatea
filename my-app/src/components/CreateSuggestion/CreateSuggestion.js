@@ -1,12 +1,12 @@
-import {Popup, Marker} from 'react-map-gl';
+import { Popup, Marker } from 'react-map-gl';
 import { useState, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { SuggestionIcon } from '../SuggestionIcon';
 import "./CreateSuggestion.css";
 
-export function CreateSuggestion (props) {
-    const {longitude, latitude, type, markerId, cancelCreate, submitSuggestion, setErrorSnackbar} = props;
+export function CreateSuggestion(props) {
+    const { longitude, latitude, type, markerId, cancelCreate, submitSuggestion, setErrorSnackbar } = props;
 
     const [selectedImage, setSelectedImage] = useState();
     const descriptionRef = useRef();
@@ -23,48 +23,48 @@ export function CreateSuggestion (props) {
 
     return (
         <div key="create-marker-container">
-            <Popup key={"create-suggestion-popup"} longitude={longitude} latitude={latitude+0.001}
-            className="popup"
-            anchor="bottom"
-            closeOnClick={false}
-            onClose={() => cancelCreate()}
+            <Popup key={"create-suggestion-popup"} longitude={longitude} latitude={latitude + 0.001}
+                className="popup"
+                anchor="bottom"
+                closeOnClick={false}
+                onClose={() => cancelCreate()}
             >
                 <form className="create-marker-container" onSubmit={validateSubmit}>
-                    <TextField size='small' sx={{width: '90%'}}
+                    <TextField size='small' sx={{ width: '90%' }}
                         required
                         multiline
                         rows={7}
                         id="outlined-required"
                         label="Required"
-                        defaultValue="Description"
+                        placeholder="Description"
                         inputRef={descriptionRef}
                     />
                     <Button
-                    variant="outlined"
-                    component="label"
-                    size="small"
+                        variant="outlined"
+                        component="label"
+                        size="small"
                     >
-                    Upload File
-                    <input
-                        type="file"
-                        hidden
-                        onChange={((e) => {setSelectedImage(e.target.files[0])})}
-                    />
+                        Upload File
+                        <input
+                            type="file"
+                            hidden
+                            onChange={((e) => { setSelectedImage(e.target.files[0]) })}
+                        />
                     </Button>
-                    <Button type='submit' variant="outlined" size="small" sx={{color: "black"}}>
+                    <Button type='submit' variant="outlined" size="small" sx={{ color: "black" }}>
                         Save Comment
                     </Button>
                 </form>
             </Popup>
-        <Marker color="orange" 
-            key={`create-marker-id-lng${longitude + `lat` + latitude}`} 
-            className="marker" longitude={longitude} 
-            latitude={latitude} 
-            anchor="bottom" >
-                <SuggestionIcon 
+            <Marker color="orange"
+                key={`create-marker-id-lng${longitude + `lat` + latitude}`}
+                className="marker" longitude={longitude}
+                latitude={latitude}
+                anchor="bottom" >
+                <SuggestionIcon
                     type={type}
                 />
-        </Marker>
+            </Marker>
         </div>
     )
 }

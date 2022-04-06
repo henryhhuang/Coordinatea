@@ -2,7 +2,7 @@
 import { Journey } from "../Journey/Journey";
 import Paper from '@mui/material/Paper';
 import { Link } from "react-router-dom";
-import { useLazyQuery, useMutation} from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { Journey_Querys } from '../../graphql/queries/journey'
 import { Journey_Mutations } from "../../graphql/mutation/journey";
 import { useEffect, useState } from "react";
@@ -67,24 +67,24 @@ export function Journeys(props) {
     }
 
     return (
-    <Stack justify="center" className="journeys" spacing={2}>
-        {journeys.length === 0 ? (
-            <Paper>
-                No journeys :(.
-            </Paper>
-        ) : (
-            journeys.map((journey) => (
-                <Link key={`link-id-${journey.id}`} className="link" to={"journey/" + journey.id} state={{journey}}>
-                    <Journey
-                        key={`journey-id-${journey.id}`}
-                        username={username}
-                        journey={journey}
-                        removeJourney={removeJourney}
+        <Stack justify="center" className="journeys" spacing={2}>
+            {journeys.length === 0 ? (
+                <Paper>
+                    No journeys :(.
+                </Paper>
+            ) : (
+                journeys.map((journey) => (
+                    <Link key={`link-id-${journey.id}`} className="link" to={"journey/" + journey.id} state={{ journey }}>
+                        <Journey
+                            key={`journey-id-${journey.id}`}
+                            username={username}
+                            journey={journey}
+                            removeJourney={removeJourney}
                         />
-                </Link>
-            ))
-        )}
-        <Pagination sx={{margin: "auto", display: "flex", justifyContent:"center"}} count={Math.ceil(length / 10)} color="primary" shape="rounded" onChange={handlePagination}/>
-    </Stack>    
+                    </Link>
+                ))
+            )}
+            <Pagination sx={{ margin: "auto", display: "flex", justifyContent: "center" }} count={Math.ceil(length / 10)} color="primary" shape="rounded" onChange={handlePagination} />
+        </Stack>
     );
 }

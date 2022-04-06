@@ -6,11 +6,11 @@ import { Button } from '@mui/material';
 import { useRef, useState } from 'react';
 import './CreateMarkerContent.css'
 
-export function CreateMarkerContent (props) {
-    const {handleSubmit, handleBack, setErrorSnackbar} = props;
+export function CreateMarkerContent(props) {
+    const { handleSubmit, handleBack, setErrorSnackbar } = props;
 
     const [selectedFile, setSelectedFile] = useState();
-	const [isFilePicked, setIsFilePicked] = useState(false);
+    const [isFilePicked, setIsFilePicked] = useState(false);
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
 
@@ -32,48 +32,48 @@ export function CreateMarkerContent (props) {
 
     return (
         <form onSubmit={validateSubmit}>
-        <Container className="create-marker-content" maxWidth="sm">
-            <IconButton onClick={handleBack}>
-                <Typography
-                    sx={{ display: 'inline' }}
-                    component="span"
-                    variant="body2"
-                    color="blue"
+            <Container className="create-marker-content" maxWidth="sm">
+                <IconButton onClick={handleBack}>
+                    <Typography
+                        sx={{ display: 'inline' }}
+                        component="span"
+                        variant="body2"
+                        color="blue"
                     >
-                    Cancel changes
-                </Typography>
-            </IconButton>
-            <TextField sx={{width: '80%', paddingBottom:'20px'}}
-                required
-                id="outlined-required"
-                label="Required"
-                defaultValue="Title"
-                inputRef={titleRef}
-            />
-            <TextField sx={{width: '80%', paddingBottom:'20px'}}
-                required
-                multiline
-                rows={8}
-                id="outlined-required"
-                label="Required"
-                defaultValue="Description"
-                inputRef={descriptionRef}
-            />
-                <Button
-                variant="contained"
-                component="label"
-                >
-                Upload File
-                <input
-                    type="file"
-                    hidden
-                    onChange={fileChange}
+                        Cancel changes
+                    </Typography>
+                </IconButton>
+                <TextField sx={{ width: '80%', paddingBottom: '20px' }}
+                    required
+                    id="outlined-required"
+                    label="Required"
+                    placeholder="Title"
+                    inputRef={titleRef}
                 />
-            </Button>
-            <Button type='submit' variant="outlined" size="medium">
-                Save Marker
-            </Button>
-        </Container>
+                <TextField sx={{ width: '80%', paddingBottom: '20px' }}
+                    required
+                    multiline
+                    rows={8}
+                    id="outlined-required"
+                    label="Required"
+                    placeholder="Description"
+                    inputRef={descriptionRef}
+                />
+                <Button
+                    variant="contained"
+                    component="label"
+                >
+                    Upload File
+                    <input
+                        type="file"
+                        hidden
+                        onChange={fileChange}
+                    />
+                </Button>
+                <Button type='submit' variant="outlined" size="medium">
+                    Save Marker
+                </Button>
+            </Container>
         </form>
     )
 }
