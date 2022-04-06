@@ -14,9 +14,9 @@ const JourneySchema = new Schema({
     viewers: [String],
     journeyType: {
         type: String,
-        enum : ['PREVIOUS', 'PLAN'],
+        enum: ['PREVIOUS', 'PLAN'],
         default: 'PREVIOUS'
     }
-});
+}, { timestamps: true });
 
 module.exports = model("Journey", JourneySchema);
