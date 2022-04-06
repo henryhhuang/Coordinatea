@@ -23,8 +23,8 @@ export function CreateMarkerContent (props) {
         e.preventDefault();
         const title = titleRef.current.value;
         const description = descriptionRef.current.value;
-        if (!(isFilePicked && title && description)) {
-            setErrorSnackbar("A title, description and image are required.")
+        if (!title || !description) {
+            setErrorSnackbar("A title and description are required.")
             return;
         }
         handleSubmit(e, title, description, selectedFile);

@@ -194,7 +194,7 @@ export function PlanJourney() {
                     </Button>
                     <div>
                         <FormControlLabel onChange={((e) => handleChange(e, "suggestions"))} control={<Switch defaultChecked />} label="Viewer Suggestions"></FormControlLabel>
-                        <FormControlLabel onChange={((e) => handleChange(e, "public"))} control={<Switch defaultChecked />} label="Public"></FormControlLabel>
+                        {/* <FormControlLabel onChange={((e) => handleChange(e, "public"))} control={<Switch defaultChecked />} label="Public"></FormControlLabel> */}
                     </div>
                     <Button
                         type="submit"

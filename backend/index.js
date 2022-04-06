@@ -34,7 +34,6 @@ const Image = require('./models/Image');
 app.use(bodyParser.json());
 
 app.use(cors({
-    // origin: 'http://147.182.149.236',
     origin: ['https://147.182.149.236', 'https://coordinatea.me', 'http://localhost:3000'],
     credentials: true
 }));
