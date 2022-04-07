@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import ReactMapGL, { Marker, useControl } from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import mapboxgl from 'mapbox-gl/dist/mapbox-gl-csp';
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
 import { Suggestion } from '../Suggestion/Suggestion';
 import { CreateSuggestion } from '../CreateSuggestion/CreateSuggestion';
 import "./Mapbox.css"
