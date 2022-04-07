@@ -5,6 +5,7 @@ import { ViewJourney } from './components/ViewJourney/ViewJourney';
 import { CreateJourney } from './components/CreateJourney/CreateJourney';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Journeys } from './components/Journeys/Journeys';
+import { Citation } from './components/Citation/Citation';
 import { Route, Routes } from 'react-router-dom';
 import { LandingPage } from './components/LandingPage/LandingPage'
 import { NotFound } from './components/NotFound/NotFound'
@@ -85,6 +86,7 @@ function App() {
             <Route path="/journey/create/:journeyId" element={<CreateMarker username={username} />}></Route>
             <Route path="/journey/plan/:journeyId" element={<PlanMarker username={username} />}></Route>
             <Route path="/signin/" element={<SignIn setUsername={setUsername} />}></Route>
+            <Route path="/citation/" element={<Citation />}></Route>
             <Route path="/signup/" element={<SignUp setUsername={setUsername} />}></Route>
             <Route path="/following/" element={<Following username={username} />}></Route>
             <Route path="/profile/:username" element={<Profile />}></Route>
