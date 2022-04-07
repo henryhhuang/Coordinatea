@@ -6,8 +6,8 @@ import { Link } from "react-router-dom"
 import { Journey } from "../Journey/Journey";
 
 const getUserJourneysQuery = gql`
-    query ($username: String) {
-        getUserJourneys(username: $username) {
+    query ($username: String, $published: Boolean) {
+        getUserJourneys(username: $username, published: $published) {
             id,
             username,
             title,
@@ -36,7 +36,8 @@ export function FollowedUser(props) {
 
     const [getUserJourneys] = useLazyQuery(getUserJourneysQuery, {
         variables: {
-            username: username
+            username: username,
+            published: true
         },
         onCompleted: (data) => {
             console.log(data);
@@ -66,7 +67,7 @@ export function FollowedUser(props) {
     }, [])
 
     return (
-        <div style={{ height: '50vh', display: 'flex' }}>
+        <div style={{ height: '100vh', display: 'flex' }}>
             <div style={{ width: '20vw', display: 'flex', alignItems: 'center', borderRight: '1px black solid' }}>
                 <Link to={"../profile/" + username} style={{ textDecoration: 'none', }}>
                     <Typography align='left' sx={{ color: 'black', fontWeight: 'bold', fontSize: 32 }}>
@@ -77,34 +78,34 @@ export function FollowedUser(props) {
                     <FavoriteIcon onClick={handleUnfollow} />
                 </IconButton>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', height: '50vh', overflow: 'auto' }} >
-                {
-                    userJourneys.length > 0 ?
-                        (
-                            <div>
-                                {
-                                    userJourneys.map((journey) => (
-                                        <div style={{ marginTop: '2vh', marginBottom: '2vh', width: "80vw" }}>
-                                            <Link key={`link-id-${journey.id}`} className="link" to={"../../journey/" + journey.id} state={{ journey }}>
-                                                <Journey
-                                                    key={`journey-id-${journey.id}`}
-                                                    username={loggedInUser}
-                                                    journey={journey}
-                                                    removeJourney={(e) => { return }}
-                                                />
-                                            </Link>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        )
-                        :
-                        (<div style={{ width: "80vw", display: "flex", justifyContent: 'center' }}>
+            {
+                userJourneys.length > 0 ?
+                    (
+                        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', height: '90vh', overflow: 'auto' }} >
+                            {
+                                userJourneys.map((journey) => (
+                                    <div style={{ marginTop: '2vh', marginBottom: '2vh', width: "80vw" }}>
+                                        <Link key={`link-id-${journey.id}`} className="link" to={"../../journey/" + journey.id} state={{ journey }}>
+                                            <Journey
+                                                key={`journey-id-${journey.id}`}
+                                                username={loggedInUser}
+                                                journey={journey}
+                                                removeJourney={(e) => { return }}
+                                            />
+                                        </Link>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    )
+                    :
+                    (<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', height: '100vh', overflow: 'auto' }} >
+                        <div style={{ width: "80vw", display: "flex", justifyContent: 'center' }}>
                             <h1>No journeys posted by {username} </h1>
                         </div>
-                        )
-                }
-            </div>
-        </div >
+                    </div>
+                    )
+            }
+        </div>
     )
 }
