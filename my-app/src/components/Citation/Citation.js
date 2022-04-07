@@ -112,6 +112,21 @@ export function Citation() {
                 </a>
                 <img src={notfound} style={{ height: '20vh' }} />
             </div>
+            <h1>Images from Journeys</h1>
+            <div style={{ width: '25vw' }}>
+                Moscow<br />
+                Photo by <a href="https://unsplash.com/@nikolayv?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Nikolay Vorobyev</a> on <a href="https://unsplash.com/s/photos/moscow?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+                <br />St.Petersburg<br />
+                Photo by <a href="https://unsplash.com/@helenaast?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Helen Ast</a> on <a href="https://unsplash.com/s/photos/st.-petersburg?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+                <br />Stalingrad<br />
+                Photo by <a href="https://unsplash.com/@ant746?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Dmitry Antropov</a> on <a href="https://unsplash.com/s/photos/stalingrad?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+                <br />Tokyo<br />
+                Photo by <a href="https://unsplash.com/@jezar?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Jezael Melgoza</a> on <a href="https://unsplash.com/s/photos/tokyo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+                <br />Kyoto<br />
+                Photo by <a href="https://unsplash.com/@boontohhgraphy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Sorasak</a> on <a href="https://unsplash.com/s/photos/kyoto?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+                <br />Osaka<br />
+                Photo by <a href="https://unsplash.com/@nomadicjulien?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Nomadic Julien</a> on <a href="https://unsplash.com/s/photos/osaka?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+            </div>
             <h1>Code Citation</h1>
             <a target="_blank" href="https://medium.com/@mahyor.sam/tracking-errors-in-apollo-graphql-with-sentry-549ae52c0c76">
                 Sentry Configuration for NodeJS
