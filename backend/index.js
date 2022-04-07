@@ -7,10 +7,10 @@ const bcrypt = require('bcrypt');
 const app = express();
 const path = require('path');
 const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
 
 
-/* Citation: sentryConfig code below taken from : 
+/* 
+Citation:
 https://medium.com/@mahyor.sam/tracking-errors-in-apollo-graphql-with-sentry-549ae52c0c76
 */
 const sentryConfig = {
