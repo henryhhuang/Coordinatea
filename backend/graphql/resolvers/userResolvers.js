@@ -47,10 +47,12 @@ const userResolvers = {
                 throw new Error("User does not exist");
             return await User.find({ username: { $in: user.followers } });;
         },
-        getUserJourneys: async (_, { username }, context) => {
+        getUserJourneys: async (_, { username, published }, context) => {
             resolverUtils.isAuthenticated(context)
-            const journeys = await Journey.find({ username: username });
-            return journeys;
+            console.log(published)
+            if (published)
+                return await Journey.find({ username: username, published: true });
+            return await Journey.find({ username: username });
         },
         getUserComments: async (_, { username }, context) => {
             resolverUtils.isAuthenticated(context)

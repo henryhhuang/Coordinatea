@@ -34,8 +34,8 @@ const getUserByUsernameQuery = gql`
 `
 
 const getUserJourneysQuery = gql`
-    query ($username: String) {
-        getUserJourneys(username: $username) {
+    query ($username: String, $published: Boolean ) {
+        getUserJourneys(username: $username, published: $published) {
             id,
             username,
             title,
@@ -144,9 +144,11 @@ export function Profile() {
 
     const [getUserJourneys] = useLazyQuery(getUserJourneysQuery, {
         variables: {
-            username: username
+            username: username,
+            published: !(loggedInUser == username)
         },
         onCompleted: (data) => {
+            console.log(data);
             setUserJourneys(data.getUserJourneys);
             setJourneyCount(data.getUserJourneys.length);
         }
@@ -212,12 +214,13 @@ export function Profile() {
         }
     })
 
-    useEffect(() => {
-        getUserProfile()
-        getLoggedInUser()
-        getUserJourneys()
-        getUserComments()
-        getFollowers();
+    useEffect(async () => {
+        await getUserProfile()
+        getLoggedInUser().then(() => {
+            getUserJourneys()
+            getUserComments()
+            getFollowers();
+        })
     }, [])
 
     //var { error, loading, data} = useQuery(getUserFollower)

@@ -109,7 +109,7 @@ module.exports = gql`
         getFollowers(username: String): [User!]!
         getUserComments(username: String): [Comment!]!
         getParentComments(id: ID): [Comment!]!
-        getUserJourneys(username: String): [Journey!]!
+        getUserJourneys(username: String, published: Boolean): [Journey!]!
         getJourneys(page: Float!): [Journey!]!
         getJourney(journeyId: ID!): Journey!
         getJourneysLength: Float!
