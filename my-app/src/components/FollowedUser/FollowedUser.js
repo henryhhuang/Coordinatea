@@ -40,7 +40,6 @@ export function FollowedUser(props) {
             published: true
         },
         onCompleted: (data) => {
-            console.log(data);
             setUserJourneys(data.getUserJourneys);
         }
     });
@@ -53,7 +52,6 @@ export function FollowedUser(props) {
 
     const handleUnfollow = async (event) => {
         event.preventDefault();
-        console.log('unfollowing')
         unfollowUser({
             variables: {
                 subscriberUsername: loggedInUser,

@@ -13,7 +13,6 @@ const userResolvers = {
                 const user = await User.findById(context.req.session.uid);
                 if (!user)
                     throw new Error("User does not exist");
-                console.log(user.username);
                 return user;
             }
             return null;
@@ -40,7 +39,6 @@ const userResolvers = {
             return await User.find({ username: { $in: user.following } });;
         },
         getFollowers: async (_, { username }, context) => {
-            console.log('followers' + username);
             resolverUtils.isAuthenticated(context)
             const user = await User.findOne({ username: username });
             if (!user)
@@ -49,7 +47,6 @@ const userResolvers = {
         },
         getUserJourneys: async (_, { username, published }, context) => {
             resolverUtils.isAuthenticated(context)
-            console.log(published)
             if (published)
                 return await Journey.find({ username: username, published: true });
             return await Journey.find({ username: username });
@@ -60,25 +57,10 @@ const userResolvers = {
             const result = await Promise.all(comments.map(async (comment) => {
                 var journey = await Journey.findById(comment.parentId).then();
                 var newComment = { ...comment._doc, parent: journey }
-                console.log(newComment);
                 return newComment
             }));
             return result;
         }
-        /*
-        getUserComments: async (_, { id }, context) => {
-            console.log(context.req.session);
-            console.log(id);
-            const user = await User.findById(id);
-            if (!user)
-                throw new Error("User does not exist");
-            return await Comment.find({ username: user.username });
-        },
-        getUserJourneys: async (_, { id }, context) => {
-            console.log(context.req.session)
-            console.log(id);
-        }
-        */
     },
     Mutation: {
         follow: async (_, { subscriberUsername, publisherUsername }, context) => {
@@ -126,7 +108,6 @@ const userResolvers = {
 
         },
         changePassword: async (_, { username, oldPassword, newPassword, passwordConfirm }, context) => {
-            console.log(username, oldPassword, newPassword, passwordConfirm)
             resolverUtils.isAuthenticated(context)
             resolverUtils.isAuthorized(context, username)
             const user = await User.findOne({ username: username })

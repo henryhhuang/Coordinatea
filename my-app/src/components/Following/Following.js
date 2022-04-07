@@ -21,7 +21,6 @@ export function Following(props) {
             username: username
         },
         onCompleted: async (data) => {
-            console.log(data);
             if (data.getFollowing) {
                 setFollowing(data.getFollowing)
             }

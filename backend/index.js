@@ -147,7 +147,6 @@ app.post('/signup/', async (req, res, next) => {
         createdAt: new Date().toISOString(),
     })
     await newUser.save((error, doc, _) => {
-        console.log(req.session)
         if (error) {
             Sentry.captureException(error)
             throw new Error(error)

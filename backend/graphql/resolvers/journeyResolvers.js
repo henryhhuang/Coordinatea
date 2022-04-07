@@ -4,14 +4,13 @@ const Suggestion = require('../../models/Suggestion');
 const resolverUtils = require('./resolverUtils');
 const validator = require('validator');
 
-const sanitizeContent = function(content) {
+const sanitizeContent = function (content) {
     return validator.escape(content);
 }
 
 const journeyResolvers = {
     Query: {
         getJourneys: async (_, { page }, context) => {
-            console.log(page)
             const journeys = await Journey.find({ published: true }).sort({ createdAt: -1 }).skip(page * 10)
             return journeys.slice(0, 10)
         },
@@ -68,22 +67,23 @@ const journeyResolvers = {
             const journey = await Journey.findById(journeyId);
             resolverUtils.isAuthorized(context, journey.username);
             if (!journey.published) {
-                await Journey.updateOne({ _id: journeyId }, { $set: { published : true } });
+                await Journey.updateOne({ _id: journeyId }, { $set: { published: true } });
             }
 
             const sanitizedTitle = sanitizeContent(title);
             const sanitizedDescription = sanitizeContent(description);
             const santiziedPlace = sanitizeContent(place);
 
-            const marker = new Marker({ 
-                journeyId, 
-                title: sanitizedTitle, 
+            const marker = new Marker({
+                journeyId,
+                title: sanitizedTitle,
                 place: santiziedPlace,
-                description: sanitizedDescription, 
-                date, 
-                latitude, 
-                longitude, 
-                imageId });
+                description: sanitizedDescription,
+                date,
+                latitude,
+                longitude,
+                imageId
+            });
 
             await marker.save();
             return marker;
@@ -92,7 +92,7 @@ const journeyResolvers = {
             resolverUtils.isAuthenticated(context);
             if (!context.req.session || !context.req.session.username) throw new Error("User must be authenticated");
             const { markerId, imageId, description, type, longitude, latitude } = args.suggestion;
-            
+
             const sanitizedDescription = sanitizeContent(description);
 
             const suggestion = new Suggestion({
@@ -108,12 +108,10 @@ const journeyResolvers = {
             return suggestion;
         },
         deleteJourney: async (_, { journeyId }, context) => {
-            console.log(journeyId);
             resolverUtils.isAuthenticated(context);
             const journey = await Journey.findById(journeyId);
             resolverUtils.isAuthorized(context, journey.username);
             const result = await Journey.deleteOne(journey)
-            console.log(result);
             return journey;
         },
         deleteMarker: async (_, { markerId }, context) => {

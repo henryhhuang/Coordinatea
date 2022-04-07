@@ -5,18 +5,6 @@ const resolverUtils = require('./resolverUtils');
 
 const commentResolvers = {
     Query: {
-        /*
-        getUserComments: async (_, { id }, context) => {
-            console.log(context.req.session);
-            const user = await User.findById(id);
-            if (!user)
-                throw new Error("User does not exist");
-            const comments = await Comment.find({ userId: id });
-            if (comments)
-                return comments
-            return []
-        },
-        */
         getParentComments: async (_, { id }, context) => {
             resolverUtils.isAuthenticated(context)
             const journey = await Journey.findById(id);

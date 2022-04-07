@@ -45,12 +45,10 @@ const ResponsiveAppBar = (props) => {
   };
 
   const handleLogout = () => {
-    console.log("Logout");
     const requestOptions = {
       credentials: 'include'
     }
     fetch(process.env.NODE_ENV === "production" ? 'https://api.coordinatea.me/signout' : 'http://localhost:5000/signout', requestOptions).then(res => {
-      console.log(res)
       setUsername(null)
     })
     setAnchorElUser(null);

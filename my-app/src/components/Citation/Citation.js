@@ -22,7 +22,6 @@ export function Citation() {
                 </a>
                 <img src={astronaut4} style={{ height: '20vh' }} />
             </div>
-            {/* */}
             <div style={{ width: '25vw' }}>
                 <a target="_blank" href="https://www.vexels.com/png-svg/preview/245302/yellow-cat-boba-tea-cute">
                     <Typography>
@@ -31,7 +30,6 @@ export function Citation() {
                 </a>
                 <img src={avatar} style={{ height: '20vh' }} />
             </div>
-            {/* */}
             <div style={{ width: '25vw' }}>
                 <h3>Landing 1 Image Edited using canva with assets:</h3>
                 <a target="_blank" href="https://www.vexels.com/png-svg/preview/245302/yellow-cat-boba-tea-cute">
@@ -56,7 +54,6 @@ export function Citation() {
                 </a>
                 <img src={landing1} style={{ height: '20vh' }} />
             </div>
-            {/* */}
             <div style={{ width: '25vw' }}>
                 <h3>Landing 2 Image Edited using canva with assets:</h3>
                 <a target="_blank" href="https://www.vexels.com/png-svg/preview/245302/yellow-cat-boba-tea-cute">
@@ -103,7 +100,6 @@ export function Citation() {
                 </a>
                 <img src={logo} style={{ height: '20vh' }} />
             </div>
-            {/* */}
             <div style={{ width: '25vw' }}>
                 <a target="_blank" href="https://www.vexels.com/png-svg/preview/204108/astronaut-colored-behind">
                     <Typography>
@@ -134,22 +130,13 @@ export function Citation() {
             <a target="_blank" href="https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site">
                 Calculate time since posting
             </a>
-            <a target="_blank" href="https://medium.com/@mahyor.sam/tracking-errors-in-apollo-graphql-with-sentry-549ae52c0c76">
-                Sentry Configuration for NodeJS
-            </a>
-            <a target="_blank" href="https://medium.com/@mahyor.sam/tracking-errors-in-apollo-graphql-with-sentry-549ae52c0c76">
-                Sentry Configuration for NodeJS
-            </a>
-            <a target="_blank" href="https://medium.com/@mahyor.sam/tracking-errors-in-apollo-graphql-with-sentry-549ae52c0c76">
-                Sentry Configuration for NodeJS
-            </a>
             <a target="_blank" href="https://codesandbox.io/s/l7p179qr6m?file=/src/index.js">
                 Geocoder setup code
             </a>
             <a target="_blank" href="https://mui.com/">
                 UI components built from Material UI
             </a>
-            
+
 
         </div >
     )

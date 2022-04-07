@@ -148,7 +148,6 @@ export function Profile() {
             published: !(loggedInUser == username)
         },
         onCompleted: (data) => {
-            console.log(data);
             setUserJourneys(data.getUserJourneys);
             setJourneyCount(data.getUserJourneys.length);
         }
@@ -196,7 +195,6 @@ export function Profile() {
             username: username
         },
         onCompleted: (data) => {
-            console.log(data);
             setFollowers(data.getFollowers);
             setFollowerCount(data.getFollowers.length);
         }
@@ -280,7 +278,6 @@ export function Profile() {
 
     const handleFollow = (event) => {
         event.preventDefault();
-        console.log('following')
         followUser({
             variables: {
                 subscriberUsername: loggedInUser,
@@ -291,7 +288,6 @@ export function Profile() {
 
     const handleUnfollow = async (event) => {
         event.preventDefault();
-        console.log('unfollowing')
         unfollowUser({
             variables: {
                 subscriberUsername: loggedInUser,
@@ -301,7 +297,6 @@ export function Profile() {
     }
 
     const removeJourney = (journeyId) => {
-        console.log(journeyId)
         deleteJourney({
             variables: {
                 journeyId

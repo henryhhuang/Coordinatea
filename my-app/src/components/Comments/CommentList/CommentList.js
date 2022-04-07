@@ -35,18 +35,15 @@ export function CommentList(props) {
             id: parentId
         },
         onCompleted: (data) => {
-            console.log(data);
             setComments(data.getParentComments);
         }
     })
 
     const [deleteComment] = useMutation(deleteCommentMutation, {
         onCompleted: (data) => {
-            console.log(data);
             getParentComments();
         },
         onError: error => {
-            console.log(username);
             console.log(error)
         }
     })
