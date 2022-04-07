@@ -101,7 +101,6 @@ app.use(cors({
 
 app.set('trust proxy', 1)
 
-//todo: https://stackoverflow.com/questions/44882535/warning-connect-session-memorystore-is-not-designed-for-a-production-environm
 const session = require('express-session');
 app.use(session({
     secret: SESSION_SECRET,
@@ -205,23 +204,6 @@ app.post('/api/image/:id', isAuthenticated, upload.single('file'), async functio
     }
     await newImage.save();
     return res.json(newImage._id);
-});
-
-//Get a list of all image ids from a journey or marker
-app.get('/api/imageIds/:id/:action', async function (req, res, next) {
-    let images;
-    if (req.params.action == 'journey') {
-        images = await Image.find({
-            'journeyId': req.params.id
-        })
-    } else {
-        images = await Image.find({
-            'markerId': req.params.id
-        })
-    }
-    let imageIds = images.map(image => image._id);
-
-    return res.json(imageIds);
 });
 
 //Get the path of the image

@@ -1,6 +1,6 @@
 import { Mapbox } from '../Mapbox/Mapbox';
 import Grid from '@mui/material/Grid';
-import React, { useRef, useState, useEffect, Fragment } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import List from '@mui/material/List';
 import { withStyles } from "@material-ui/core/styles";
@@ -150,7 +150,7 @@ export function PlanMarker (props) {
 
     const handleBack = () => {
         setOpen(false);
-        setOpenMarker({});
+        setOpenMarker(null)
     }
 
     const onSearch = (result) => {
@@ -286,20 +286,20 @@ export function PlanMarker (props) {
                 <TabPanel value="1" sx={{width: '100%', height: '95vh', overflow: 'auto', padding:"0px"}}>
                     {open ? (
                     <div>
-                    {openMarker != null ? (
-                        <MarkerContent className="marker-content"
-                            title={openMarker.title}
-                            description={openMarker.description}
-                            images={openMarker.imageId}
-                            handleBack={handleBack}
-                            />     
-                    ) : (
-                        <CreateMarkerContent
-                            setErrorSnackbar={setErrorSnackbar}
-                            handleBack={handleBack}
-                            handleSubmit={handleSubmit}>
-                        </CreateMarkerContent> 
-                    )}
+                        {openMarker != null ? (
+                            <MarkerContent className="marker-content"
+                                title={openMarker.title}
+                                description={openMarker.description}
+                                images={openMarker.imageId}
+                                handleBack={handleBack}
+                                />     
+                        ) : (
+                            <CreateMarkerContent
+                                setErrorSnackbar={setErrorSnackbar}
+                                handleBack={handleBack}
+                                handleSubmit={handleSubmit}>
+                            </CreateMarkerContent> 
+                        )}
                     </div>
                     ) : (
                     <List sx={{maxHeight: '100vh', overflow: 'auto'}}>

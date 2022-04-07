@@ -13,7 +13,7 @@ import "./Mapbox.css"
 import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
 mapboxgl.workerClass = MapboxWorker;
 
-//todo id from backend when markers are saved
+//used to store markers on the client
 let id = 1;
 
 export function Mapbox(props) {
@@ -61,7 +61,6 @@ export function Mapbox(props) {
     }
   }, [props.currentMarker])
 
-  //can refactor to its own component
   //parts taken from https://codesandbox.io/s/l7p179qr6m?file=/src/index.js
   const Geocoder = (props) => {
     const ctrl = useControl(() => new MapboxGeocoder(props), {
@@ -71,8 +70,6 @@ export function Mapbox(props) {
       const {result} = evt;
       const location = result && (result.center || (result.geometry?.type === 'Point' && result.geometry.coordinates));
       if (markerCreation && location) {
-        //todo save marker info to database, and store id from backend here
-        //we should also check that no duplicate markers are made (same long,latitude)
         const newMarker = {
           id: id,
           longitude: location[0],

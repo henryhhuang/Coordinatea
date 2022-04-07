@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 
-//TODO PAGINATION
 export const Journey_Querys = {
     GET_JOURNEYS: gql`
         query GetJourneys($page: Float!) {

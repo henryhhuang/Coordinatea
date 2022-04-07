@@ -117,7 +117,7 @@ export function CreateMarker (props) {
 
     const handleBack = () => {
         setOpen(false);
-        setOpenMarker({});
+        setOpenMarker(null);
     }
 
     const onSearch = (result) => {
@@ -142,7 +142,6 @@ export function CreateMarker (props) {
         marker.date = date;
         marker.place = markerPlaceRef.current.value;
         setOpen(true);
-        setNewMarker(marker);
     }
 
     const handleSubmit = (e, title, description, image) => {
@@ -151,7 +150,6 @@ export function CreateMarker (props) {
             return;
         }
         setOpen(false);
-        setNewMarker();
         let marker = {
             journeyId: journeyId,
             title: title,

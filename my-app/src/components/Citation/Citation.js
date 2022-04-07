@@ -143,6 +143,13 @@ export function Citation() {
             <a target="_blank" href="https://medium.com/@mahyor.sam/tracking-errors-in-apollo-graphql-with-sentry-549ae52c0c76">
                 Sentry Configuration for NodeJS
             </a>
+            <a target="_blank" href="https://codesandbox.io/s/l7p179qr6m?file=/src/index.js">
+                Geocoder setup code
+            </a>
+            <a target="_blank" href="https://mui.com/">
+                UI components built from Material UI
+            </a>
+            
 
         </div >
     )
