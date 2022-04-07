@@ -44,7 +44,7 @@ export function CreateSuggestion(props) {
                         component="label"
                         size="small"
                     >
-                        Upload File
+                        Upload File (max 2mb)
                         <input
                             type="file"
                             hidden

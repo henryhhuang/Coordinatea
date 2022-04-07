@@ -3,12 +3,10 @@ import { useMutation } from '@apollo/client';
 import { Journey_Mutations } from '../../graphql/mutation/journey';
 import { useNavigate } from "react-router-dom";
 import {
-    Avatar,
     Box,
     Button,
     Container,
     CssBaseline,
-    Link,
     TextField,
     Typography,
 } from '@mui/material'
@@ -219,7 +217,7 @@ export function CreateJourney() {
                         component="label"
                         color="secondary"
                     >
-                        Upload File
+                        Upload File (max 2mb)
                         <input
                             type="file"
                             hidden

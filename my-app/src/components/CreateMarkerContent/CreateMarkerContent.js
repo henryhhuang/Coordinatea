@@ -63,7 +63,7 @@ export function CreateMarkerContent(props) {
                     variant="contained"
                     component="label"
                 >
-                    Upload File
+                    Upload File (max 2mb)
                     <input
                         type="file"
                         hidden
