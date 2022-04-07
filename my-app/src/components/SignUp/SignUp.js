@@ -16,6 +16,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import "./SignUp.css"
 
+/*
+Citation:
+Sign Up From taken from MUI template: https://github.com/mui/material-ui/tree/v5.5.2/docs/data/material/getting-started/templates/sign-up
+*/
 export function SignUp(props) {
     const { setUsername } = props;
     const [snackbar, setSnackbar] = useState();

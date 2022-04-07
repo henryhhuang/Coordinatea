@@ -29,12 +29,7 @@ const unfollowMutation = gql`
     }
 `
 
-
 export function FollowedUser(props) {
-    /*
-        get the logged In user journeys
-        expose unfollow
-    */
 
     const { username, loggedInUser, getFollowing } = props
     const [userJourneys, setUserJourneys] = useState([]);

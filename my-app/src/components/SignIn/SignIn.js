@@ -16,6 +16,10 @@ import { useNavigate } from 'react-router-dom';
 
 import "./SignIn.css"
 
+/*
+Citation:
+Sign In From taken from MUI template: https://github.com/mui/material-ui/tree/v5.5.2/docs/data/material/getting-started/templates/sign-in
+*/
 export function SignIn(props) {
 
     const { setUsername } = props;

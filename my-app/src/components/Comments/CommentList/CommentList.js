@@ -1,6 +1,5 @@
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Comment } from '../Comment/Comment';
 import { List, ListItem } from '@mui/material';
 import { CommentForm } from '../CommentForm/CommentForm';

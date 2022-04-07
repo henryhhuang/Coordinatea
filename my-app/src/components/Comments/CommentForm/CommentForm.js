@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import {
-    Avatar,
     Grid,
-    Button,
     Container,
     TextField,
-    IconButton,
     Alert
 } from '@mui/material';
-
-import SendIcon from '@mui/icons-material/Send';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Snackbar } from '@material-ui/core';
 
 
 export function CommentForm(props) {
 
-    const { comments, getComments, parentId } = props;
+    const { getComments, parentId } = props;
     const [snackbar, setSnackbar] = useState();
     const [open, setOpen] = useState();
 
@@ -85,7 +79,7 @@ export function CommentForm(props) {
                     />
                 </Grid>
             </Grid>
-            <Snackbar open={open} onClose={((e) => setOpen(false))} autoHideDuration={6000}>
+            <Snackbar open={open} onClose={(() => setOpen(false))} autoHideDuration={6000}>
                 <Alert severity="error" sx={{ width: '100%' }}>
                     {snackbar}
                 </Alert>

@@ -1,10 +1,10 @@
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import { Button, Container, Grid, Icon, IconButton, Tab, TextField, Typography } from '@mui/material';
+import { Button, Container, Grid, IconButton, Tab, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { Link, useParams } from "react-router-dom";
-import React, { useEffect, useRef, useState } from 'react';
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import TabPanel from '@mui/lab/TabPanel';
@@ -109,7 +109,6 @@ const unfollowMutation = gql`
         }
     }
 `
-
 
 export function Profile() {
     const { username } = useParams();
@@ -307,7 +306,10 @@ export function Profile() {
         })
     }
 
-
+    /* 
+    Citation:
+    Tab Panels adapted from MUI: https://mui.com/components/tabs/ (EXPERIMENTAL API)
+    */
     return (
         <Grid container sx={{ height: '100vh' }}>
             <Grid item xs={4} sx={{ borderRight: 1 }}>

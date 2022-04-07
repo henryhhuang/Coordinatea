@@ -16,6 +16,10 @@ const intervals = {
     minute: 60
 }
 
+/*
+Citation:
+https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site
+*/
 function commentAge(date) {
     const seconds = Math.floor((new Date() - date) / 1000);
     if (seconds === 0)

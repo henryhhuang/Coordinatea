@@ -15,10 +15,13 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from "react-router-dom";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PublicIcon from '@mui/icons-material/Public';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CreateIcon from '@mui/icons-material/Create';
-import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
 import home from '../../static/home.svg'
+
+/*
+Citation:
+Navbar adapted from MUI example: https://mui.com/components/app-bar/ (BASIC NAVBAR)
+*/
 const ResponsiveAppBar = (props) => {
 
   const { username, setUsername } = props;
@@ -96,14 +99,14 @@ const ResponsiveAppBar = (props) => {
                       <Typography>Following</Typography>
                     </MenuItem>
                   </Link>
-                  <Link to="/discover" style={{ color: 'black', textDecoration: 'none' }}>
-                    <MenuItem>
-                      <Typography>Discover</Typography>
-                    </MenuItem>
-                  </Link>
                   <Link to="/journey/create" style={{ color: 'black', textDecoration: 'none' }}>
                     <MenuItem>
                       <Typography>Create Journey</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link to="/citation" style={{ color: 'black', textDecoration: 'none' }}>
+                    <MenuItem>
+                      <Typography>Citation</Typography>
                     </MenuItem>
                   </Link>
                 </Menu></div>) : (<></>)}
@@ -125,16 +128,16 @@ const ResponsiveAppBar = (props) => {
                     <Typography>Following</Typography>
                   </Button>
                 </Link>
-                <Link to="/discover" style={{ textDecoration: 'none' }}>
-                  <Button sx={{ my: 2, display: 'flex', color: 'primary.text' }} >
-                    <PublicIcon sx={{ mr: 1 }} />
-                    <Typography>Discover</Typography>
-                  </Button>
-                </Link>
                 <Link to="/journey/create" style={{ textDecoration: 'none' }}>
                   <Button sx={{ my: 2, display: 'flex', color: 'primary.text' }} >
                     <CreateIcon sx={{ mr: 1 }} />
                     <Typography>Create Journey</Typography>
+                  </Button>
+                </Link>
+                <Link to="/citation" style={{ textDecoration: 'none' }}>
+                  <Button sx={{ my: 2, display: 'flex', color: 'primary.text' }} >
+                    <PublicIcon sx={{ mr: 1 }} />
+                    <Typography>Citation</Typography>
                   </Button>
                 </Link>
               </div>
