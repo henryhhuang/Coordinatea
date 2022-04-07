@@ -1,7 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const { model, Schema } = require("mongoose");
 
-//todo make two image schemas one for journeys, one for markers
 const ImageSchema = new Schema({
     journeyId: String,
     markerId: String,
