@@ -38,8 +38,6 @@ const ListItemButton = withStyles({
     selected: {}
   })(MuiListItemButton);
 
-const url = window.location.href;
-
 export function CreateMarker (props) {
     const { username } = props;
 
@@ -136,10 +134,7 @@ export function CreateMarker (props) {
     const handleMarkerSubmit = (e) => {
         e.preventDefault();
         if (!(date && markerPlaceRef.current.value)) {
-            setSnackbar({
-                serverity: "error",
-                message: "A place and date are required."
-            })
+            setErrorSnackbar("A place and date are required.");
             setOpenSnackbar(true);
             return;
         }
@@ -152,6 +147,7 @@ export function CreateMarker (props) {
 
     const handleSubmit = (e, title, description, image) => {
         if (!(image && title && description)) {
+            setErrorSnackbar("An image is required for past journeys");
             return;
         }
         setOpen(false);

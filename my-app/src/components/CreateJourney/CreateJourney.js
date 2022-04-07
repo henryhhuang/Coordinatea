@@ -31,9 +31,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const url = window.location.href;
-
-export function CreateJourney(props) {
+export function CreateJourney() {
 
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
@@ -230,7 +228,7 @@ export function CreateJourney(props) {
                     </Button>
                     <div>
                         <FormControlLabel onChange={((e) => handleChange(e, "suggestions"))} control={<Switch defaultChecked />} label="Viewer Suggestions"></FormControlLabel>
-                        <FormControlLabel onChange={((e) => handleChange(e, "public"))} control={<Switch defaultChecked />} label="Public"></FormControlLabel>
+                        {/* <FormControlLabel onChange={((e) => handleChange(e, "public"))}  control={<Switch defaultChecked />} label="Public"></FormControlLabel> */}
                     </div>
                     <Button
                         type="submit"

@@ -1,6 +1,6 @@
 import { Mapbox } from '../Mapbox/Mapbox';
 import Grid from '@mui/material/Grid';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, Fragment } from 'react';
 import { useParams } from "react-router-dom";
 import List from '@mui/material/List';
 import { withStyles } from "@material-ui/core/styles";
@@ -29,6 +29,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
 import { PlaceSuggestions } from '../PlaceSuggestions/PlaceSuggestion';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -92,9 +93,7 @@ export function PlanMarker (props) {
 
     const [getSuggestions] = useLazyQuery(Suggestion_Queries.GET_PLACE_SUGGESTIONS, {
         onCompleted: data => {
-            console.log('data', data);
-            setPlaceSuggestions(data.getPlaceSuggestions)}
-            ,
+            setPlaceSuggestions(data.getPlaceSuggestions)},
         onError: error => setErrorSnackbar(error.message)
     })
 
@@ -123,9 +122,27 @@ export function PlanMarker (props) {
         }
     }, [uploadedImage])
 
+    useEffect(() => {
+        if (newMarker && newMarker.imageId === "") {
+            createMarker({
+                variables: {
+                    marker: {
+                        journeyId: journeyId,
+                        title: newMarker.title,
+                        description: newMarker.description,
+                        place: newMarker.place,
+                        date: newMarker.date,
+                        longitude: newMarker.longitude,
+                        latitude: newMarker.latitude,
+                        imageId: newMarker.imageId
+                    }
+                }
+            });
+        }
+    }, [newMarker])
+
     const handleChange = (marker, value) => {
         if (value) {
-            console.log(value);
             setTabValue(value)
         }
         setCurrentMarker(marker);
@@ -150,10 +167,7 @@ export function PlanMarker (props) {
     const handleMarkerSubmit = (e) => {
         e.preventDefault();
         if (!(date && markerPlaceRef.current.value)) {
-            setSnackbar({
-                serverity: "error",
-                message: "A place and date are required."
-            })
+            setErrorSnackbar("A place and date are required.");
             setOpenSnackbar(true);
             return;
         }
@@ -165,10 +179,6 @@ export function PlanMarker (props) {
     }
 
     const handleSubmit = (e, title, description, image) => {
-        if (!(image && title && description)) {
-            return;
-        }
-        setOpen(false);
         let marker = {
             journeyId: journeyId,
             title: title,
@@ -178,8 +188,13 @@ export function PlanMarker (props) {
             longitude: newMarker.longitude,
             latitude: newMarker.latitude,
         }
+        if (image) {
+            uploadImage(image, setUploadedImage, setErrorSnackbar);
+        } else {
+            marker.imageId = "";
+        }
+        setOpen(false);
         setNewMarker(marker)
-        uploadImage(image, setUploadedImage, setErrorSnackbar);
     }
 
     const handleContentOpen = (e, marker) => {
@@ -268,7 +283,6 @@ export function PlanMarker (props) {
                         <Tab disabled={newMarker == null || !newMarker.center} label="SUGGESTIONS" value="2" />
                     </TabList>
                 </Box>
-                {/* todo: to center the markers/comments in tabpanel horizontally. display: "flex", alignItems: "center", this works for markers but breaks comments*/}
                 <TabPanel value="1" sx={{width: '100%', height: '95vh', overflow: 'auto', padding:"0px"}}>
                     {open ? (
                     <div>
