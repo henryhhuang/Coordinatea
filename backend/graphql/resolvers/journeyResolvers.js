@@ -7,7 +7,7 @@ const journeyResolvers = {
     Query: {
         getJourneys: async (_, { page }, context) => {
             console.log(page)
-            const journeys = await Journey.find({}).sort({ createdAt: -1 }).skip(page * 10)
+            const journeys = await Journey.find({ published: true }).sort({ createdAt: -1 }).skip(page * 10)
             return journeys.slice(0, 10)
         },
         getJourney: async (_, { journeyId }) => {

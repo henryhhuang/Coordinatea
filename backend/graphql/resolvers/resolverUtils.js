@@ -1,4 +1,4 @@
-exports.isAuthenticated = function(context) {
+exports.isAuthenticated = function (context) {
     if (!context.req.session || !context.req.session.username) throw new Error("User is not authenticated.");
 }
 
