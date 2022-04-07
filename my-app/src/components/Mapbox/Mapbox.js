@@ -1,7 +1,7 @@
-import { useRef, useEffect, useState, useCallback} from 'react';
-import ReactMapGL, {Marker, useControl} from 'react-map-gl';
+import { useRef, useEffect, useState, useCallback } from 'react';
+import ReactMapGL, { Marker, useControl } from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl-csp';
 import { Suggestion } from '../Suggestion/Suggestion';
 import { CreateSuggestion } from '../CreateSuggestion/CreateSuggestion';
 import "./Mapbox.css"
@@ -17,11 +17,11 @@ mapboxgl.workerClass = MapboxWorker;
 let id = 1;
 
 export function Mapbox(props) {
-  let { onSearch, 
-    changeCurrentMarker, 
-    currentMarker, 
-    markerCreation, 
-    accessToken, 
+  let { onSearch,
+    changeCurrentMarker,
+    currentMarker,
+    markerCreation,
+    accessToken,
     commentMarkerCreation,
     onCommentMarkerCreate,
     onCommentMarkerSubmit,
@@ -29,7 +29,7 @@ export function Mapbox(props) {
     username,
     journeyOwner,
     setErrorSnackbar,
-    placeSuggestions} = props;
+    placeSuggestions } = props;
 
   const [markers, setMarkers] = useState([]);
   const [commentMarkers, setCommentMarkers] = useState([]);
@@ -56,8 +56,8 @@ export function Mapbox(props) {
 
   useEffect(() => {
     if (mapRef && mapRef.current) {
-        currentMarker = props.currentMarker
-        zoomToMarker(null, currentMarker);
+      currentMarker = props.currentMarker
+      zoomToMarker(null, currentMarker);
     }
   }, [props.currentMarker])
 
@@ -67,7 +67,7 @@ export function Mapbox(props) {
       position: props.position
     })
     ctrl.on('result', evt => {
-      const {result} = evt;
+      const { result } = evt;
       const location = result && (result.center || (result.geometry?.type === 'Point' && result.geometry.coordinates));
       if (markerCreation && location) {
         const newMarker = {
@@ -79,7 +79,7 @@ export function Mapbox(props) {
         id++;
         onSearch(result);
         setMarkers(() => [...markers, newMarker])
-        }
+      }
     });
     return null;
   }
@@ -92,7 +92,7 @@ export function Mapbox(props) {
 
 
   const zoomToOriginal = () => {
-      mapRef.current.flyTo({
+    mapRef.current.flyTo({
       center: [10.9353, 44.8916],
       zoom: 1.20,
       bearing: 0,
@@ -103,7 +103,7 @@ export function Mapbox(props) {
       easing: (t) => t,
       // this animation is considered essential with respect to prefers-reduced-motion
       essential: true
-      });
+    });
   }
 
 
@@ -168,60 +168,60 @@ export function Mapbox(props) {
   }
 
   return (
-      <ReactMapGL
-        className="map"
-        initialViewState={viewport}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
-        maxZoom={14}
-        mapboxAccessToken={accessToken}
-        ref={mapRef}
-        onLoad={onMapLoad}
-        onClick={createMarker}
-        renderChildrenInPortal={true}
-        >
-        <Geocoder
-          accessToken={accessToken}
-          mapboxgl={mapboxgl} position="top-right"
-          >
-        </Geocoder>
-        {markers.map((marker) => (
-          <div key={marker.id}>
-            <Marker 
-              key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`} 
-              className="marker" longitude={marker.longitude} latitude={marker.latitude} 
-              onClick={(e) => markerClick(e, marker.id, marker.longitude, marker.latitude)} 
-              anchor="bottom" 
-              color="#8c9cd8">
-            </Marker>
-          </div>
-        ))} 
-        {placeSuggestions && placeSuggestions.map((placeSuggestion) => (
-          <Marker 
-            key={`marker-id-lng${placeSuggestion.longitude + `lat` + placeSuggestion.latitude}`} 
-            className="marker" longitude={placeSuggestion.longitude} latitude={placeSuggestion.latitude} 
-            onClick={(e) => placeSuggestionClick(e, placeSuggestion.xid, placeSuggestion.longitude, placeSuggestion.latitude)} 
-            anchor="bottom" 
-            color="#4f1b26">
+    <ReactMapGL
+      className="map"
+      initialViewState={viewport}
+      mapStyle="mapbox://styles/mapbox/streets-v11"
+      maxZoom={14}
+      mapboxAccessToken={accessToken}
+      ref={mapRef}
+      onLoad={onMapLoad}
+      onClick={createMarker}
+      renderChildrenInPortal={true}
+    >
+      <Geocoder
+        accessToken={accessToken}
+        mapboxgl={mapboxgl} position="top-right"
+      >
+      </Geocoder>
+      {markers.map((marker) => (
+        <div key={marker.id}>
+          <Marker
+            key={`marker-id-lng${marker.longitude + `lat` + marker.latitude}`}
+            className="marker" longitude={marker.longitude} latitude={marker.latitude}
+            onClick={(e) => markerClick(e, marker.id, marker.longitude, marker.latitude)}
+            anchor="bottom"
+            color="#8c9cd8">
           </Marker>
-        ))}       
-        {commentMarkers.map((commentMarker) => (
-          <Suggestion
-            suggestion={commentMarker}
-            username={username}
-            removeSuggestion={removeSuggestion}
-            journeyOwner={journeyOwner}
-          />
-        ))} 
-        {createSuggestion && (<CreateSuggestion
-            longitude={newSuggestion.longitude}
-            latitude={newSuggestion.latitude}
-            type={newSuggestion.type}
-            markerId={newSuggestion.markerId}
-            cancelCreate={cancelCreate}
-            submitSuggestion={onCommentMarkerSubmit}
-            setErrorSnackbar={setErrorSnackbar}
-        />)}    
-      </ReactMapGL>
+        </div>
+      ))}
+      {placeSuggestions && placeSuggestions.map((placeSuggestion) => (
+        <Marker
+          key={`marker-id-lng${placeSuggestion.longitude + `lat` + placeSuggestion.latitude}`}
+          className="marker" longitude={placeSuggestion.longitude} latitude={placeSuggestion.latitude}
+          onClick={(e) => placeSuggestionClick(e, placeSuggestion.xid, placeSuggestion.longitude, placeSuggestion.latitude)}
+          anchor="bottom"
+          color="#4f1b26">
+        </Marker>
+      ))}
+      {commentMarkers.map((commentMarker) => (
+        <Suggestion
+          suggestion={commentMarker}
+          username={username}
+          removeSuggestion={removeSuggestion}
+          journeyOwner={journeyOwner}
+        />
+      ))}
+      {createSuggestion && (<CreateSuggestion
+        longitude={newSuggestion.longitude}
+        latitude={newSuggestion.latitude}
+        type={newSuggestion.type}
+        markerId={newSuggestion.markerId}
+        cancelCreate={cancelCreate}
+        submitSuggestion={onCommentMarkerSubmit}
+        setErrorSnackbar={setErrorSnackbar}
+      />)}
+    </ReactMapGL>
   );
 }
 
