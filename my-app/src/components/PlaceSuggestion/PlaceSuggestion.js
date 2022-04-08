@@ -16,6 +16,10 @@ const ListItemButton = withStyles({
     selected: {}
   })(MuiListItemButton);
 
+const distanceInKm = (distance) => {
+    return Math.round((distance / 1000) * 100) / 100
+}
+
 export function PlaceSuggestion(props) {
     const { placeSuggestion, currentMarker, handleChange, addMarker} = props;
 
@@ -47,7 +51,7 @@ export function PlaceSuggestion(props) {
                             variant="body2"
                             color="text.primary"
                         >
-                            10km away
+                            {distanceInKm(placeSuggestion.distance)} km away
                         </Typography>
                     </React.Fragment>
                 }
