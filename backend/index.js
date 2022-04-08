@@ -95,7 +95,7 @@ const Image = require('./models/Image');
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: ['https://147.182.149.236', 'https://coordinatea.me', 'http://localhost:3000'],
+    origin: ['https://147.182.149.236', 'https://coordinatea.me'],
     credentials: true
 }));
 
@@ -125,7 +125,7 @@ const server = new ApolloServer({
     }
 });
 
-server.applyMiddleware({ app, cors: { origin: ['https://147.182.149.236', 'https://coordinatea.me', 'http://localhost:3000'], credentials: true } });
+server.applyMiddleware({ app, cors: { origin: ['https://147.182.149.236', 'https://coordinatea.me'], credentials: true } });
 
 // REST endpoint for signup from piazza post @342: https://piazza.com/class/kxgjicgvryu3h8?cid=342
 app.post('/signup/', async (req, res, next) => {
