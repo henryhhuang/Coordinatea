@@ -1,6 +1,7 @@
 # Coordinatea
 ## Project URL
-coordinatea.me
+[coordinatea.me](https://coordinatea.me/)
+https://coordinatea.me/
 ## Project Video URL
 [YouTube Video Demo](https://youtu.be/AYIulx-DKog)
 https://youtu.be/AYIulx-DKog
